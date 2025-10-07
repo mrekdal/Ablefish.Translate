@@ -52,3 +52,11 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+*.pubxml.user
+*.Development.json
+*.metadata.v9.bin
+*.projects.v9.bin
+*.v9.bin
+*.v2
+.vs/
+/WebApp/appsettings.Development.json

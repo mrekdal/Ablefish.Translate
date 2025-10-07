@@ -1,0 +1,5 @@
+obj/
+*.cache
+*.sqlproj.user
+*.dbmdl
+*.jfm

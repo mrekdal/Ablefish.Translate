@@ -1,0 +1,335 @@
+﻿@page "/"
+@inject ILogger<Home> logger
+@inject IDataContext data
+@inject IAppUser appUser
+@inject ITransFactory transFactory
+@inject IStatusMessage statusMessage
+
+<PageTitle>Translation Work</PageTitle>
+
+<table class="w-100 mt-2">
+    <tr style="vertical-align: middle;">
+        <td>
+            <div class="h2 fw-bold me-4">Ablefish Translator</div>
+        </td>
+        <td style="float: right;">
+            <LoginControl />
+        </td>
+    </tr>
+</table>
+
+
+@if (!appUser.IsAuthenticated)
+{
+    <div class="card shadow mt-2">
+        <div class="card-header">Ready to Translate</div>
+        <div class="card-body">
+            <div class="m-6">
+                You have to be registered, signed in, and to be assigned responsibility
+                for projects and target languages in order to use the application.
+                Click the button below to see of there's work for you! @(appUser.LogTo)
+            </div>
+            <div class="text-center mt-4 mb-4">
+                <button class="btn btn-lg btn-success" @onclick="@(() => RunQuery())">Start Working</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+
+    <div class="card shadow mt-2">
+        <div class="card-header">
+            <span class="fw-bold">
+                <InputCheckbox @bind-Value="ShowSettings" class="form-check-inline me-2" />Project Settings
+            </span>
+            <span style="float:right;">Welcome: <b>@appUser.FirstName</b></span>
+        </div>
+        @if (ShowSettings)
+        {
+            <div class="card-body">
+                <div class="mb-2 py-3">
+                    Choose your project, target language and support language.
+                    The support language should be a manual translation and can be used to resolve ambiguities in the source language.
+                </div>
+                <LanguageControl OnClick="RunQuery" />
+            </div>
+        }
+    </div>
+
+    <div class="card shadow mt-2">
+        <div class="card-header">Find Work</div>
+        <div class="card-body">
+            @if (workBatch.Count == 0)
+            {
+                ShowSettings = true;
+                <div>
+                    There is no more work for you with the current settings.
+                    You may find more work in other projects or with other target languages.
+                </div>
+            }
+            else
+            {
+                <div>
+                    You get @(workBatch.Count) text blocks to work with at a time.  When you are done, get more work by clicking on the <b>More</b> button.
+                </div>
+                <div class="btn-group w-100 mt-2">
+                    <button class="btn btn-sm btn-secondary disabled twa-first-button">Text Block</button>
+                    @{
+                        int btnNo = 0;
+                        foreach (var e in workBatch)
+                        {
+                            int locBtnNo = btnNo;
+                            <button class="btn btn-sm @BtnClass(btnNo, e)" @onclick="@(() => SelectItem(locBtnNo))" title="@e.WorkId">@(locBtnNo + 1)</button>
+                            btnNo++;
+                        }
+                    }
+                    <button class="btn btn-sm btn-primary" @onclick="@(() => RunQuery())">More</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div>
+
+        @if (workItem != null)
+        {
+            <div class="card shadow mt-2">
+                <div class="card-header">
+                    English - Original Language
+                    <span class="twa-work-item">@workItem.RowKey</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        @workItem.Src1Text
+                    </div>
+                </div>
+            </div>
+
+            @if (data.HelperLanguage != "xx" && !string.IsNullOrEmpty(workItem.Src2Text))
+            {
+                <div class="card shadow mt-2">
+                    <div class="card-header">
+                        @(workItem.HelpLanguage) - <span class="@SecondaryClass()">@SecondaryWarning()</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            @workItem.Src2Text
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(workItem.WorkAi))
+            {
+                <div class="card shadow mt-2">
+                    <div class="card-header">@(workItem.WorkLanguage) - Machine Translation</div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            @workItem.WorkAi
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span style="float: right;">
+                            <button class="btn btn-sm btn-primary" @onclick="@(() => EditText())">Edit</button>
+                            <button class="btn btn-sm btn-success" @onclick="@(() => ApproveAiText())">Approve</button>
+                        </span>
+                    </div>
+                </div>
+            }
+
+            @if ((!string.IsNullOrEmpty(workItem.WorkFinal) || string.IsNullOrEmpty(workItem.WorkAi)) && !IsSaving)
+            {
+                <div class="card shadow mt-2">
+                    <div class="card-header">
+                        @(workItem.WorkLanguage) - Manual Translation
+                        <span style="float: right;">
+                            <b>Try AI:</b>
+                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("Lara"))">Lara</button>
+                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("DeepL"))">DeepL</button>
+                        </span>
+
+                    </div>
+                    <div class="card-body">
+                        <InputTextArea @bind-Value="@workItem.WorkFinal" class="form-control manual-edit" />
+                    </div>
+                    @if (!statusMessage.IsEmpty)
+                    {
+                        <div class="ms-3 me-3 mb-3">
+                            <StatusBox StatusMessage="@statusMessage" />
+                        </div>
+                    }
+                    <div class="card-footer">
+                        <span style="float: right;">
+                            <button class="btn btn-sm btn-success" @onclick="@(() => ApproveManualText())">Approve</button>
+                        </span>
+                    </div>
+                </div>
+            }
+        }
+
+
+    </div>
+}
+
+
+@code {
+
+    private bool ShowSettings = false;
+    private bool IsSaving = false;
+
+    WorkItem? workItem;
+
+    private int SelectedItemIndex = -1;
+
+    private List<WorkItem> workBatch = new();
+
+    private async Task MoveNext()
+    {
+        if (SelectedItemIndex < workBatch.Count - 1)
+        {
+            SelectedItemIndex++;
+            await SelectItem(SelectedItemIndex);
+        }
+        else
+        {
+            await RunQuery();
+        }
+    }
+
+    private string BtnClass(int btnNo, WorkItem? workItem)
+    {
+        string btnClass = "btn-success";
+        if (workItem?.IsApproved == false)
+            btnClass = btnClass.Replace("success", "outline-primary");
+        if (btnNo == SelectedItemIndex)
+            btnClass = btnClass.Replace("outline-", "") + " active text-bold";
+        return btnClass;
+    }
+    private string SecondaryWarning()
+    {
+        switch (workItem?.Src2Machine)
+        {
+            case true: return "Machine Translation";
+            case false: return "Manual Translation";
+            default: return "No Translation";
+        }
+    }
+
+    private string SecondaryClass()
+    {
+        switch (workItem?.Src2Machine)
+        {
+            case true: return "sectext-machine";
+            case false: return "sectext-manual";
+            default: return "sectext-none";
+        }
+    }
+    private async Task SelectItem(int itemNo)
+    {
+        if (itemNo >= 0 && itemNo < workBatch.Count)
+        {
+            SelectedItemIndex = itemNo;
+            workItem = workBatch[SelectedItemIndex];
+            await Task.Delay(0);
+        }
+    }
+
+    private async Task TranslateText(string serviceName)
+    {
+        statusMessage.Clear();
+        if (workItem != null && transFactory.TryGetService(serviceName, out ITransProcessor? service) && service != null)
+            try
+            {
+                workItem.WorkAi = await service.Translate(workItem.Src1Text, workItem.Src1Key, workItem.LangWorkKey);
+                await data.StoreAiText(workItem, serviceName);
+
+            }
+            catch (Exception e)
+            {
+                statusMessage.SetException(e);
+            }
+    }
+
+    private async Task EditText()
+    {
+        statusMessage.Clear();
+        if (workItem != null && !string.IsNullOrEmpty(workItem.WorkAi))
+        {
+            workItem.WorkFinal = workItem.WorkAi;
+        }
+    }
+
+    private async Task ApproveAiText()
+    {
+        statusMessage.Clear();
+        IsSaving = true;
+        if (workItem != null && !string.IsNullOrEmpty(workItem.WorkAi))
+            try
+            {
+                await data.ApproveAiText(workItem);
+                await MoveNext();
+            }
+            catch (Exception e)
+            {
+                statusMessage.SetException(e);
+                logger.LogError(e.Message);
+            }
+        IsSaving = false;
+    }
+
+    private async Task ApproveManualText()
+    {
+        statusMessage.Clear();
+        IsSaving = true;
+        if (workItem != null && !string.IsNullOrEmpty(workItem.WorkFinal))
+            try
+            {
+                await data.ApproveText(workItem);
+                await MoveNext();
+            }
+            catch (Exception e)
+            {
+                statusMessage.SetException(e);
+                logger.LogError(e.Message);
+            }
+        IsSaving = false;
+    }
+
+    private async Task RunQuery()
+    {
+        if (appUser.UserId == 0) return;
+        try
+        {
+            workBatch = await data.GetWorkBatch();
+            if (workBatch.Count > 0)
+            {
+                SelectedItemIndex = 0;
+                workItem = workBatch[0];
+            }
+            else
+            {
+                SelectedItemIndex = -1;
+                workItem = null;
+            }
+            statusMessage.Clear();
+        }
+        catch (Exception e)
+        {
+            statusMessage.SetException(e);
+        }
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RunQuery();
+    }
+
+    //public override async Task SetParametersAsync(ParameterView parameters)
+    //{
+    //    await RunQuery();
+    //    return;
+    //}
+
+}

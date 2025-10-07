@@ -1,0 +1,84 @@
+﻿@inject IDataContext data
+
+<div class="btn-group w-100">
+    <button class="btn btn-sm btn-secondary disabled twa-first-button">Project</button>
+    <button class="btn btn-sm @CssBtnProject(4)" @onclick="@(() => SetProjectId(4))">Demo</button>
+    <button class="btn btn-sm @CssBtnProject(1)" @onclick="@(() => SetProjectId(1))">Web Page</button>
+    <button class="btn btn-sm @CssBtnProject(2)" @onclick="@(() => SetProjectId(2))">ATC Codes</button>
+    <button class="btn btn-sm @CssBtnProject(3)" @onclick="@(() => SetProjectId(3))">Monographs</button>
+</div>
+
+<div class="btn-group w-100 mt-2">
+    <button class="btn btn-sm btn-secondary disabled twa-first-button">Target Language</button>
+    @foreach (var e in data.TargetLanguages)
+    {
+        <button class="btn btn-sm @CssBtnTarget(e.LangKey)" title="@e.EnglishName" @onclick="@(() => SetTargetLanguage(e.LangKey))">@e.ShortName</button>
+    }
+</div>
+
+<div class="btn-group w-100 mt-2">
+    <button class="btn btn-sm btn-secondary disabled twa-first-button">Support Language</button>
+    <button class="btn btn-sm @CssBtnSecondary("xx")" @onclick="@(() => SelectSecondary("xx"))">-</button>
+    <button class="btn btn-sm @CssBtnSecondary("ca")" @onclick="@(() => SelectSecondary("ca"))">CAT</button>
+    <button class="btn btn-sm @CssBtnSecondary("es")" @onclick="@(() => SelectSecondary("es"))">ESP</button>
+    <button class="btn btn-sm @CssBtnSecondary("nb")" @onclick="@(() => SelectSecondary("nb"))">NOR</button>
+    <button class="btn btn-sm @CssBtnSecondary("nl")" @onclick="@(() => SelectSecondary("nl"))">NED</button>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private async Task SelectSecondary(string helperLanguage)
+    {
+        if (helperLanguage != data.HelperLanguage)
+        {
+            data.HelperLanguage = helperLanguage;
+            await OnClick.InvokeAsync();
+        }
+    }
+
+    private async Task SetTargetLanguage(string targetLanguage)
+    {
+        if (targetLanguage != data.TargetLanguage)
+        {
+            data.TargetLanguage = targetLanguage;
+            await OnClick.InvokeAsync();
+        }
+    }
+
+    private async Task SetProjectId(int projectId)
+    {
+        if (projectId != data.ProjectId)
+        {
+            data.SetProjectId(projectId);
+            await OnClick.InvokeAsync();
+        }
+    }
+
+    private string CssBtnProject(int projectId)
+    {
+        if (projectId == data.ProjectId)
+            return "btn-primary active";
+        else
+            return "btn-outline-primary";
+    }
+
+    private string CssBtnTarget(string btnLang)
+    {
+        if (btnLang == data.TargetLanguage)
+            return "btn-primary active";
+        else
+            return "btn-outline-primary";
+    }
+
+    private string CssBtnSecondary(string btnLang)
+    {
+        if (btnLang == data.HelperLanguage)
+            return "btn-primary active";
+        else
+            return "btn-outline-primary";
+    }
+
+}

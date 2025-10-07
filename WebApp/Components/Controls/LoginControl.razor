@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject IAppUser appUser
+
+<AuthorizeView>
+    <NotAuthorized>
+        <button class="btn btn-primary" @onclick="SignIn">Sign in</button>
+    </NotAuthorized>
+    <Authorized>
+        <button class="btn btn-outline-primary" @onclick="SignOut">Sign out</button>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await appUser.SetClaimsPrincipal(authState.User);
+    }
+
+    private void SignIn()
+    {
+        NavigationManager.NavigateTo("/SignIn", forceLoad: true);
+    }
+
+    private void SignOut()
+    {
+        NavigationManager.NavigateTo("/SignOut", forceLoad: true);
+    }
+
+}

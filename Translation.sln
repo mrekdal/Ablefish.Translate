@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslateWebApp", "WebApp\TranslateWebApp.csproj", "{48FFDD07-A332-56E9-8223-3E71F1707C40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationPoster", "CLI\TranslationPoster.csproj", "{574E610D-5F33-CAB7-C5A7-D10C5C50F5D3}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TranslationDatabase", "Database\TranslationDatabase.sqlproj", "{187F69E9-C049-4A47-898E-9C1B8FA29425}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ablefish.StringUtils", "..\Ablefish.StringUtils\Ablefish.StringUtils.csproj", "{F67DEBB0-85C2-1521-44CD-7EF3533246A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ablefish.Blazor.Components", "..\Ablefish.Blazor.Components\Ablefish.Blazor.Components.csproj", "{73A5E763-7C8A-2613-DB4D-15B23021FEEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransService", "Libraries\TransService.csproj", "{5BDF6A45-B17A-45F7-8174-02C73451905E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48FFDD07-A332-56E9-8223-3E71F1707C40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48FFDD07-A332-56E9-8223-3E71F1707C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48FFDD07-A332-56E9-8223-3E71F1707C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48FFDD07-A332-56E9-8223-3E71F1707C40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574E610D-5F33-CAB7-C5A7-D10C5C50F5D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574E610D-5F33-CAB7-C5A7-D10C5C50F5D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574E610D-5F33-CAB7-C5A7-D10C5C50F5D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574E610D-5F33-CAB7-C5A7-D10C5C50F5D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{187F69E9-C049-4A47-898E-9C1B8FA29425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{187F69E9-C049-4A47-898E-9C1B8FA29425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{187F69E9-C049-4A47-898E-9C1B8FA29425}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{187F69E9-C049-4A47-898E-9C1B8FA29425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{187F69E9-C049-4A47-898E-9C1B8FA29425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{187F69E9-C049-4A47-898E-9C1B8FA29425}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F67DEBB0-85C2-1521-44CD-7EF3533246A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F67DEBB0-85C2-1521-44CD-7EF3533246A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F67DEBB0-85C2-1521-44CD-7EF3533246A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F67DEBB0-85C2-1521-44CD-7EF3533246A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73A5E763-7C8A-2613-DB4D-15B23021FEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A5E763-7C8A-2613-DB4D-15B23021FEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A5E763-7C8A-2613-DB4D-15B23021FEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73A5E763-7C8A-2613-DB4D-15B23021FEEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDF6A45-B17A-45F7-8174-02C73451905E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDF6A45-B17A-45F7-8174-02C73451905E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDF6A45-B17A-45F7-8174-02C73451905E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDF6A45-B17A-45F7-8174-02C73451905E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA3ACFDF-7481-40E8-ACDE-246DA80AF404}
+	EndGlobalSection
+EndGlobal

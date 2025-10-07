@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TranslationPoster": {
+      "commandName": "Project",
+      "commandLineArgs": "-p 2 -t sv"
+    }
+  }
+}
