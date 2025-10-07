@@ -62,6 +62,7 @@
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="Web\" />
     <Folder Include="Web\Stored Procedures\" />
+    <Folder Include="Web\Synonyms\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TextLanguage.sql" />
@@ -88,6 +89,10 @@
     <Build Include="dbo\Tables\UserTargetLanguage.sql" />
     <Build Include="dbo\Tables\UserProject.sql" />
     <Build Include="Web\Stored Procedures\GetTargets.sql" />
+    <Build Include="Web\Stored Procedures\GetProjects.sql" />
+    <Build Include="Web\Synonyms\GetWorkBatch.sql" />
+    <Build Include="Web\Synonyms\ApproveFinalText.sql" />
+    <Build Include="Web\Synonyms\AddTextBlock.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />

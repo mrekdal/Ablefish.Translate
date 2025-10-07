@@ -9,3 +9,8 @@
     CONSTRAINT [FK_UserProject_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE
 );
 
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [UIDX_UserProject_LogTo_ProjectId]
+    ON [dbo].[UserProject]([LogTo] ASC, [ProjectId] ASC);
+

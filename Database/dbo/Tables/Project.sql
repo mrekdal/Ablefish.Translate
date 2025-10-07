@@ -4,6 +4,7 @@
     [LangKey]     VARCHAR (12) DEFAULT ('en') NOT NULL,
     [RowVer]      ROWVERSION   NOT NULL,
     [CreatedAt]   DATETIME     DEFAULT (getdate()) NOT NULL,
+    [ShortName]   VARCHAR (16) NULL,
     PRIMARY KEY CLUSTERED ([ProjectId] ASC),
     FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey])
 );
