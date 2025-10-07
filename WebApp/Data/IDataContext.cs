@@ -14,5 +14,6 @@ namespace TranslateWebApp.Data
         public string HelperLanguage { get; set; }
         public string TargetLanguage { get; set; }
         List<TargetLanguage> TargetLanguages { get; }
+        List<UserProject> UserProjects { get; }
     }
 }
