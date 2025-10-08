@@ -1,5 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[GetWorkBatch]( @ProjectId INT, @LogTo VARCHAR(16), @LangWork VARCHAR(12), @LangHelp VARCHAR(12), @LogToAi VARCHAR(12) = 'DeepL' ) AS
 BEGIN
+  SET NOCOUNT ON;
+  INSERT INTO dbo.UserBatchLog ( ProjectId, LogTo, LangWork, LangHelp ) VALUES ( @ProjectId, @LogTo, @LangWork, @LangHelp );
   SELECT TOP 10 wi.WorkId, wi.RowKey, 
     p.LangKey AS Src1Key, wi.RawText AS Src1Text, CHECKSUM(wi.RawText) AS Src1Check, -- Source text 
     tsh.LangKey AS Src2Key, tsh.RawText AS Src2Text, CHECKSUM(tsh.RawText) AS Src2Check, ul.MachineUser AS Src2Machine, -- Translated helper text

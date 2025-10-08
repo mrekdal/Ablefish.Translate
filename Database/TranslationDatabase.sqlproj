@@ -63,6 +63,9 @@
     <Folder Include="Web\" />
     <Folder Include="Web\Stored Procedures\" />
     <Folder Include="Web\Synonyms\" />
+    <Folder Include="WebAdmin\" />
+    <Folder Include="WebAdmin\Stored Procedures\" />
+    <Folder Include="dbo\Synonyms\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TextLanguage.sql" />
@@ -93,6 +96,11 @@
     <Build Include="Web\Synonyms\GetWorkBatch.sql" />
     <Build Include="Web\Synonyms\ApproveFinalText.sql" />
     <Build Include="Web\Synonyms\AddTextBlock.sql" />
+    <Build Include="dbo\Tables\UserBatchLog.sql" />
+    <Build Include="Web\Stored Procedures\GetUsage.sql" />
+    <Build Include="WebAdmin\Stored Procedures\AddUser.sql" />
+    <Build Include="Security\WebAdmin.sql" />
+    <Build Include="dbo\Synonyms\AddUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />
