@@ -10,7 +10,8 @@ namespace TranslateWebApp.Data
     {
 
         private UserData _userData = new();
-        private List<TargetLanguage> _targetLanguages = new();
+        private List<Language> _targetLanguages = new();
+        private List<Language> _supportLanguages = new();
         private List<UserProject> _userProjects = new();
 
         private string _connectionString = string.Empty;
@@ -23,6 +24,11 @@ namespace TranslateWebApp.Data
             _connectionString = _config.GetConnectionString("MSSQL") ?? "";
             _logger = logger;
             _userData.Clear();
+            _supportLanguages.Add(new Language("xx", "No Language", "-"));
+            _supportLanguages.Add(new Language("ca", "Catalan", "CAT"));
+            _supportLanguages.Add(new Language("nb", "Norwegian - Bokmål", "NOR"));
+            _supportLanguages.Add(new Language("nl", "Dutch", "NED"));
+            _supportLanguages.Add(new Language("es", "Spanish", "SPA"));
         }
 
         public int ProjectId { get => _userData.ProjectId; }
@@ -30,7 +36,8 @@ namespace TranslateWebApp.Data
         public string TargetLanguage { get => _userData.TargetLanguage; set => _userData.TargetLanguage = value; }
 
         public List<UserProject> UserProjects { get => _userProjects; }
-        public List<TargetLanguage> TargetLanguages { get => _targetLanguages;  }
+        public List<Language> SupportLanguages { get => _supportLanguages; }
+        public List<Language> TargetLanguages { get => _targetLanguages; }
         public void SetProjectId(int projectId)
         {
             _userData.ProjectId = projectId;
@@ -42,7 +49,7 @@ namespace TranslateWebApp.Data
             string sql = $"EXEC Web.GetWorkBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
-                var rows = await connection.QueryAsync<WorkItem>(sql, new { _userData.ProjectId, _userData.LogTo, _userData.TargetLanguage,_userData.HelperLanguage });
+                var rows = await connection.QueryAsync<WorkItem>(sql, new { _userData.ProjectId, _userData.LogTo, _userData.TargetLanguage, _userData.HelperLanguage });
                 return rows.ToList();
             }
         }
@@ -86,8 +93,8 @@ namespace TranslateWebApp.Data
             sql = $"EXEC Web.GetTargets @LogTo;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
-                var rows = await connection.QueryAsync<TargetLanguage>(sql, new { LogTo = logTo });
-                _targetLanguages = rows.ToList<TargetLanguage>();
+                var rows = await connection.QueryAsync<Language>(sql, new { LogTo = logTo });
+                _targetLanguages = rows.ToList<Language>();
             }
             sql = $"EXEC Web.GetProjects @LogTo;";
             using (IDbConnection connection = new SqlConnection(_connectionString))

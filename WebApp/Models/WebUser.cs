@@ -7,14 +7,14 @@ using TranslateWebApp.Data;
 
 namespace TranslateWebApp.Models
 {
-    public class AppUser : IAppUser
+    public class WebUser : IWebUser
     {
 
         private IDataContext _dataContext;
         private UserData _userData = new();
         private string _logTo = string.Empty;
 
-        public AppUser(IDataContext dataContext)
+        public WebUser(IDataContext dataContext)
         {
             _dataContext = dataContext;
         }
@@ -24,9 +24,6 @@ namespace TranslateWebApp.Models
         public string FirstName { get => _userData.FirstName; }
         public string LastName { get => _userData.LastName; }
         public bool IsAuthenticated { get => ( _userData.UserId > 0 && ( User?.Identity?.IsAuthenticated ?? false ) ); }
-
-        public string TargetLanguage { get => _dataContext.TargetLanguage; set => _dataContext.TargetLanguage = value; }
-        public string HelperLanguage { get => _dataContext.HelperLanguage; set => _dataContext.HelperLanguage = value; }
 
         public string LogTo { get => _userData.LogTo; }
 

@@ -13,6 +13,8 @@ namespace PostTranslations
 
     public class Options
     {
+        [Option('e', "Engine", Required = false, Default ="Azure", HelpText = $"Translation engine (Azure, Lara, DeepL).")]
+        public string Engine { get; set; } = string.Empty;
         [Option('m', "Monograph", Required = false, HelpText = $"Read data from monographs fields 1-n.")]
         public int Monograph { get; set; }
         [Option('r', "Resource", Required = false, HelpText = $"Read data from resource files.")]
@@ -43,7 +45,7 @@ namespace PostTranslations
                 if (!string.IsNullOrEmpty(options.ResourceFile))
                     ReadResourceData(options.ResourceFile);
                 if (!string.IsNullOrEmpty(options.Target))
-                    DoTranslationWork(options.ProjectId, options.Target, options.MaxCount, config).GetAwaiter().GetResult();
+                    DoTranslationWork(options.ProjectId, options.Target, options.MaxCount, config, options.Engine).GetAwaiter().GetResult();
             });
         }
 
@@ -80,9 +82,8 @@ namespace PostTranslations
             }
         }
 
-        static async Task DoTranslationWork(int projectId, string targetLanguage, int maxCount, IConfiguration config)
+        static async Task DoTranslationWork(int projectId, string targetLanguage, int maxCount, IConfiguration config, string serviceName )
         {
-            const string serviceName = "Lara";
             DataContext dc = new DataContext(config);
             TransFactory transFactory = new TransFactory(config);
             if (transFactory.TryGetService(serviceName, out ITransProcessor? service) && service != null)

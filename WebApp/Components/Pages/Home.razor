@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject ILogger<Home> logger
 @inject IDataContext data
-@inject IAppUser appUser
+@inject IWebUser appUser
 @inject ITransFactory transFactory
 @inject IStatusMessage statusMessage
 
@@ -23,15 +23,22 @@
 {
     <div class="card shadow mt-2">
         <div class="card-header">Ready to Translate</div>
-        <div class="card-body">
-            <div class="m-6">
+        <div class="card-body m-6">
+            <div>
                 You have to be registered, signed in, and to be assigned responsibility
-                for projects and target languages in order to use the application.
-                Click the button below to see of there's work for you! @(appUser.LogTo)
+                for specific projects and target languages in order to use this application.
             </div>
-            <div class="text-center mt-4 mb-4">
-                <button class="btn btn-lg btn-success" @onclick="@(() => RunQuery())">Start Working</button>
-            </div>
+            <AuthorizeView>
+                <Authorized>
+                    <div class="text-center mt-4 mb-4">
+                        <button class="btn btn-lg btn-success" @onclick="@(() => RunQuery())">Start Working</button>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <div class="mt-2">Click the <b>Sign In</b> button to sign in or to create a user.</div>
+                </NotAuthorized>
+            </AuthorizeView>
+
         </div>
     </div>
 }
@@ -145,8 +152,9 @@ else
                         @(workItem.WorkLanguage) - Manual Translation
                         <span style="float: right;">
                             <b>Try AI:</b>
-                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("Lara"))">Lara</button>
+                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("Azure"))">Azure</button>
                             <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("DeepL"))">DeepL</button>
+                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("Lara"))">Lara</button>
                         </span>
 
                     </div>
@@ -298,10 +306,12 @@ else
 
     private async Task RunQuery()
     {
-        if (appUser.UserId == 0) return;
         try
         {
-            workBatch = await data.GetWorkBatch();
+            if (!appUser.IsAuthenticated)
+                throw new UnauthorizedAccessException("You need to be signed in and authorized for this application.");
+            else
+                workBatch = await data.GetWorkBatch();
             if (workBatch.Count > 0)
             {
                 SelectedItemIndex = 0;
