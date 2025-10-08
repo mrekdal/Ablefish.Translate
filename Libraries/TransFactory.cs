@@ -23,6 +23,7 @@ namespace TransService
             else
                 switch (serviceName)
                 {
+                    case "Azure": service = new AzureTranslate(_configuration); break;
                     case "Lara": service = new LaraService(_configuration); break;
                     case "DeepL": service = new DeepLService(_configuration); break;
                     default: return false;
