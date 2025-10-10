@@ -11,8 +11,8 @@
     },
     "https": {
       "commandName": "Project",
-      "commandLineArgs": "-p 2 -t sv",
       "launchBrowser": true,
+      "launchUrl": "Conflicts",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

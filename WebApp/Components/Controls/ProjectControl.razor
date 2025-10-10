@@ -1,0 +1,37 @@
+﻿@using TranslateWebApp.Interfaces
+@inject IDataContext data
+
+@if (data != null && data.UserProjects.Count > 0)
+{
+    <div class="btn-group w-100">
+        <button class="btn btn-sm btn-secondary disabled twa-first-button">Project</button>
+        @foreach (var e in data.UserProjects)
+        {
+            <button class="btn btn-sm @CssBtnProject(e.ProjectId)" title="@e.ProjectName" @onclick="@(() => SetProjectId(e.ProjectId))">@e.ShortName</button>
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private async Task SetProjectId(int projectId)
+    {
+        if (projectId != data.ProjectId)
+        {
+            data.SetProjectId(projectId);
+            await OnClick.InvokeAsync();
+        }
+    }
+
+    private string CssBtnProject(int projectId)
+    {
+        if (projectId == data.ProjectId)
+            return "btn-primary active";
+        else
+            return "btn-outline-primary";
+    }
+
+}

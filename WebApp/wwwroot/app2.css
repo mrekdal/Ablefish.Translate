@@ -9,6 +9,9 @@ body {
  min-width: 120px;
 }
 
+.twa-long-text{
+    max-width: 400px;
+}
 .twa-first-button{
     font-weight: 500;
     min-width: 100px;

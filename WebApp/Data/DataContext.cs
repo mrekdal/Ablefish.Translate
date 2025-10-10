@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Data;
+using System.Text.Json;
 using TranslateWebApp.Interfaces;
 using TranslateWebApp.Models;
 
@@ -106,5 +108,18 @@ namespace TranslateWebApp.Data
             return _userData;
         }
 
+        public async Task<Disagreements> GetDisagreements(int projectId, string langCode)
+        {
+            Disagreements disagreements = new();
+            _logger.LogInformation($"EXEC WebJson.GetDisagreements( {projectId}, '{langCode}';");
+            string sql = $"EXEC WebJson.GetDisagreements @ProjectId, @LangKey;";
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                string? jsonResult = await connection.ExecuteScalarAsync<string?>(sql, new { ProjectId = projectId, LangKey = langCode });
+                if (jsonResult != null)
+                    disagreements = JsonSerializer.Deserialize<Disagreements>(jsonResult) ?? new();
+            }
+            return disagreements;
+        }
     }
 }

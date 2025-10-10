@@ -10,6 +10,8 @@ namespace TranslateWebApp.Interfaces
         Task StoreAiText(WorkItem workItem, string logTo);
         Task<List<WorkItem>> GetWorkBatch();
         public void SetProjectId(int projectId);
+        Task<Disagreements> GetDisagreements(int projectId, string langCode);
+
         public int ProjectId { get; }
         public string HelperLanguage { get; set; }
         public string TargetLanguage { get; set; }

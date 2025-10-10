@@ -1,0 +1,173 @@
+﻿@page "/Conflicts"
+@using TranslateWebApp.Interfaces
+@inject ILogger<Home> logger
+@inject IDataContext data
+@inject IWebUser appUser
+@inject IStatusMessage statusMessage
+
+<PageTitle>Conflicts</PageTitle>
+
+<table class="w-100 mt-2">
+    <tr style="vertical-align: middle;">
+        <td>
+            <div class="h2 fw-bold me-4">Ablefish Translator</div>
+        </td>
+        <td style="float: right;">
+            <LoginControl />
+        </td>
+    </tr>
+</table>
+
+<div class="card shadow mt-2">
+    <div class="card-header">
+        <span>Conflict Resolution</span>
+        <span style="float:right;">Welcome: <b>@appUser.FirstName</b></span>
+    </div>
+    <div class="card-body">
+        <div class="m-1">
+            @if (data.UserProjects.Count > 0)
+            {
+                <div>
+                    Choose your project and language.
+                </div>
+            }
+            else
+            {
+                <div>Click the <b>Start button</b> to find your projects.</div>
+                <div class="text-center mt-2">
+                    <button class="btn btn-success" @onclick="RunQuery">Start</button>
+                </div>
+            }
+        </div>
+        <ProjectControl OnClick="RunQuery" />
+        <LanguageControl OnClick="RunQuery" ShowHelper=false />
+    </div>
+</div>
+
+<div class="card shadow mt-2">
+    <div class="card-header">
+        <span><b>Work Items</b> with conflicts</span>
+        <span class="text-end" style="float: right;">Project #<b>@data.ProjectId</b></span>
+    </div>
+    <div class="card-body">
+        @if (workBatch != null)
+        {
+            rowNo = 0;
+            <table class="table table-sm">
+                <tbody>
+                    @foreach (var e in workBatch.Items)
+                    {
+                        int localRowNo = rowNo;
+                        <tr>
+                            <td class="text-truncate twa-long-text">@e.SrcText</td>
+                            @if (ShowNumbers)
+                            {
+
+                                <td scope="row" class="text-end"><a class="text-decoration-none">@e.WorkId</a></td>
+                            }
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-primary" @onclick="@(() => PickRow(localRowNo))"><i class="bi bi-eye" /></button>
+                            </td>
+                        </tr>
+                        rowNo++;
+                        if (rowNo > 4)
+                            break;
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@if (workItem != null && workItem.Candidate.Count > 1)
+{
+    <div class="card shadow mt-2">
+        <div class="card-header">
+            <span class="fw-bold">Alternative Translations</span>
+            <span class="text-end" style="float:right;">Work Item #<b>@workItem.WorkId</b></span>
+        </div>
+        <div class="card-body">
+
+            @if (workItem != null)
+            {
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <td class="text-primary">
+                                @workItem.SrcText
+                            </td>
+                            @if (ShowNumbers)
+                            {
+                                <td class="text-sm-end">
+                                    @workItem.WorkId
+                                </td>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in workItem.Candidate)
+                        {
+                            <tr>
+                                <td>@e.RawText <span class="text-muted small fst-italic">- @e.UserName</span></td>
+                                @if (ShowNumbers)
+                                {
+                                    <td class="text-sm-end"><a class="text-decoration-none">@e.BlockId</a></td>
+                                }
+                                <td class="text-end">
+                                    <button title="@e.UserName" class="btn btn-sm btn-success"><i class="bi bi-check2-circle" /></button>
+                                    <button title="@e.UserName" class="btn btn-sm btn-warning"><i class="bi bi-trash" /></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
+}
+
+@code {
+    private Disagreements workBatch = new();
+    private TextConflict? workItem;
+    private int SelectedItemIndex = 0;
+    private bool ShowNumbers = false;
+    private int rowNo = 0;
+
+    private void PickRow(int rowNo)
+    {
+        workItem = workBatch.Items[rowNo];
+    }
+
+    private async Task RunQuery()
+    {
+        try
+        {
+            if (!appUser.IsAuthenticated)
+                throw new UnauthorizedAccessException("You need to be signed in and authorized for this application.");
+            else
+                workBatch = await data.GetDisagreements(data.ProjectId, data.TargetLanguage);
+            if (workBatch.Items.Count > 0)
+            {
+                SelectedItemIndex = 0;
+                workItem = workBatch.Items[0];
+            }
+            else
+            {
+                SelectedItemIndex = -1;
+                workItem = null;
+            }
+            statusMessage.Clear();
+        }
+        catch (Exception e)
+        {
+            statusMessage.SetException(e);
+        }
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RunQuery();
+    }
+}
