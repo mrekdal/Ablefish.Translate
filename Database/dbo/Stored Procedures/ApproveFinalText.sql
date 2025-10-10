@@ -1,8 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[ApproveFinalText]( @WorkId INT, @LogTo VARCHAR(16), @TargetLanguage VARCHAR(12), @CheckSrc INT, @FinalText NVARCHAR(MAX) ) AS
 BEGIN
   SET NOCOUNT ON;
-  DECLARE @WorkItemId INT;
-  DECLARE @TargetRowId INT;
+  DECLARE @BlockId INT;
   DECLARE @ApprId INT;
 
   -- Verify that the row hasn't changed by using a checksum.
@@ -15,11 +14,11 @@ BEGIN
 
   -- Update the TextBlock or create it if it doesn't exist.
 
-  SELECT @TargetRowId = RowId FROM dbo.TextBlock WHERE WorkId = @WorkId AND LangKey = @TargetLanguage AND LogTo = @LogTo;
-  IF @TargetRowId IS NULL
+  SELECT @BlockId = BlockId FROM dbo.TextBlock WHERE WorkId = @WorkId AND LangKey = @TargetLanguage AND LogTo = @LogTo;
+  IF @BlockId IS NULL
     INSERT INTO dbo.TextBlock ( WorkId, LangKey, RawText, LogTo ) VALUES ( @WorkId, @TargetLanguage, @FinalText, @LogTo );
   ELSE
-    UPDATE dbo.TextBlock SET RawText = @FinalText WHERE RowId = @TargetRowId AND ISNULL(RawText,'') <> ISNULL(@FinalText,'');
+    UPDATE dbo.TextBlock SET RawText = @FinalText WHERE BlockId = @BlockId AND ISNULL(RawText,'') <> ISNULL(@FinalText,'');
 
   -- Update the approval status or create it if it doesn't exist.
 
