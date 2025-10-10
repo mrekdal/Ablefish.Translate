@@ -5,10 +5,14 @@ body {
     background-repeat: no-repeat; /* prevents tiling */
 }
 
+.btn-translate{
+ min-width: 120px;
+}
+
 .twa-first-button{
     font-weight: 500;
-    min-width: 160px;
-    max-width: 160px;
+    min-width: 100px;
+    max-width: 100px;
     text-align: left;
 }
 .twa-work-item {

@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Data;
+using TranslateWebApp.Interfaces;
 using TranslateWebApp.Models;
 
 namespace TranslateWebApp.Data

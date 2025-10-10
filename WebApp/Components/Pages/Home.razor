@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using TranslateWebApp.Interfaces
 @inject ILogger<Home> logger
 @inject IDataContext data
 @inject IWebUser appUser
@@ -78,7 +79,7 @@ else
             else
             {
                 <div>
-                    You get @(workBatch.Count) text blocks to work with at a time.  When you are done, get more work by clicking on the <b>More</b> button.
+                    You get @(workBatch.Count) text blocks to work with at a time.  When you are done, get more work by clicking on three dots. <i class="bi bi-three-dots" />
                 </div>
                 <div class="btn-group w-100 mt-2">
                     <button class="btn btn-sm btn-secondary disabled twa-first-button">Text Block</button>
@@ -91,7 +92,7 @@ else
                             btnNo++;
                         }
                     }
-                    <button class="btn btn-sm btn-primary" @onclick="@(() => RunQuery())">More</button>
+                    <button class="btn btn-sm btn-primary" @onclick="@(() => RunQuery())"><i class="bi bi-three-dots" /></button>
                 </div>
             }
         </div>
@@ -138,7 +139,7 @@ else
                     </div>
                     <div class="card-footer">
                         <span style="float: right;">
-                            <button class="btn btn-sm btn-primary" @onclick="@(() => EditText())">Edit</button>
+                            <button class="btn btn-sm btn-primary" @onclick="@(() => EditText())"><i class="bi bi-pencil-fill me-2"/>Edit</button>
                             <button class="btn btn-sm btn-success" @onclick="@(() => ApproveAiText())">Approve</button>
                         </span>
                     </div>
@@ -151,12 +152,10 @@ else
                     <div class="card-header">
                         @(workItem.WorkLanguage) - Manual Translation
                         <span style="float: right;">
-                            <b>Try AI:</b>
-                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("Azure"))">Azure</button>
-                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("DeepL"))">DeepL</button>
-                            <button class="btn btn-sm btn-primary" @onclick="@(() => TranslateText("Lara"))">Lara</button>
+                            <button class="btn btn-sm btn-primary btn-translate" @onclick="@(() => TranslateText("Azure"))"><i class="bi bi-microsoft me-2"/>Azure</button>
+                            <button class="btn btn-sm btn-primary btn-translate" @onclick="@(() => TranslateText("DeepL"))"><i class="bi bi-translate me-2"/>DeepL</button>
+                            <button class="btn btn-sm btn-primary btn-translate" @onclick="@(() => TranslateText("Lara"))"><i class="bi bi-translate me-2"/>Lara</button>
                         </span>
-
                     </div>
                     <div class="card-body">
                         <InputTextArea @bind-Value="@workItem.WorkFinal" class="form-control manual-edit" />
@@ -169,7 +168,7 @@ else
                     }
                     <div class="card-footer">
                         <span style="float: right;">
-                            <button class="btn btn-sm btn-success" @onclick="@(() => ApproveManualText())">Approve</button>
+                            <button class="btn btn-sm btn-success" @onclick="@(() => ApproveManualText())"><i class="bi bi-check-circle-fill me-2"/>Approve</button>
                         </span>
                     </div>
                 </div>

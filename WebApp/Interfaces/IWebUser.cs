@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace TranslateWebApp.Models
+namespace TranslateWebApp.Interfaces
 {
     public interface IWebUser
     {

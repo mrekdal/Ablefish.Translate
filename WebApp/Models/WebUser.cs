@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Data;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using TranslateWebApp.Data;
+using TranslateWebApp.Interfaces;
 
 namespace TranslateWebApp.Models
 {

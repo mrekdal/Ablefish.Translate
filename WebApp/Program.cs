@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using TranslateWebApp.Components;
 using TranslateWebApp.Data;
+using TranslateWebApp.Interfaces;
 using TranslateWebApp.Models;
 using TranslateWebApp.Models.TranslateWebApp.Models;
 using TransService;

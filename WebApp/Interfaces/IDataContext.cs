@@ -1,6 +1,6 @@
 ﻿using TranslateWebApp.Models;
 
-namespace TranslateWebApp.Data
+namespace TranslateWebApp.Interfaces
 {
     public interface IDataContext
     {
