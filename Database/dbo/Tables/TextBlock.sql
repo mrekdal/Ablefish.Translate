@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[TextBlock] (
-    [RowId]     INT            IDENTITY (1, 1) NOT NULL,
+    [BlockId]   INT            IDENTITY (1, 1) NOT NULL,
     [LangKey]   VARCHAR (12)   NULL,
     [RawText]   NVARCHAR (MAX) NULL,
     [WorkId]    INT            NULL,
@@ -7,10 +7,10 @@
     [RowVer]    ROWVERSION     NOT NULL,
     [CreatedAt] DATETIME       DEFAULT (getdate()) NOT NULL,
     [CheckRaw]  AS             (checksum([RawText])) PERSISTED,
-    CONSTRAINT [PK_RowId] PRIMARY KEY CLUSTERED ([RowId] ASC),
-    FOREIGN KEY ([WorkId]) REFERENCES [dbo].[WorkItem] ([WorkId]),
+    CONSTRAINT [PK_BlockId] PRIMARY KEY CLUSTERED ([BlockId] ASC),
     CONSTRAINT [FK_TextBlock_LangKey] FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
-    CONSTRAINT [FK_TextBlock_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE
+    CONSTRAINT [FK_TextBlock_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE,
+    CONSTRAINT [FK_TextBlock_WorkId] FOREIGN KEY ([WorkId]) REFERENCES [dbo].[WorkItem] ([WorkId])
 );
 
 

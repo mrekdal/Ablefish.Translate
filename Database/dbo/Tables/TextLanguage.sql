@@ -6,6 +6,6 @@
     [RowVer]      ROWVERSION   NOT NULL,
     [CreatedAt]   DATETIME     DEFAULT (getdate()) NOT NULL,
     [ShortName]   VARCHAR (3)  NOT NULL,
-    PRIMARY KEY CLUSTERED ([LangKey] ASC)
+    CONSTRAINT [PK_TextLanguage] PRIMARY KEY CLUSTERED ([LangKey] ASC)
 );
 

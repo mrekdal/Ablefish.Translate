@@ -8,8 +8,8 @@
     [WorkId]    INT          NULL,
     [UpdatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
     CONSTRAINT [PK_TextApproved] PRIMARY KEY CLUSTERED ([ApprId] ASC),
-    FOREIGN KEY ([LangTrg]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
-    FOREIGN KEY ([WorkId]) REFERENCES [dbo].[WorkItem] ([WorkId])
+    CONSTRAINT [FK_TextApproved_LangTrg] FOREIGN KEY ([LangTrg]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
+    CONSTRAINT [FK_TextApproved_WorkId] FOREIGN KEY ([WorkId]) REFERENCES [dbo].[WorkItem] ([WorkId])
 );
 
 

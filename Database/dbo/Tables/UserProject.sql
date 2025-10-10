@@ -5,10 +5,12 @@
     [CreatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
     [RowVer]    ROWVERSION   NOT NULL,
     [IsActive]  BIT          DEFAULT ((1)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([RowId] ASC),
-    FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId]),
-    CONSTRAINT [FK_UserProject_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE
+    CONSTRAINT [PK_UserProject] PRIMARY KEY CLUSTERED ([RowId] ASC),
+    CONSTRAINT [FK_UserProject_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE,
+    CONSTRAINT [FK_UserProject_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId])
 );
+
+
 
 
 GO

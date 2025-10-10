@@ -6,7 +6,7 @@
     [CreatedAt]   DATETIME     DEFAULT (getdate()) NOT NULL,
     [ShortName]   VARCHAR (16) NULL,
     [IsActive]    BIT          DEFAULT ((1)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([ProjectId] ASC),
-    FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey])
+    CONSTRAINT [PK_Project] PRIMARY KEY CLUSTERED ([ProjectId] ASC),
+    CONSTRAINT [FK_Project_LangKey] FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey])
 );
 

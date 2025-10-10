@@ -5,9 +5,11 @@
     [CreatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
     [Level]     INT          NULL,
     [IsActive]  BIT          DEFAULT ((1)) NOT NULL,
-    FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey]) ON UPDATE CASCADE,
-    FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE
+    CONSTRAINT [FK_UserTarget_LangKey] FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey]) ON UPDATE CASCADE,
+    CONSTRAINT [FK_UserTarget_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE
 );
+
+
 
 
 GO

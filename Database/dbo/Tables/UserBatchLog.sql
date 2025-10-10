@@ -3,12 +3,12 @@
     [LogTo]     VARCHAR (16) NOT NULL,
     [LangWork]  VARCHAR (12) NOT NULL,
     [LangHelp]  VARCHAR (12) NOT NULL,
-    [CreatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
+    [CreatedAt] DATETIME     CONSTRAINT [DF_UserBatch_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [ProjectId] INT          NOT NULL,
-    PRIMARY KEY CLUSTERED ([BatchId] ASC),
-    FOREIGN KEY ([LangHelp]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
-    FOREIGN KEY ([LangWork]) REFERENCES [dbo].[TextLanguage] ([LangKey]) ON UPDATE CASCADE,
-    FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE,
-    FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId])
+    CONSTRAINT [PK_UserBatch] PRIMARY KEY CLUSTERED ([BatchId] ASC),
+    CONSTRAINT [FK_UserBatch_LangHelp] FOREIGN KEY ([LangHelp]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
+    CONSTRAINT [FK_UserBatch_LangWork] FOREIGN KEY ([LangWork]) REFERENCES [dbo].[TextLanguage] ([LangKey]) ON UPDATE CASCADE,
+    CONSTRAINT [FK_UserBatch_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE,
+    CONSTRAINT [FK_UserBatch_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId])
 );
 

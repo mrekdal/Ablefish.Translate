@@ -11,9 +11,9 @@
     [HelperLanguage] VARCHAR (12) DEFAULT ('nb') NOT NULL,
     [RowVer]         ROWVERSION   NOT NULL,
     [CreatedAt]      DATETIME     DEFAULT (getdate()) NOT NULL,
-    PRIMARY KEY CLUSTERED ([LogTo] ASC),
-    FOREIGN KEY ([HelperLanguage]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
-    FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId]),
-    FOREIGN KEY ([TargetLanguage]) REFERENCES [dbo].[TextLanguage] ([LangKey])
+    CONSTRAINT [PK_UserList] PRIMARY KEY CLUSTERED ([LogTo] ASC),
+    CONSTRAINT [FK_UserList_Helper] FOREIGN KEY ([HelperLanguage]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
+    CONSTRAINT [FK_UserList_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId]),
+    CONSTRAINT [FK_UserList_Target] FOREIGN KEY ([TargetLanguage]) REFERENCES [dbo].[TextLanguage] ([LangKey])
 );
 
