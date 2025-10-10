@@ -3,6 +3,8 @@
     [LogTo]     VARCHAR (16) NOT NULL,
     [LangKey]   VARCHAR (12) NOT NULL,
     [CreatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
+    [Level]     INT          NULL,
+    [IsActive]  BIT          DEFAULT ((1)) NOT NULL,
     FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey]) ON UPDATE CASCADE,
     FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE
 );

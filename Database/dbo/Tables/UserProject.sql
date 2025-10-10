@@ -4,6 +4,7 @@
     [LogTo]     VARCHAR (16) NOT NULL,
     [CreatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
     [RowVer]    ROWVERSION   NOT NULL,
+    [IsActive]  BIT          DEFAULT ((1)) NOT NULL,
     PRIMARY KEY CLUSTERED ([RowId] ASC),
     FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId]),
     CONSTRAINT [FK_UserProject_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE

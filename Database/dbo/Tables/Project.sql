@@ -5,6 +5,7 @@
     [RowVer]      ROWVERSION   NOT NULL,
     [CreatedAt]   DATETIME     DEFAULT (getdate()) NOT NULL,
     [ShortName]   VARCHAR (16) NULL,
+    [IsActive]    BIT          DEFAULT ((1)) NOT NULL,
     PRIMARY KEY CLUSTERED ([ProjectId] ASC),
     FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey])
 );

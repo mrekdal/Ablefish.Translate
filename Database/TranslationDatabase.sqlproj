@@ -66,6 +66,8 @@
     <Folder Include="WebAdmin\" />
     <Folder Include="WebAdmin\Stored Procedures\" />
     <Folder Include="dbo\Synonyms\" />
+    <Folder Include="dbo\Views\" />
+    <Folder Include="Web\Functions\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TextLanguage.sql" />
@@ -74,7 +76,6 @@
     <Build Include="dbo\Stored Procedures\GetWorkList.sql" />
     <Build Include="dbo\Stored Procedures\GetTranslations.sql" />
     <Build Include="dbo\Stored Procedures\AddTextBlock.sql" />
-    <Build Include="dbo\Stored Procedures\AddFinalText.sql" />
     <Build Include="Security\Permissions.sql" />
     <Build Include="dbo\Tables\TextApproved.sql" />
     <Build Include="Security\WebPublicUser.sql" />
@@ -101,6 +102,10 @@
     <Build Include="WebAdmin\Stored Procedures\AddUser.sql" />
     <Build Include="Security\WebAdmin.sql" />
     <Build Include="dbo\Synonyms\AddUser.sql" />
+    <Build Include="dbo\Views\TextBlockManual.sql" />
+    <Build Include="Web\Functions\GetTextBlockDisagreements.sql" />
+    <Build Include="Web\Stored Procedures\GetWorkDone.sql" />
+    <Build Include="Web\Stored Procedures\GetAllProjects.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />

@@ -25,8 +25,10 @@ BEGIN
 
   SELECT @ApprId = ApprId FROM dbo.TextApproved WHERE WorkId = @WorkId AND LangTrg = @TargetLanguage;
   IF @ApprId IS NULL
-    INSERT INTO dbo.TextApproved( WorkId, LangTrg, CheckSrc, CheckTrg) VALUES ( @WorkId, @TargetLanguage, @CheckSrc, CHECKSUM(@FinalText) )
+    INSERT INTO dbo.TextApproved( WorkId, LangTrg, CheckSrc, CheckTrg) 
+	VALUES ( @WorkId, @TargetLanguage, @CheckSrc, CHECKSUM(@FinalText) )
   ELSE
-    UPDATE dbo.TextApproved SET CheckSrc = @CheckSrc, CheckTrg = CHECKSUM(@FinalText) WHERE ApprId = @ApprId;
+    UPDATE dbo.TextApproved SET CheckSrc = @CheckSrc, CheckTrg = CHECKSUM(@FinalText), UpdatedAt = GETDATE()
+	WHERE ApprId = @ApprId AND CheckTrg <> CHECKSUM(@FinalText);
 
 END

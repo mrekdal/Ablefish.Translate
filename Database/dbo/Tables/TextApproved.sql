@@ -6,7 +6,8 @@
     [CreatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
     [RowVer]    ROWVERSION   NOT NULL,
     [WorkId]    INT          NULL,
-    PRIMARY KEY CLUSTERED ([ApprId] ASC),
+    [UpdatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
+    CONSTRAINT [PK_TextApproved] PRIMARY KEY CLUSTERED ([ApprId] ASC),
     FOREIGN KEY ([LangTrg]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
     FOREIGN KEY ([WorkId]) REFERENCES [dbo].[WorkItem] ([WorkId])
 );
