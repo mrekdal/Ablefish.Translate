@@ -7,6 +7,7 @@
         public int BlockId { get; set; }
         public int CheckRaw { get; set; }
         public bool Discarded { get; set; }
+        public bool Approved { get; set; }
     }
 
     public class TextConflict
@@ -19,10 +20,10 @@
         public List<Candidate> Candidate { get; set; } = new();
 
         #endregion
-
         #region Methods 
 
-        public int CandidatesLeft => Candidate.Count(c => !c.Discarded);
+        public int CandidatesLeft => Candidate.Count(c => ( !c.Discarded && !c.Approved ) );
+
         public int DiscardBlock(int blockId)
         {
             var block = Candidate.Find(e => e.BlockId == blockId);

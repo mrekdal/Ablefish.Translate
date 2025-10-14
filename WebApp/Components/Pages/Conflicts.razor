@@ -47,30 +47,31 @@
             <table class="table table-sm">
                 <tbody>
                     @foreach (var e in allConflicts.Items)
-                    {
-                        int localRowNo = rowNo;
-                        <tr>
-                            <td class="text-truncate twa-long-text">@e.SrcText</td>
-                            @if (ShowNumbers)
-                            {
-
-                                <td scope="row" class="text-end"><a class="text-decoration-none">@e.WorkId</a></td>
-                            }
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-primary" @onclick="@(() => PickRow(localRowNo))"><i class="bi bi-eye" /></button>
-                            </td>
-                        </tr>
-                        rowNo++;
-                        if (rowNo > 4)
-                            break;
-                    }
+                        if (e.CandidatesLeft > 0)
+                        {
+                            int localRowNo = rowNo;
+                            TextConflict tc = e;
+                            <tr class="align-middle">
+                                <td class="text-truncate twa-long-text @CssRowClass(tc)">@e.SrcText</td>
+                                @if (ShowNumbers)
+                                {
+                                    <td scope="row" class="text-end"><a class="text-decoration-none">@e.WorkId</a></td>
+                                }
+                                <td class="text-end @CssRowClass(tc)">
+                                    <button class="btn btn-sm btn-primary" @onclick="@(() => PickRow(localRowNo))"><i class="bi bi-eye" /></button>
+                                </td>
+                            </tr>
+                            rowNo++;
+                            if (rowNo > 4)
+                                break;
+                        }
                 </tbody>
             </table>
         </div>
     </div>
 }
 
-@if (textConflict != null && textConflict.CandidatesLeft > 0 )
+@if (textConflict != null && textConflict.CandidatesLeft > 0)
 {
     <div class="card shadow mt-2">
         <div class="card-header">
@@ -83,8 +84,8 @@
             {
                 <table class="table table-sm">
                     <thead>
-                        <tr>
-                            <td class="text-primary">
+                        <tr class="bg-primary-subtle">
+                            <td class="bg-primary-subtle" colspan="2">
                                 @textConflict.SrcText
                             </td>
                             @if (ShowNumbers)
@@ -100,7 +101,7 @@
                         {
                             if (!e.Discarded)
                             {
-                                <tr>
+                                <tr class="align-middle">
                                     <td>@e.RawText <span class="text-muted small fst-italic">- @e.UserName</span></td>
                                     @if (ShowNumbers)
                                     {
@@ -128,6 +129,14 @@
     private bool ShowNumbers = false;
     private int rowNo = 0;
 
+    private string CssRowClass(TextConflict conflict )
+    {
+        if ( textConflict != null && conflict.RowKey == textConflict.RowKey)
+            return "bg-primary-subtle";
+        else
+            return "";
+    }
+
     private void PickRow(int rowNo)
     {
         textConflict = allConflicts.Items[rowNo];
@@ -151,7 +160,9 @@
     {
         if (textConflict == null) return;
         foreach (var c in textConflict.Candidate)
-            if (c.BlockId != blockId && !c.Discarded)
+            if (c.BlockId == blockId)
+                c.Approved = true;
+            else if (c.BlockId != blockId && !c.Discarded)
                 await DiscardBlock(c.BlockId);
     }
 
@@ -159,7 +170,7 @@
     {
         if (textConflict == null) return;
         await data.DiscardBlock(blockId);
-        if ( textConflict.DiscardBlock(blockId) == 0 )
+        if (textConflict.DiscardBlock(blockId) == 0)
             PickFirst();
     }
 
