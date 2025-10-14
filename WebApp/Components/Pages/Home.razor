@@ -54,6 +54,11 @@ else
                 <LanguageControl OnClick="RunQuery" ShowHelper=true />
             </div>
         }
+        <div class="card-footer">
+            <div class="progress" style="height: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: @(PctDone)%;" aria-valuenow="@(PctDone)" aria-valuemin="0" aria-valuemax="100">@(PctDone)%</div>
+            </div>
+        </div>
     </div>
 
     <div class="card shadow mt-2">
@@ -195,6 +200,7 @@ else
         }
     }
 
+    private string PctDone { get => $"{data.PercentDone()}"; }
     private string BtnClass(int btnNo, WorkItem? workItem)
     {
         string btnClass = "btn-success";
@@ -256,6 +262,7 @@ else
         {
             workItem.WorkFinal = workItem.WorkAi;
         }
+        await Task.Delay(0);
     }
 
     private async Task ApproveAiText()

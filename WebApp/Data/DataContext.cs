@@ -16,6 +16,8 @@ namespace TranslateWebApp.Data
         private List<Language> _targetLanguages = new();
         private List<Language> _supportLanguages = new();
         private List<UserProject> _userProjects = new();
+        private List<UserProjectStatus> _userProjectStatus = new();
+        private UserProjectStatus? _userProject;
 
         private string _connectionString = string.Empty;
         private IConfiguration _config;
@@ -36,14 +38,36 @@ namespace TranslateWebApp.Data
 
         public int ProjectId { get => _userData.ProjectId; }
         public string HelperLanguage { get => _userData.HelperLanguage; set => _userData.HelperLanguage = value; }
-        public string TargetLanguage { get => _userData.TargetLanguage; set => _userData.TargetLanguage = value; }
+        public string TargetLanguage
+        {
+            get => _userData.TargetLanguage;
+            set
+            {
+                _userData.TargetLanguage = value;
+                UpdateProject();
+            }
+        }
 
         public List<UserProject> UserProjects { get => _userProjects; }
         public List<Language> SupportLanguages { get => _supportLanguages; }
         public List<Language> TargetLanguages { get => _targetLanguages; }
+
+        private void UpdateProject()
+        {
+            _userProject = _userProjectStatus.Find(up => up.ProjectId == _userData.ProjectId && up.LangKey == _userData.TargetLanguage );
+        }
         public void SetProjectId(int projectId)
         {
             _userData.ProjectId = projectId;
+            UpdateProject();
+        }
+
+        public int PercentDone()
+        {
+            if (_userProject == null)
+                return 0;
+            else
+                return (int)_userProject.WorkDone;
         }
 
         public async Task<List<WorkItem>> GetWorkBatch()
@@ -71,6 +95,15 @@ namespace TranslateWebApp.Data
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync(sql, new { workItem.WorkId, _userData.LogTo, _userData.TargetLanguage, workItem.Src1Check, workItem.WorkFinal });
+            }
+        }
+
+        public async Task DiscardBlock( int blockId )
+        {
+            string sql = $"EXEC Web.DiscardBlock @BlockId, @LogTo;";
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.ExecuteAsync(sql, new {BlockId = blockId, _userData.LogTo });
             }
         }
 
@@ -104,6 +137,12 @@ namespace TranslateWebApp.Data
             {
                 var rows = await connection.QueryAsync<UserProject>(sql, new { LogTo = logTo });
                 _userProjects = rows.ToList<UserProject>();
+            }
+            sql = $"EXEC Web.GetProjectStatus @LogTo;";
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var rows = await connection.QueryAsync<UserProjectStatus>(sql, new { LogTo = logTo });
+                _userProjectStatus = rows.ToList<UserProjectStatus>();
             }
             return _userData;
         }

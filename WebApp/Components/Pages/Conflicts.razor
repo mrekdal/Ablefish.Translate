@@ -7,7 +7,7 @@
 
 <PageTitle>Conflicts</PageTitle>
 
-<MenuBar/>
+<MenuBar />
 
 <div class="card shadow mt-2">
     <div class="card-header">
@@ -35,18 +35,18 @@
     </div>
 </div>
 
-<div class="card shadow mt-2">
-    <div class="card-header">
-        <span><b>Work Items</b> with conflicts</span>
-        <span class="text-end" style="float: right;">Project #<b>@data.ProjectId</b></span>
-    </div>
-    <div class="card-body">
-        @if (workBatch != null)
-        {
-            rowNo = 0;
+@if (allConflicts != null && allConflicts.Items.Count > 0)
+{
+    rowNo = 0;
+    <div class="card shadow mt-2">
+        <div class="card-header">
+            <span><b>Work Items</b> with conflicts</span>
+            <span class="text-end" style="float: right;">Project #<b>@data.ProjectId</b></span>
+        </div>
+        <div class="card-body">
             <table class="table table-sm">
                 <tbody>
-                    @foreach (var e in workBatch.Items)
+                    @foreach (var e in allConflicts.Items)
                     {
                         int localRowNo = rowNo;
                         <tr>
@@ -66,49 +66,52 @@
                     }
                 </tbody>
             </table>
-        }
+        </div>
     </div>
-</div>
+}
 
-@if (workItem != null && workItem.Candidate.Count > 1)
+@if (textConflict != null && textConflict.CandidatesLeft > 0 )
 {
     <div class="card shadow mt-2">
         <div class="card-header">
             <span class="fw-bold">Alternative Translations</span>
-            <span class="text-end" style="float:right;">Work Item #<b>@workItem.WorkId</b></span>
+            <span class="text-end" style="float:right;">Work Item #<b>@textConflict.WorkId</b></span>
         </div>
         <div class="card-body">
 
-            @if (workItem != null)
+            @if (textConflict != null)
             {
                 <table class="table table-sm">
                     <thead>
                         <tr>
                             <td class="text-primary">
-                                @workItem.SrcText
+                                @textConflict.SrcText
                             </td>
                             @if (ShowNumbers)
                             {
                                 <td class="text-sm-end">
-                                    @workItem.WorkId
+                                    @textConflict.WorkId
                                 </td>
                             }
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var e in workItem.Candidate)
+                        @foreach (var e in textConflict.Candidate)
                         {
-                            <tr>
-                                <td>@e.RawText <span class="text-muted small fst-italic">- @e.UserName</span></td>
-                                @if (ShowNumbers)
-                                {
-                                    <td class="text-sm-end"><a class="text-decoration-none">@e.BlockId</a></td>
-                                }
-                                <td class="text-end">
-                                    <button title="@e.UserName" class="btn btn-sm btn-success"><i class="bi bi-check2-circle" /></button>
-                                    <button title="@e.UserName" class="btn btn-sm btn-warning"><i class="bi bi-trash" /></button>
-                                </td>
-                            </tr>
+                            if (!e.Discarded)
+                            {
+                                <tr>
+                                    <td>@e.RawText <span class="text-muted small fst-italic">- @e.UserName</span></td>
+                                    @if (ShowNumbers)
+                                    {
+                                        <td class="text-sm-end"><a class="text-decoration-none">@e.BlockId</a></td>
+                                    }
+                                    <td class="text-end">
+                                        <button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
+                                        <button title="@e.UserName" class="btn btn-sm btn-warning" @onclick="@(() => DiscardBlock(e.BlockId))"><i class="bi bi-trash" /></button>
+                                    </td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
@@ -119,15 +122,45 @@
 }
 
 @code {
-    private Disagreements workBatch = new();
-    private TextConflict? workItem;
-    private int SelectedItemIndex = 0;
+    private Disagreements allConflicts = new();
+    private TextConflict? textConflict;
+    private int SelectedItemIndex;
     private bool ShowNumbers = false;
     private int rowNo = 0;
 
     private void PickRow(int rowNo)
     {
-        workItem = workBatch.Items[rowNo];
+        textConflict = allConflicts.Items[rowNo];
+    }
+
+    private void PickFirst()
+    {
+        if (allConflicts.Items.Count > 0)
+        {
+            SelectedItemIndex = 0;
+            textConflict = allConflicts.Items[0];
+        }
+        else
+        {
+            SelectedItemIndex = -1;
+            textConflict = null;
+        }
+    }
+
+    private async Task PickBlock(int blockId)
+    {
+        if (textConflict == null) return;
+        foreach (var c in textConflict.Candidate)
+            if (c.BlockId != blockId && !c.Discarded)
+                await DiscardBlock(c.BlockId);
+    }
+
+    private async Task DiscardBlock(int blockId)
+    {
+        if (textConflict == null) return;
+        await data.DiscardBlock(blockId);
+        if ( textConflict.DiscardBlock(blockId) == 0 )
+            PickFirst();
     }
 
     private async Task RunQuery()
@@ -137,17 +170,8 @@
             if (!appUser.IsAuthenticated)
                 throw new UnauthorizedAccessException("You need to be signed in and authorized for this application.");
             else
-                workBatch = await data.GetDisagreements(data.ProjectId, data.TargetLanguage);
-            if (workBatch.Items.Count > 0)
-            {
-                SelectedItemIndex = 0;
-                workItem = workBatch.Items[0];
-            }
-            else
-            {
-                SelectedItemIndex = -1;
-                workItem = null;
-            }
+                allConflicts = await data.GetDisagreements(data.ProjectId, data.TargetLanguage);
+            PickFirst();
             statusMessage.Clear();
         }
         catch (Exception e)
