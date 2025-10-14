@@ -13,7 +13,7 @@ namespace TranslateWebApp.Interfaces
         Task<Disagreements> GetDisagreements(int projectId, string langCode);
 
         public int ProjectId { get; }
-        public int PercentDone();
+        public double PercentDone();
         Task DiscardBlock(int blockId);
 
         public string HelperLanguage { get; set; }

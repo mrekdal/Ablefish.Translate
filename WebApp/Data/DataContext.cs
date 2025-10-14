@@ -62,12 +62,12 @@ namespace TranslateWebApp.Data
             UpdateProject();
         }
 
-        public int PercentDone()
+        public double PercentDone()
         {
             if (_userProject == null)
                 return 0;
             else
-                return (int)_userProject.WorkDone;
+                return _userProject.WorkDonePercent;
         }
 
         public async Task<List<WorkItem>> GetWorkBatch()
@@ -80,7 +80,6 @@ namespace TranslateWebApp.Data
                 return rows.ToList();
             }
         }
-
         public async Task ApproveAiText(WorkItem workItem)
         {
             workItem.WorkFinal = workItem.WorkAi;
@@ -89,6 +88,7 @@ namespace TranslateWebApp.Data
 
         public async Task ApproveText(WorkItem workItem)
         {
+            _userProject?.AddOne();
             _logger.LogInformation($"EXEC Web.ApproveFinalText( {workItem.WorkId}, {workItem.Src1Check} );");
             workItem.Approve();
             string sql = $"EXEC Web.ApproveFinalText @WorkId, @LogTo, @TargetLanguage, @Src1Check, @WorkFinal;";

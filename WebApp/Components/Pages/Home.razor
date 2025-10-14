@@ -200,7 +200,7 @@ else
         }
     }
 
-    private string PctDone { get => $"{data.PercentDone()}"; }
+    private string PctDone { get => $"{data.PercentDone():F0}"; }
     private string BtnClass(int btnNo, WorkItem? workItem)
     {
         string btnClass = "btn-success";
