@@ -17,21 +17,31 @@
     [Parameter]
     public EventCallback OnClick { get; set; }
 
+    private bool IsBusy { get; set; }
     private async Task SetProjectId(int projectId)
     {
         if (projectId != data.ProjectId)
-        {
-            data.SetProjectId(projectId);
-            await OnClick.InvokeAsync();
-        }
+            try
+            {
+                IsBusy = true;
+                data.SetProjectId(projectId);
+                await OnClick.InvokeAsync();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
     }
 
     private string CssBtnProject(int projectId)
     {
+        string btnClass = string.Empty;
+        if (IsBusy)
+            btnClass = "disabled";
         if (projectId == data.ProjectId)
-            return "btn-primary active";
+            return $"btn-primary active {btnClass}";
         else
-            return "btn-outline-primary";
+            return $"btn-outline-primary {btnClass}";
     }
 
 }

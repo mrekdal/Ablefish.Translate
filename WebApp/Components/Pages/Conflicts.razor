@@ -10,6 +10,7 @@
 
 <MenuBar />
 
+
 <div class="card shadow mt-2">
     <div class="card-header">
         <span>Conflict Resolution</span>
@@ -25,15 +26,21 @@
             }
             else
             {
-                <div>Click the <b>Start button</b> to find your projects.</div>
+                <div>Click the <b>Start Working</b> button to find translation conflicts in your projects.</div>
                 <div class="text-center mt-2">
-                    <button class="btn btn-success" @onclick="@(() => ClickStart())">Start</button>
+                    <button class="btn btn-lg btn-success" @onclick="@(() => ClickStart())">Start Working</button>
                 </div>
             }
         </div>
         <ProjectControl OnClick="RunQuery" />
         <LanguageControl OnClick="RunQuery" ShowHelper=false />
     </div>
+    @if (!statusMessage.IsEmpty)
+    {
+        <div class="card-footer">
+            <StatusBox StatusMessage="statusMessage" />
+        </div>
+    }
 </div>
 
 @if (allConflicts != null && allConflicts.Items.Count > 0)
@@ -142,6 +149,7 @@
     private int SelectedItemIndex;
     private bool ShowNumbers = false;
     private bool StartClicked = false;
+    private bool QueryIsRunning = false;
     private int rowNo = 0;
 
     private string CssRowClass(TextConflict conflict)
@@ -169,9 +177,11 @@
         {
             SelectedItemIndex = 0;
             textConflict = allConflicts.Items[0];
+            statusMessage.Clear();
         }
         else
         {
+            statusMessage.SetSuccess("No more conflicts", "There are no translation conflicts for the selected project and language");
             SelectedItemIndex = -1;
             textConflict = null;
         }
@@ -206,8 +216,11 @@
 
     private async Task RunQuery()
     {
+        if (QueryIsRunning) return;
+        QueryIsRunning = true;
+        statusMessageApprove.Clear();
+        statusMessage.SetInformation("Loading data ...", "Retrieving a list of conflicts for you to resolve.  Please wait for this message to disappear.");
         if (!StartClicked) return;
-        statusMessage.Clear();
         try
         {
             if (!appUser.IsAuthenticated)
@@ -215,12 +228,12 @@
             else
                 allConflicts = await data.GetDisagreements(data.ProjectId, data.TargetLanguage);
             PickFirst();
-            statusMessage.Clear();
         }
         catch (Exception e)
         {
             statusMessage.SetException(e);
         }
+        QueryIsRunning = false;
         StateHasChanged();
     }
 
