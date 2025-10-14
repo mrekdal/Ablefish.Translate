@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION Web.GetTextBlockDisagreements( @LangKey VARCHAR(12) ) RETURNS TABLE AS
+﻿CREATE FUNCTION [Web].[GetTextBlockDisagreements]( @LangKey VARCHAR(12) ) RETURNS TABLE AS
 RETURN
 (
     SELECT *
@@ -16,7 +16,7 @@ RETURN
         INNER JOIN dbo.UserList ul 
             ON ul.LogTo = tb.LogTo
             AND ul.MachineUser = 0
-		WHERE tb.LangKey = @LangKey
+		WHERE tb.LangKey = @LangKey AND tb.IsDiscarded = 0
         GROUP BY tb.WorkId, tb.LangKey
         HAVING COUNT(*) > 1
     ) agg

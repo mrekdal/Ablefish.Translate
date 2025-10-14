@@ -68,6 +68,8 @@
     <Folder Include="dbo\Synonyms\" />
     <Folder Include="dbo\Views\" />
     <Folder Include="Web\Functions\" />
+    <Folder Include="WebJson\" />
+    <Folder Include="WebJson\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TextLanguage.sql" />
@@ -106,6 +108,11 @@
     <Build Include="Web\Functions\GetTextBlockDisagreements.sql" />
     <Build Include="Web\Stored Procedures\GetWorkDone.sql" />
     <Build Include="Web\Stored Procedures\GetAllProjects.sql" />
+    <Build Include="dbo\Tables\LangLevel.sql" />
+    <Build Include="Web\Stored Procedures\GetProjectStatus.sql" />
+    <Build Include="Web\Stored Procedures\DiscardBlock.sql" />
+    <Build Include="WebJson\Stored Procedures\GetDisagreements.sql" />
+    <Build Include="Security\WebJson.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />

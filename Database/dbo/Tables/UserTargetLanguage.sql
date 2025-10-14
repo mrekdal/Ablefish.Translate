@@ -1,12 +1,14 @@
 ﻿CREATE TABLE [dbo].[UserTargetLanguage] (
-    [TargId]    INT          IDENTITY (1, 1) NOT NULL,
-    [LogTo]     VARCHAR (16) NOT NULL,
-    [LangKey]   VARCHAR (12) NOT NULL,
-    [CreatedAt] DATETIME     DEFAULT (getdate()) NOT NULL,
-    [Level]     INT          NULL,
-    [IsActive]  BIT          DEFAULT ((1)) NOT NULL,
+    [TargId]     INT          IDENTITY (1, 1) NOT NULL,
+    [LogTo]      VARCHAR (16) NOT NULL,
+    [LangKey]    VARCHAR (12) NOT NULL,
+    [CreatedAt]  DATETIME     DEFAULT (getdate()) NOT NULL,
+    [Level]      INT          NOT NULL,
+    [IsActive]   BIT          DEFAULT ((1)) NOT NULL,
+    [CanApprove] BIT          DEFAULT ((0)) NOT NULL,
     CONSTRAINT [FK_UserTarget_LangKey] FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey]) ON UPDATE CASCADE,
-    CONSTRAINT [FK_UserTarget_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE
+    CONSTRAINT [FK_UserTarget_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE,
+    CONSTRAINT [FK_UserTargetLanguage_Level] FOREIGN KEY ([Level]) REFERENCES [dbo].[LangLevel] ([Level]) ON UPDATE CASCADE
 );
 
 
