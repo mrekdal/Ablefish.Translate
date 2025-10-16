@@ -76,7 +76,7 @@ namespace PostTranslations
                 {
                     foreach (var e in originalFile.Data)
                     {
-                        Console.WriteLine($"EXEC dbo.AddFinalText 1, '{e.Name}', {SqlUtils.TextToSql(sourceLanguage)}, {SqlUtils.TextToSql(e.Value)};");
+                        Console.WriteLine($"EXEC dbo.AddResourceText 1, '{e.Name}', {SqlUtils.TextToSql(sourceLanguage)}, {SqlUtils.TextToSql(e.Value)};");
                     }
                 }
             }
