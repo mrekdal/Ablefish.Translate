@@ -1,3 +1,28 @@
+.btn-primary {
+    background-color: #2174a2 !important; 
+}
+
+    .btn-primary:hover, .btn-outline-primary:hover {
+        background-color: #288fc8 !important;
+    }
+
+.btn-outline-primary {
+    color: #2174a2 !important;
+    border-color: #2174a2 !important;
+}
+
+.btn-outline-primary:hover {
+    color: white !important;
+}
+
+.btn-secondary {
+   background-color:  #185a7f !important;
+}
+
+.progress-bar {
+   background-color: #185a7f !important;
+}
+
 body {
     background-image: url('images/background_02.png');
     background-size: cover; /* makes the image cover the entire area */
