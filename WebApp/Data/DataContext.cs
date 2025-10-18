@@ -13,8 +13,9 @@ namespace TranslateWebApp.Data
     public class DataContext : IDataContext
     {
 
+        private Guid ContextId = Guid.NewGuid();
         private UserData _userData = new();
-        private IAppState _appState;
+        private IApplicationWorkState _appState;
         private List<Language> _targetLanguages = new();
         private List<Language> _supportLanguages = new();
         private List<UserProject> _userProjects = new();
@@ -25,7 +26,7 @@ namespace TranslateWebApp.Data
         private IConfiguration _config;
         private ILogger<DataContext> _logger;
 
-        public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IAppState appState)
+        public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IApplicationWorkState appState)
         {
             _config = configuration;
             _appState = appState;
@@ -74,16 +75,6 @@ namespace TranslateWebApp.Data
                 return _userProject.WorkDonePercent;
         }
 
-        public async Task LoadTranslations()
-        {
-            _logger.LogInformation($"EXEC Web.GetWorkBatch( {_userData.ProjectId}, '{_userData.LogTo}', '{_userData.TargetLanguage}' );");
-            string sql = $"EXEC Web.GetWorkBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage;";
-            using (IDbConnection connection = new SqlConnection(_connectionString))
-            {
-                var rows = await connection.QueryAsync<WorkItem>(sql, new { _userData.ProjectId, _userData.LogTo, _userData.TargetLanguage, _userData.HelperLanguage });
-                _appState.SetTranslations(rows.ToList());
-            }
-        }
         public async Task ApproveAiText(WorkItem workItem)
         {
             workItem.WorkFinal = workItem.WorkAi;
@@ -130,7 +121,7 @@ namespace TranslateWebApp.Data
             else
             {
                 _userData.Clear(logTo);
-                _logger.LogInformation($"EXEC Web.GetUserData({logTo})");
+                _logger.LogInformation($"EXEC Web.GetUserData({logTo}). Ctx: {ContextId}");
                 string sql = $"EXEC Web.GetUserFromLogTo @LogTo;";
                 using (IDbConnection connection = new SqlConnection(_connectionString))
                 {
@@ -159,15 +150,27 @@ namespace TranslateWebApp.Data
             }
         }
 
-        public async Task LoadConflicts()
+        public async Task LoadTranslations( string logTo )
         {
+            await LoadUserData( logTo );
+            _logger.LogInformation($"EXEC Web.GetWorkBatch( {_userData.ProjectId}, '{_userData.LogTo}', '{_userData.TargetLanguage}' );");
+            string sql = $"EXEC Web.GetWorkBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage;";
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var rows = await connection.QueryAsync<WorkItem>(sql, new { _userData.ProjectId, _userData.LogTo, _userData.TargetLanguage, _userData.HelperLanguage });
+                _appState.SetTranslations(rows.ToList());
+            }
+        }
+        public async Task LoadConflicts( string logTo )
+        {
+            await LoadUserData( logTo );
             _logger.LogInformation($"EXEC WebJson.GetDisagreements( {_userData.ProjectId}, '{_userData.TargetLanguage}';");
             string sql = $"EXEC WebJson.GetDisagreements @ProjectId, @LangKey;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
                 string? jsonResult = await connection.ExecuteScalarAsync<string?>(sql, new { ProjectId = _userData.ProjectId, LangKey = _userData.TargetLanguage });
                 if (jsonResult != null)
-                    _appState.SetConflicts(JsonSerializer.Deserialize<Disagreements>(jsonResult) ?? new());
+                    _appState.SetConflicts(JsonSerializer.Deserialize<TranslationConflicts>(jsonResult) ?? new());
             }
         }
     }

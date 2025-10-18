@@ -6,10 +6,10 @@
 
 @inject ILogger<Home> logger
 @inject IDataContext data
-@inject IWebUser appUser
 @inject IStatusMessage statusMessageQuery
 @inject IStatusMessage statusMessageApprove
-@inject IAppState appState
+@inject IApplicationUser appUser
+@inject IApplicationWorkState appState
 
 <PageTitle>Conflicts</PageTitle>
 
@@ -21,7 +21,7 @@
         <div class="card shadow mt-2">
             <div class="card-header">
                 <span>Conflict Resolution</span>
-                <span style="float:right;">Welcome: <b>@appUser.FirstName</b> @appUser.LogTo</span>
+                <span style="float:right;">Welcome: <b>@appUser.FirstName</b></span>
             </div>
             <div class="card-body">
                 <div class="m-1">
@@ -150,6 +150,7 @@
         }
     </Authorized>
 </AuthorizeView>
+
 
 @code {
     private string CssRowClass(TextConflict conflict)

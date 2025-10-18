@@ -5,7 +5,6 @@ namespace TranslateWebApp.Components.Pages
     public partial class Conflicts
     {
         private TextConflict? textConflict;
-        private int SelectedItemIndex;
         private bool ShowNumbers = false;
         private bool QueryIsRunning = false;
         private int rowNo = 0;
@@ -26,14 +25,12 @@ namespace TranslateWebApp.Components.Pages
         {
             if (appState.Conflicts.Items.Count > 0)
             {
-                SelectedItemIndex = 0;
                 textConflict = appState.Conflicts.Items[0];
                 statusMessageQuery.Clear();
             }
             else
             {
                 statusMessageQuery.SetSuccess("No more conflicts", "There are no translation conflicts for the selected project and language");
-                SelectedItemIndex = -1;
                 textConflict = null;
             }
         }
@@ -72,9 +69,7 @@ namespace TranslateWebApp.Components.Pages
             {
                 statusMessageQuery.SetInformation("Loading data ...", "Retrieving a list of conflicts for you to resolve.  Please wait for this message to disappear.");
                 QueryIsRunning = true;
-                if (!appUser.Loaded)
-                    await data.LoadUserData(appUser.LogTo);
-                await data.LoadConflicts();
+                await data.LoadConflicts( appUser.LogTo);
                 PickFirst();
                 statusMessageQuery.Clear();
             }
@@ -88,7 +83,7 @@ namespace TranslateWebApp.Components.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if ( appState.CallsConflicts == 0 && appUser.Authenticated)
+            if (appState.CallsConflicts == 0 && appUser.Authenticated)
                 await RunQuery();
         }
 

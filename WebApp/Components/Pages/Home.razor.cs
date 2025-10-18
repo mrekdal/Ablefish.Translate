@@ -16,7 +16,7 @@ namespace TranslateWebApp.Components.Pages
         private bool ShowSettings = true;
         private bool IsSaving = false;
 
-        private void MoveFirst()
+        private void MoveToFirst()
         {
             if (appState.Translations.Count > 0)
             {
@@ -30,7 +30,7 @@ namespace TranslateWebApp.Components.Pages
             }
         }
 
-        private async Task MoveNext()
+        private async Task MoveToNext()
         {
             if (SelectedItemIndex < appState.Translations.Count - 1)
             {
@@ -87,7 +87,7 @@ namespace TranslateWebApp.Components.Pages
                 try
                 {
                     await data.ApproveAiText(workItem);
-                    await MoveNext();
+                    await MoveToNext();
                 }
                 catch (Exception e)
                 {
@@ -105,7 +105,7 @@ namespace TranslateWebApp.Components.Pages
                 try
                 {
                     await data.ApproveText(workItem);
-                    await MoveNext();
+                    await MoveToNext();
                 }
                 catch (Exception e)
                 {
@@ -121,10 +121,8 @@ namespace TranslateWebApp.Components.Pages
             try
             {
                 QueryIsRunning = true;
-                if (!appUser.Loaded)
-                    await data.LoadUserData(appUser.LogTo);
-                await data.LoadTranslations();
-                MoveFirst();
+                await data.LoadTranslations(appUser.LogTo);
+                MoveToFirst();
                 statusMessage.Clear();
             }
             catch (Exception e)
@@ -133,6 +131,12 @@ namespace TranslateWebApp.Components.Pages
             }
             QueryIsRunning = false;
             StateHasChanged();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (appState.CallsTranslations == 0 && appUser.Authenticated)
+                await RunQuery();
         }
 
         protected void OnInitialize()

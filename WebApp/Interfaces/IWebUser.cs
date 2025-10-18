@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace TranslateWebApp.Interfaces
 {
-    public interface IWebUser
+    public interface IApplicationUser
     {
         void Attach(IObserver observer);
         Task SetClaimsPrincipal(ClaimsPrincipal? claimsPrincipal);

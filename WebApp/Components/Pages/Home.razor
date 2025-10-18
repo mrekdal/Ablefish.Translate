@@ -5,10 +5,10 @@
 @implements IObserver
 
 @inject ILogger<Home> logger
-@inject IWebUser appUser
+@inject IApplicationUser appUser
 @inject ITransFactory transFactory
 @inject IStatusMessage statusMessage
-@inject IAppState appState
+@inject IApplicationWorkState appState
 @inject IDataContext data
 
 <PageTitle>Translation Work</PageTitle>
@@ -22,9 +22,9 @@
 
             <div class="card-header">
                 <span class="fw-bold">
-                    <InputCheckbox @bind-Value="ShowSettings" class="form-check-inline me-2" />Show Project Settings
+                    <InputCheckbox @bind-Value="ShowSettings" class="form-check-inline me-2" />Translation Settings
                 </span>
-                <span style="float:right;">Welcome: <b>@appUser.FirstName</b> @appUser.LogTo</span>
+                <span style="float:right;">Welcome: <b>@appUser.FirstName</b></span>
             </div>
 
             <div class="card-body">
@@ -33,14 +33,16 @@
                     <div class="text-center w-100">
                         <div class="mb-2">
                             Each user is assigned a set of projects and target languages.<br />
-                            Click the button below to load your projects and languages.
+                            They should load automatically within a few seconds.
+                            Click the button below to load your projects and languages manually.
                         </div>
                         <button class="btn btn-primary" @onclick="@(() => RunQuery())">Start Working</button>
                     </div>
                 }
                 else if (ShowSettings)
                 {
-                    <div class="mb-2 py-3">
+                    <div class="fw-bold">Select Project</div>
+                    <div class="mb-2">
                         Choose your project, target language and support language.
                         The support language should be a manual translation and can be used to resolve ambiguities in the source language.
                         The support languages may not be available in all projects.
@@ -178,6 +180,7 @@
 
 @code {
 
+   
     private string TextPercentDone { get => $"{data.PercentDone():F0}"; }
 
     private string CssClassButton(int btnNo, WorkItem? workItem)

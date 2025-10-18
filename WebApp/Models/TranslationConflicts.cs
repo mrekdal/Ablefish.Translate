@@ -35,7 +35,7 @@
         #endregion
     }
 
-    public class Disagreements
+    public class TranslationConflicts
     {
         public List<TextConflict> Items { get; set; } = new();
     }

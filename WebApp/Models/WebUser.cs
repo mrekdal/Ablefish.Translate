@@ -4,7 +4,7 @@ using TranslateWebApp.Interfaces;
 
 namespace TranslateWebApp.Models
 {
-    public class WebUser : SubjectBase, IWebUser
+    public class WebUser : SubjectBase, IApplicationUser
     {
 
         private IDataContext _dataContext;

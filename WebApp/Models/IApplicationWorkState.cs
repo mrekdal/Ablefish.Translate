@@ -1,13 +1,13 @@
 ﻿
 namespace TranslateWebApp.Models
 {
-    public interface IAppState
+    public interface IApplicationWorkState
     {
         public int CallsConflicts { get; }
         public int CallsTranslations { get; }
         List<WorkItem> Translations { get; }
-        Disagreements Conflicts { get; }
-        public void SetConflicts(Disagreements conflicts);
+        TranslationConflicts Conflicts { get; }
+        public void SetConflicts(TranslationConflicts conflicts);
         public void SetTranslations(List<WorkItem> translations);
     }
 }

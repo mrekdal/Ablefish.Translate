@@ -10,9 +10,9 @@ namespace TranslateWebApp.Interfaces
         Task ApproveAiText(WorkItem workItem);
         Task ApproveText(WorkItem workItem);
         Task StoreAiText(WorkItem workItem, string logTo);
-        Task LoadTranslations();
+        Task LoadTranslations(string logTo);
         public void SetProjectId(int projectId);
-        Task LoadConflicts();
+        Task LoadConflicts(string logTo);
 
         public int ProjectId { get; }
         public double PercentDone();
