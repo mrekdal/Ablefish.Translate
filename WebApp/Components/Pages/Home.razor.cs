@@ -115,6 +115,24 @@ namespace TranslateWebApp.Components.Pages
             IsSaving = false;
         }
 
+        private async Task RunSearch()
+        {
+            if (!appUser.Authenticated && QueryIsRunning) return;
+            try
+            {
+                QueryIsRunning = true;
+                await data.LoadTranslationsText(appUser.LogTo, SearchFor);
+                MoveToFirst();
+                statusMessage.Clear();
+            }
+            catch (Exception e)
+            {
+                statusMessage.SetException(e);
+            }
+            QueryIsRunning = false;
+            StateHasChanged();
+        }
+
         private async Task RunQuery()
         {
             if (!appUser.Authenticated && QueryIsRunning) return;
@@ -137,17 +155,6 @@ namespace TranslateWebApp.Components.Pages
         {
             if (appState.CallsTranslations == 0 && appUser.Authenticated)
                 await RunQuery();
-        }
-
-        protected void OnInitialize()
-        {
-            appUser.Attach(this);
-        }
-
-        public void HandleUpdate()
-        {
-            logger.LogWarning($"{this}.HandleUpdate(): Triggered.");
-            StateHasChanged();
         }
 
     }

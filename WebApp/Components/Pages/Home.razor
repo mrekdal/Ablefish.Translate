@@ -1,8 +1,7 @@
 ﻿@page "/"
+@page "/Translations"
 
 @using TranslateWebApp.Interfaces
-
-@implements IObserver
 
 @inject ILogger<Home> logger
 @inject IApplicationUser appUser
@@ -45,7 +44,7 @@
                     <div class="mb-2">
                         Choose your project, target language and support language.
                         The support language should be a manual translation and can be used to resolve ambiguities in the source language.
-                        The support languages may not be available in all projects.
+                        All support languages may not be available in all projects.
                     </div>
                     <ProjectControl OnClick="RunQuery" />
                     <LanguageControl OnClick="RunQuery" ShowHelper=true />
@@ -66,7 +65,14 @@
                 <div class="card-header">Find Work</div>
                 <div class="card-body">
 
-                    @if (appState.Translations.Count == 0 && appState.CallsTranslations > 0)
+                    <div class="input-group mt-2 mb-2">
+                        <InputText class="form-control" placeholder="Search for work items" aria-label="Search for work items" aria-describedby="basic-addon2" @bind-Value="SearchFor" />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="button" @onclick="@(() => RunSearch() )" >Search</button>
+                        </div>
+                    </div>
+
+                    @if (appState.Translations.Count == 0 )
                     {
                         ShowSettings = true;
                         <div>
@@ -77,8 +83,12 @@
                     else
                     {
                         <div>
-                            You get @(appState.Translations.Count) text blocks to work with at a time.  When you are done, get more work by clicking on three dots. <i class="bi bi-three-dots" />
+                            You will automatically get @(appState.Translations.Count) text blocks to work with at a time.  
+                            When you are done, get more work by clicking on three dots. <i class="bi bi-three-dots" />
+                            You can search for specific work items below.
                         </div>
+
+
                         <div class="btn-group w-100 mt-2">
                             <button class="btn btn-sm btn-secondary disabled twa-first-button">Text Block</button>
                             @{
@@ -180,7 +190,8 @@
 
 @code {
 
-   
+    private string SearchFor { get; set; } = string.Empty;
+
     private string TextPercentDone { get => $"{data.PercentDone():F0}"; }
 
     private string CssClassButton(int btnNo, WorkItem? workItem)

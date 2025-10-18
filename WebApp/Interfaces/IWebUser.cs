@@ -5,7 +5,6 @@ namespace TranslateWebApp.Interfaces
 {
     public interface IApplicationUser
     {
-        void Attach(IObserver observer);
         Task SetClaimsPrincipal(ClaimsPrincipal? claimsPrincipal);
         string FirstName { get; }
         string LastName { get; }

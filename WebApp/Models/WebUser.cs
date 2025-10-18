@@ -4,7 +4,7 @@ using TranslateWebApp.Interfaces;
 
 namespace TranslateWebApp.Models
 {
-    public class WebUser : SubjectBase, IApplicationUser
+    public class WebUser : IApplicationUser
     {
 
         private IDataContext _dataContext;
@@ -29,8 +29,6 @@ namespace TranslateWebApp.Models
         public async Task SetClaimsPrincipal(ClaimsPrincipal? claimsPrincipal)
         {
             User = claimsPrincipal;
-            await _dataContext.LoadUserData(LogTo);
-            Notify();
         }
 
     }

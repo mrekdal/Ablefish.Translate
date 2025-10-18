@@ -161,6 +161,18 @@ namespace TranslateWebApp.Data
                 _appState.SetTranslations(rows.ToList());
             }
         }
+        public async Task LoadTranslationsText(string logTo, string searchFor)
+        {
+            await LoadUserData(logTo);
+            _logger.LogInformation($"EXEC Web.GetTextBatch( {_userData.ProjectId}, '{_userData.LogTo}', '{_userData.TargetLanguage}' );");
+            string sql = $"EXEC Web.GetTextBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage, @SearchFor;";
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var rows = await connection.QueryAsync<WorkItem>(sql, new { _userData.ProjectId, _userData.LogTo, _userData.TargetLanguage, _userData.HelperLanguage, searchFor });
+                _appState.SetTranslations(rows.ToList());
+            }
+        }
+
         public async Task LoadConflicts( string logTo )
         {
             await LoadUserData( logTo );

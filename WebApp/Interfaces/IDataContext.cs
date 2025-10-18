@@ -11,6 +11,7 @@ namespace TranslateWebApp.Interfaces
         Task ApproveText(WorkItem workItem);
         Task StoreAiText(WorkItem workItem, string logTo);
         Task LoadTranslations(string logTo);
+        Task LoadTranslationsText(string logTo, string searchFor );
         public void SetProjectId(int projectId);
         Task LoadConflicts(string logTo);
 

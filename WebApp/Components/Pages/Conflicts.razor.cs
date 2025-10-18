@@ -87,15 +87,5 @@ namespace TranslateWebApp.Components.Pages
                 await RunQuery();
         }
 
-        protected void OnInitialize()
-        {
-            appUser.Attach(this);
-        }
-
-        public void HandleUpdate()
-        {
-            logger.LogWarning($"{this}.HandleUpdate(): Triggered.");
-            StateHasChanged();
-        }
     }
 }
