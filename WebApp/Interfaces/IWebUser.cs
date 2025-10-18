@@ -1,14 +1,16 @@
-﻿using System.Security.Claims;
+﻿using Ablefish.Blazor.Observer;
+using System.Security.Claims;
 
 namespace TranslateWebApp.Interfaces
 {
     public interface IWebUser
     {
+        void Attach(IObserver observer);
         Task SetClaimsPrincipal(ClaimsPrincipal? claimsPrincipal);
-        Task SetLogTo(string? logTo);
         string FirstName { get; }
         string LastName { get; }
-        bool IsAuthenticated { get; }
+        bool Authenticated { get; }
+        bool Loaded { get; }
         int ProjectId { get; }
         string LogTo { get; }
         int UserId { get; }

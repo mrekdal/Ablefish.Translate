@@ -28,6 +28,7 @@ namespace TranslateWebApp
 
             builder.Services.AddScoped<IWebUser, WebUser>();
             builder.Services.AddScoped<IDataContext, DataContext>();
+            builder.Services.AddScoped<IAppState, AppState>();
             builder.Services.AddSingleton<ITransFactory, TransFactory>();
             builder.Services.AddTransient<IStatusMessage, StatusMessage>();
 

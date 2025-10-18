@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Ablefish.Blazor.Observer;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -13,6 +14,7 @@ namespace TranslateWebApp.Data
     {
 
         private UserData _userData = new();
+        private IAppState _appState;
         private List<Language> _targetLanguages = new();
         private List<Language> _supportLanguages = new();
         private List<UserProject> _userProjects = new();
@@ -23,12 +25,13 @@ namespace TranslateWebApp.Data
         private IConfiguration _config;
         private ILogger<DataContext> _logger;
 
-        public DataContext(ILogger<DataContext> logger, IConfiguration configuration)
+        public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IAppState appState)
         {
             _config = configuration;
+            _appState = appState;
             _connectionString = _config.GetConnectionString("MSSQL") ?? "";
             _logger = logger;
-            _userData.Clear();
+            _userData.Clear(string.Empty);
             _supportLanguages.Add(new Language("xx", "No Language", "-"));
             _supportLanguages.Add(new Language("ca", "Catalan", "CAT"));
             _supportLanguages.Add(new Language("nb", "Norwegian - Bokmål", "NOR"));
@@ -36,6 +39,7 @@ namespace TranslateWebApp.Data
             _supportLanguages.Add(new Language("es", "Spanish", "SPA"));
         }
 
+        public UserData UserData => _userData;
         public int ProjectId { get => _userData.ProjectId; }
         public string HelperLanguage { get => _userData.HelperLanguage; set => _userData.HelperLanguage = value; }
         public string TargetLanguage
@@ -54,7 +58,7 @@ namespace TranslateWebApp.Data
 
         private void UpdateProject()
         {
-            _userProject = _userProjectStatus.Find(up => up.ProjectId == _userData.ProjectId && up.LangKey == _userData.TargetLanguage );
+            _userProject = _userProjectStatus.Find(up => up.ProjectId == _userData.ProjectId && up.LangKey == _userData.TargetLanguage);
         }
         public void SetProjectId(int projectId)
         {
@@ -70,14 +74,14 @@ namespace TranslateWebApp.Data
                 return _userProject.WorkDonePercent;
         }
 
-        public async Task<List<WorkItem>> GetWorkBatch()
+        public async Task LoadTranslations()
         {
             _logger.LogInformation($"EXEC Web.GetWorkBatch( {_userData.ProjectId}, '{_userData.LogTo}', '{_userData.TargetLanguage}' );");
             string sql = $"EXEC Web.GetWorkBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
                 var rows = await connection.QueryAsync<WorkItem>(sql, new { _userData.ProjectId, _userData.LogTo, _userData.TargetLanguage, _userData.HelperLanguage });
-                return rows.ToList();
+                _appState.SetTranslations(rows.ToList());
             }
         }
         public async Task ApproveAiText(WorkItem workItem)
@@ -98,12 +102,12 @@ namespace TranslateWebApp.Data
             }
         }
 
-        public async Task DiscardBlock( int blockId )
+        public async Task DiscardBlock(int blockId)
         {
             string sql = $"EXEC Web.DiscardBlock @BlockId, @LogTo;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync(sql, new {BlockId = blockId, _userData.LogTo });
+                await connection.ExecuteAsync(sql, new { BlockId = blockId, _userData.LogTo });
             }
         }
 
@@ -117,48 +121,54 @@ namespace TranslateWebApp.Data
             }
         }
 
-        public async Task<UserData> GetUserData(string logTo)
+        public async Task LoadUserData(string logTo)
         {
-            _logger.LogInformation($"EXEC Web.GetUserData({logTo})");
-            string sql = $"EXEC Web.GetUserFromLogTo @LogTo;";
-            using (IDbConnection connection = new SqlConnection(_connectionString))
+            if (logTo == string.Empty)
+                _userData.Clear(logTo);
+            else if (_userData.Loaded && _userData.LogTo.Equals(logTo))
+                _logger.LogInformation($"GetUserData({logTo}): Returning cached object.");
+            else
             {
-                var rows = await connection.QueryAsync<UserData>(sql, new { LogTo = logTo });
-                _userData = rows.FirstOrDefault<UserData>() ?? new();
+                _userData.Clear(logTo);
+                _logger.LogInformation($"EXEC Web.GetUserData({logTo})");
+                string sql = $"EXEC Web.GetUserFromLogTo @LogTo;";
+                using (IDbConnection connection = new SqlConnection(_connectionString))
+                {
+                    var rows = await connection.QueryAsync<UserData>(sql, new { LogTo = logTo });
+                    _userData = rows.FirstOrDefault<UserData>() ?? new();
+                }
+                sql = $"EXEC Web.GetTargets @LogTo;";
+                using (IDbConnection connection = new SqlConnection(_connectionString))
+                {
+                    var rows = await connection.QueryAsync<Language>(sql, new { LogTo = logTo });
+                    _targetLanguages = rows.ToList<Language>();
+                }
+                sql = $"EXEC Web.GetProjects @LogTo;";
+                using (IDbConnection connection = new SqlConnection(_connectionString))
+                {
+                    var rows = await connection.QueryAsync<UserProject>(sql, new { LogTo = logTo });
+                    _userProjects = rows.ToList<UserProject>();
+                }
+                sql = $"EXEC Web.GetProjectStatus @LogTo;";
+                using (IDbConnection connection = new SqlConnection(_connectionString))
+                {
+                    var rows = await connection.QueryAsync<UserProjectStatus>(sql, new { LogTo = logTo });
+                    _userProjectStatus = rows.ToList<UserProjectStatus>();
+                }
+                _userData.SetLoaded();
             }
-            sql = $"EXEC Web.GetTargets @LogTo;";
-            using (IDbConnection connection = new SqlConnection(_connectionString))
-            {
-                var rows = await connection.QueryAsync<Language>(sql, new { LogTo = logTo });
-                _targetLanguages = rows.ToList<Language>();
-            }
-            sql = $"EXEC Web.GetProjects @LogTo;";
-            using (IDbConnection connection = new SqlConnection(_connectionString))
-            {
-                var rows = await connection.QueryAsync<UserProject>(sql, new { LogTo = logTo });
-                _userProjects = rows.ToList<UserProject>();
-            }
-            sql = $"EXEC Web.GetProjectStatus @LogTo;";
-            using (IDbConnection connection = new SqlConnection(_connectionString))
-            {
-                var rows = await connection.QueryAsync<UserProjectStatus>(sql, new { LogTo = logTo });
-                _userProjectStatus = rows.ToList<UserProjectStatus>();
-            }
-            return _userData;
         }
 
-        public async Task<Disagreements> GetDisagreements(int projectId, string langCode)
+        public async Task LoadConflicts()
         {
-            Disagreements disagreements = new();
-            _logger.LogInformation($"EXEC WebJson.GetDisagreements( {projectId}, '{langCode}';");
+            _logger.LogInformation($"EXEC WebJson.GetDisagreements( {_userData.ProjectId}, '{_userData.TargetLanguage}';");
             string sql = $"EXEC WebJson.GetDisagreements @ProjectId, @LangKey;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
-                string? jsonResult = await connection.ExecuteScalarAsync<string?>(sql, new { ProjectId = projectId, LangKey = langCode });
+                string? jsonResult = await connection.ExecuteScalarAsync<string?>(sql, new { ProjectId = _userData.ProjectId, LangKey = _userData.TargetLanguage });
                 if (jsonResult != null)
-                    disagreements = JsonSerializer.Deserialize<Disagreements>(jsonResult) ?? new();
+                    _appState.SetConflicts(JsonSerializer.Deserialize<Disagreements>(jsonResult) ?? new());
             }
-            return disagreements;
         }
     }
 }

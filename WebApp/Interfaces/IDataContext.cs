@@ -1,16 +1,18 @@
-﻿using TranslateWebApp.Models;
+﻿using Ablefish.Blazor.Observer;
+using TranslateWebApp.Models;
 
 namespace TranslateWebApp.Interfaces
 {
     public interface IDataContext
     {
-        Task<UserData> GetUserData(string logTo);
+        UserData UserData { get; }
+        Task LoadUserData(string logTo);
         Task ApproveAiText(WorkItem workItem);
         Task ApproveText(WorkItem workItem);
         Task StoreAiText(WorkItem workItem, string logTo);
-        Task<List<WorkItem>> GetWorkBatch();
+        Task LoadTranslations();
         public void SetProjectId(int projectId);
-        Task<Disagreements> GetDisagreements(int projectId, string langCode);
+        Task LoadConflicts();
 
         public int ProjectId { get; }
         public double PercentDone();
