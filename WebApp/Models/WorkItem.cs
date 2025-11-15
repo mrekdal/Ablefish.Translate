@@ -9,13 +9,13 @@ namespace TranslateWebApp.Models
         public string RowKey { get; set; } = string.Empty;
 
         #region Translation Source data
-
+        public string SourceLanguage { get; set; } = string.Empty;
         public string Src1Key { get; set; } = string.Empty;
         public string Src1Text { get; set; } = string.Empty;
         public int Src1Check { get; set; }
 
         #endregion
-        
+
         #region Translation Helper data
 
         public string Src2Key { get; set; } = string.Empty;
@@ -24,7 +24,7 @@ namespace TranslateWebApp.Models
         public bool Src2Machine { get; set; }
 
         #endregion
-        
+
         #region Translation Machine data
 
         public string LangAiKey { get; set; } = string.Empty;
@@ -32,7 +32,7 @@ namespace TranslateWebApp.Models
         public int WorkAiCheck { get; set; }
 
         #endregion
-        
+
         #region Translation Manual data
 
         public string LangWorkKey { get; set; } = string.Empty;
