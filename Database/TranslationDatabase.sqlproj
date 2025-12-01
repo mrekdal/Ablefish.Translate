@@ -113,6 +113,8 @@
     <Build Include="Web\Stored Procedures\DiscardBlock.sql" />
     <Build Include="WebJson\Stored Procedures\GetDisagreements.sql" />
     <Build Include="Security\WebJson.sql" />
+    <Build Include="Web\Stored Procedures\GetTextBatch.sql" />
+    <Build Include="dbo\Stored Procedures\AddResourceText.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />

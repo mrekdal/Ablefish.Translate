@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[GetWorkBatch]( @ProjectId INT, @LogTo VARCHAR(16), @LangWork VARCHAR(12), @LangHelp VARCHAR(12), @LogToAi VARCHAR(12) = 'DeepL' ) AS
+﻿CREATE PROCEDURE [Web].[GetTextBatch]( @ProjectId INT, @LogTo VARCHAR(16), @LangWork VARCHAR(12), @LangHelp VARCHAR(12), @SearchFor VARCHAR(64), @LogToAi VARCHAR(12) = 'DeepL' ) AS
 BEGIN
   SET NOCOUNT ON;
   INSERT INTO dbo.UserBatchLog ( ProjectId, LogTo, LangWork, LangHelp ) VALUES ( @ProjectId, @LogTo, @LangWork, @LangHelp );
@@ -9,8 +9,7 @@ BEGIN
     td.LangKey AS LangAiKey, td.RawText AS WorkAi, CHECKSUM(td.RawText) AS WorkAiCheck, -- AI Translated text
     @LangWork AS LangWorkKey, tw.RawText AS WorkFinal, CHECKSUM(tw.RawText) AS WorkFinalCheck,
 	tlw.EnglishName AS WorkLanguage, tlh.EnglishName AS HelpLanguage,
-	tw.LogTo,
-	ta.ApprId
+	tw.LogTo
   FROM dbo.WorkItem wi
   JOIN dbo.Project p ON p.ProjectId = wi.ProjectId
   JOIN dbo.TextLanguage tlw ON tlw.LangKey = @LangWork
@@ -22,6 +21,5 @@ BEGIN
   LEFT JOIN dbo.TextBlock tsh ON tsh.WorkId = wi.WorkId AND tsh.LangKey = @LangHelp AND tsh.LogTo = pth.GoldLogTo
   LEFT JOIN dbo.TextBlock tw ON tw.WorkId = wi.WorkId AND tw.LangKey = @LangWork AND tw.LogTo = @LogTo
   LEFT JOIN dbo.UserList ul ON ul.LogTo = pth.GoldLogTo
-  LEFT JOIN dbo.TextApproved ta ON ta.WorkId = wi.WorkId AND ta.LangTrg = @LangWork AND ta.CheckSrc = wi.CheckSrc AND ta.CheckTrg = CHECKSUM(tw.RawText)
-  WHERE wi.ProjectId = @ProjectId AND ta.ApprId IS NULL;
+  WHERE wi.ProjectId = @ProjectId AND wi.RawText LIKE CONCAT('%',@SearchFor,'%');
 END

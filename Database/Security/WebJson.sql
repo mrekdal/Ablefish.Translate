@@ -6,3 +6,8 @@ GO
 GRANT EXECUTE
     ON SCHEMA::[WebJson] TO [WebPublicUser];
 
+
+GO
+GRANT EXECUTE
+    ON SCHEMA::[WebJson] TO [WebAdminUser];
+
