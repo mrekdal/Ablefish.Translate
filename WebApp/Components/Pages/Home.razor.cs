@@ -79,14 +79,14 @@ namespace TranslateWebApp.Components.Pages
             await Task.Delay(0);
         }
 
-        private async Task ApproveAiText()
+        private async Task ApproveAiText( bool withDoubt )
         {
             statusMessage.Clear();
             IsSaving = true;
             if (workItem != null && !string.IsNullOrEmpty(workItem.WorkAi))
                 try
                 {
-                    await data.ApproveAiText(workItem);
+                    await data.ApproveAiText(workItem, withDoubt);
                     await MoveToNext();
                 }
                 catch (Exception e)
@@ -97,14 +97,14 @@ namespace TranslateWebApp.Components.Pages
             IsSaving = false;
         }
 
-        private async Task ApproveManualText()
+        private async Task ApproveManualText( bool withDoubt )
         {
             statusMessage.Clear();
             IsSaving = true;
             if (workItem != null && !string.IsNullOrEmpty(workItem.WorkFinal))
                 try
                 {
-                    await data.ApproveText(workItem);
+                    await data.ApproveText(workItem, withDoubt);
                     await MoveToNext();
                 }
                 catch (Exception e)
@@ -114,6 +114,7 @@ namespace TranslateWebApp.Components.Pages
                 }
             IsSaving = false;
         }
+
 
         private async Task RunSearch()
         {

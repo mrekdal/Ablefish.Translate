@@ -9,6 +9,7 @@
     [CheckRaw]    AS             (checksum([RawText])) PERSISTED,
     [IsDiscarded] BIT            DEFAULT ((0)) NOT NULL,
     [DiscardedBy] VARCHAR (16)   NULL,
+    [WithDoubt]   BIT            DEFAULT ((0)) NOT NULL,
     CONSTRAINT [PK_BlockId] PRIMARY KEY CLUSTERED ([BlockId] ASC),
     FOREIGN KEY ([DiscardedBy]) REFERENCES [dbo].[UserList] ([LogTo]),
     CONSTRAINT [FK_TextBlock_LangKey] FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey]),

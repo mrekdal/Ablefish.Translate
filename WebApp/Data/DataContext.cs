@@ -75,21 +75,21 @@ namespace TranslateWebApp.Data
                 return _userProject.WorkDonePercent;
         }
 
-        public async Task ApproveAiText(WorkItem workItem)
+        public async Task ApproveAiText(WorkItem workItem, bool withDoubt)
         {
             workItem.WorkFinal = workItem.WorkAi;
-            await ApproveText(workItem);
+            await ApproveText(workItem, withDoubt);
         }
 
-        public async Task ApproveText(WorkItem workItem)
+        public async Task ApproveText(WorkItem workItem, bool withDoubt)
         {
             _userProject?.AddOne();
             _logger.LogInformation($"EXEC Web.ApproveFinalText( {workItem.WorkId}, {workItem.Src1Check} );");
             workItem.Approve();
-            string sql = $"EXEC Web.ApproveFinalText @WorkId, @LogTo, @TargetLanguage, @Src1Check, @WorkFinal;";
+            string sql = $"EXEC Web.ApproveFinalText @WorkId, @LogTo, @TargetLanguage, @Src1Check, @WorkFinal, @withDoubt;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync(sql, new { workItem.WorkId, _userData.LogTo, _userData.TargetLanguage, workItem.Src1Check, workItem.WorkFinal });
+                await connection.ExecuteAsync(sql, new { workItem.WorkId, _userData.LogTo, _userData.TargetLanguage, workItem.Src1Check, workItem.WorkFinal, withDoubt });
             }
         }
 
@@ -150,9 +150,9 @@ namespace TranslateWebApp.Data
             }
         }
 
-        public async Task LoadTranslations( string logTo )
+        public async Task LoadTranslations(string logTo)
         {
-            await LoadUserData( logTo );
+            await LoadUserData(logTo);
             _logger.LogInformation($"EXEC Web.GetWorkBatch( {_userData.ProjectId}, '{_userData.LogTo}', '{_userData.TargetLanguage}' );");
             string sql = $"EXEC Web.GetWorkBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
@@ -173,9 +173,9 @@ namespace TranslateWebApp.Data
             }
         }
 
-        public async Task LoadConflicts( string logTo )
+        public async Task LoadConflicts(string logTo)
         {
-            await LoadUserData( logTo );
+            await LoadUserData(logTo);
             _logger.LogInformation($"EXEC WebJson.GetDisagreements( {_userData.ProjectId}, '{_userData.TargetLanguage}';");
             string sql = $"EXEC WebJson.GetDisagreements @ProjectId, @LangKey;";
             using (IDbConnection connection = new SqlConnection(_connectionString))

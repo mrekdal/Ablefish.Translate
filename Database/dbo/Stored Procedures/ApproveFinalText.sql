@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[ApproveFinalText]( @WorkId INT, @LogTo VARCHAR(16), @TargetLanguage VARCHAR(12), @CheckSrc INT, @FinalText NVARCHAR(MAX) ) AS
+﻿CREATE PROCEDURE [dbo].[ApproveFinalText]( @WorkId INT, @LogTo VARCHAR(16), @TargetLanguage VARCHAR(12), @CheckSrc INT, @FinalText NVARCHAR(MAX), @WithDoubt BIT = 0 ) AS
 BEGIN
   SET NOCOUNT ON;
   DECLARE @BlockId INT;
@@ -16,18 +16,22 @@ BEGIN
 
   SELECT @BlockId = BlockId FROM dbo.TextBlock WHERE WorkId = @WorkId AND LangKey = @TargetLanguage AND LogTo = @LogTo;
   IF @BlockId IS NULL
-    INSERT INTO dbo.TextBlock ( WorkId, LangKey, RawText, LogTo ) VALUES ( @WorkId, @TargetLanguage, @FinalText, @LogTo );
+    INSERT INTO dbo.TextBlock ( WorkId, LangKey, RawText, LogTo, WithDoubt ) 
+	VALUES ( @WorkId, @TargetLanguage, @FinalText, @LogTo, @WithDoubt );
   ELSE
-    UPDATE dbo.TextBlock SET RawText = @FinalText WHERE BlockId = @BlockId AND ISNULL(RawText,'') <> ISNULL(@FinalText,'');
+    UPDATE dbo.TextBlock SET RawText = @FinalText, WithDoubt = @WithDoubt 
+	WHERE BlockId = @BlockId AND ( ISNULL(RawText,'') <> ISNULL(@FinalText,'') OR WithDoubt <> @WithDoubt );
 
   -- Update the approval status or create it if it doesn't exist.
 
-  SELECT @ApprId = ApprId FROM dbo.TextApproved WHERE WorkId = @WorkId AND LangTrg = @TargetLanguage;
+  SELECT @ApprId = ApprId FROM dbo.TextApproved WHERE WorkId = @WorkId AND LangTrg = @TargetLanguage AND CheckSrc = @CheckSrc;
+
   IF @ApprId IS NULL
-    INSERT INTO dbo.TextApproved( WorkId, LangTrg, CheckSrc, CheckTrg) 
-	VALUES ( @WorkId, @TargetLanguage, @CheckSrc, CHECKSUM(@FinalText) )
+    INSERT INTO dbo.TextApproved( WorkId, LangTrg, CheckSrc, CheckTrg, WithDoubt ) 
+	VALUES ( @WorkId, @TargetLanguage, @CheckSrc, CHECKSUM(@FinalText), @WithDoubt )
   ELSE
-    UPDATE dbo.TextApproved SET CheckSrc = @CheckSrc, CheckTrg = CHECKSUM(@FinalText), UpdatedAt = GETDATE()
-	WHERE ApprId = @ApprId AND CheckTrg <> CHECKSUM(@FinalText);
+    UPDATE dbo.TextApproved 
+	SET CheckTrg = CHECKSUM( @FinalText ), UpdatedAt = GETDATE(), WithDoubt = @WithDoubt 
+	WHERE ApprId = @ApprId AND ( CheckTrg <> CHECKSUM( @FinalText ) OR WithDoubt <> @WithDoubt );
 
 END

@@ -150,7 +150,8 @@
                         <div class="card-footer">
                             <span style="float: right;">
                                 <button class="btn btn-sm btn-primary" @onclick="@(() => EditText())"><i class="bi bi-pencil-fill me-2" />Edit</button>
-                                <button class="btn btn-sm btn-success" @onclick="@(() => ApproveAiText())">Approve</button>
+                                <button class="btn btn-sm btn-warning" @onclick="@(() => ApproveAiText(true))"><i class="bi bi-question-circle me-2" />In Doubt</button>
+                                <button class="btn btn-sm btn-success" @onclick="@(() => ApproveAiText(false))"><i class="bi bi-check-circle-fill me-2" />Approve</button>
                             </span>
                         </div>
                     </div>
@@ -178,7 +179,8 @@
                         }
                         <div class="card-footer">
                             <span style="float: right;">
-                                <button class="btn btn-sm btn-success" @onclick="@(() => ApproveManualText())"><i class="bi bi-check-circle-fill me-2" />Approve</button>
+                                <button class="btn btn-sm btn-warning" @onclick="@(() => ApproveManualText(true))"><i class="bi bi-question-circle me-2" />In Doubt</button>
+                                <button class="btn btn-sm btn-success" @onclick="@(() => ApproveManualText(false))"><i class="bi bi-check-circle-fill me-2" />Approve</button>
                             </span>
                         </div>
                     </div>

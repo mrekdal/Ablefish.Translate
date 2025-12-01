@@ -7,11 +7,11 @@ namespace TranslateWebApp.Interfaces
     {
         UserData UserData { get; }
         Task LoadUserData(string logTo);
-        Task ApproveAiText(WorkItem workItem);
-        Task ApproveText(WorkItem workItem);
+        Task ApproveAiText(WorkItem workItem, bool withDoubt);
+        Task ApproveText(WorkItem workItem, bool withDoubt);
         Task StoreAiText(WorkItem workItem, string logTo);
         Task LoadTranslations(string logTo);
-        Task LoadTranslationsText(string logTo, string searchFor );
+        Task LoadTranslationsText(string logTo, string searchFor);
         public void SetProjectId(int projectId);
         Task LoadConflicts(string logTo);
 
