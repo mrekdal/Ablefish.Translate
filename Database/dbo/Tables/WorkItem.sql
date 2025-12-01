@@ -6,6 +6,7 @@
     [CheckSrc]  AS             (checksum([RawText])),
     [RowVer]    ROWVERSION     NOT NULL,
     [CreatedAt] DATETIME       DEFAULT (getdate()) NOT NULL,
+    [UpdatedAt] DATETIME       DEFAULT (getdate()) NOT NULL,
     CONSTRAINT [PK_WorkItem] PRIMARY KEY CLUSTERED ([WorkId] ASC),
     CONSTRAINT [FK_WorkItem_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId])
 );
