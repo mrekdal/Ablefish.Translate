@@ -1,5 +1,10 @@
+.btn-sized {
+    min-width: 120px;
+    max-width: 120px;
+}
+
 .btn-primary {
-    background-color: #2174a2 !important; 
+    background-color: #2174a2 !important;
 }
 
     .btn-primary:hover, .btn-outline-primary:hover {
@@ -11,16 +16,16 @@
     border-color: #2174a2 !important;
 }
 
-.btn-outline-primary:hover {
-    color: white !important;
-}
+    .btn-outline-primary:hover {
+        color: white !important;
+    }
 
 .btn-secondary {
-   background-color:  #185a7f !important;
+    background-color: #185a7f !important;
 }
 
 .progress-bar {
-   background-color: #185a7f !important;
+    background-color: #185a7f !important;
 }
 
 body {
@@ -30,30 +35,33 @@ body {
     background-repeat: no-repeat; /* prevents tiling */
 }
 
-.btn-translate{
- min-width: 120px;
+.btn-translate {
+    min-width: 120px;
 }
 
-.twa-long-text{
+.twa-long-text {
     max-width: 400px;
 }
-.twa-first-button{
+
+.twa-first-button {
     font-weight: 500;
     min-width: 100px;
     max-width: 100px;
     text-align: left;
 }
+
 .twa-work-item {
     float: right;
     font-weight: 600;
     font-family: monospace;
 }
-.manual-edit{
+
+.manual-edit {
     min-height: 200px !important;
     background-color: lightgoldenrodyellow;
 }
 
-.sectext-manual{
+.sectext-manual {
 }
 
 .sectext-machine {

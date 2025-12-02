@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System;
 using System.Data;
 using System.Text.Json;
 using TranslateWebApp.Interfaces;
@@ -29,6 +30,9 @@ namespace TranslateWebApp.Data
         {
             get => _userData.IsLoaded && _userData.UserId > 0;
         }
+
+        // Event: raised when user data has been successfully loaded
+        public Action? OnUserDataLoaded { get; set; }
 
         public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IApplicationWorkState appState)
         {
@@ -168,6 +172,9 @@ namespace TranslateWebApp.Data
                         _userProjectStatus = rows.ToList<UserProjectStatus>();
                     }
                     _userData.SetLoaded();
+
+                    // Raise notification that user data has been loaded
+                    OnUserDataLoaded?.Invoke();
                 }
                 catch (Exception ex)
                 {

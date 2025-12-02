@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using TranslateWebApp.Interfaces;
-using TranslateWebApp.Models;
+﻿using TranslateWebApp.Models;
 using TransService;
 
 namespace TranslateWebApp.Components.Pages
@@ -117,25 +115,7 @@ namespace TranslateWebApp.Components.Pages
         }
 
 
-        private async Task RunSearch()
-        {
-            if (!appUser.Authenticated && QueryIsRunning) return;
-            try
-            {
-                QueryIsRunning = true;
-                await data.LoadTranslationsText(appUser.LogTo, SearchFor);
-                MoveToFirst();
-                statusMessage.Clear();
-            }
-            catch (Exception e)
-            {
-                statusMessage.SetException(e);
-            }
-            QueryIsRunning = false;
-            StateHasChanged();
-        }
-
-        private async Task RunQuery()
+        protected async Task RunQuery()
         {
             if (!appUser.Authenticated && QueryIsRunning) return;
             try
@@ -153,12 +133,37 @@ namespace TranslateWebApp.Components.Pages
             StateHasChanged();
         }
 
+
+        private async void UserDataLoaded()
+        {
+            await RunQuery();
+        }
+
+        #region Event Handler to register and unregister    
+        protected override async Task OnInitializedAsync()
+        {
+            data.OnUserDataLoaded += UserDataLoaded;
+            await base.OnInitializedAsync();
+        }
+
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (appState.CallsTranslations == 0 )
-                await RunQuery();
+            if (firstRender)
+            {
+                var authState = await AuthStateTask;
+                await appUser.SetClaimsPrincipal(authState.User);
+                await data.LoadUserData(appUser.LogTo);
+            }
         }
+
+
+        public void Dispose()
+        {
+            data.OnUserDataLoaded -= UserDataLoaded;
+        }
+
+        #endregion
 
     }
 }
-

@@ -1,11 +1,15 @@
 ﻿@inject IApplicationWorkState appState
+@inject IDataContext data
 
 <AuthorizeView>
     <Authorized>
-        @if (appState.Disabled)
+
+        @if (!data.UserData.IsValid)
         {
-            <div class="alert">
-                Your account is either not activated, or it has been disabled.
+            <div class="alert alert-danger mt-2">
+                <h4 class="alert-heading">Permission denied</h4>
+                Your account  either not activated, or it has been disabled.
+                <b>Message:</b> @(data.UserData.LoadError)
             </div>
         }
         else if (!appState.ReadyToWork)
@@ -32,9 +36,26 @@
                 </div>
             </div>
         }
+
     </Authorized>
 </AuthorizeView>
 
 @code {
+
+    private void UserDataLoaded()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected override void OnInitialized()
+    {
+        data.OnUserDataLoaded += UserDataLoaded;
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        data.OnUserDataLoaded -= UserDataLoaded;
+    }
 
 }
