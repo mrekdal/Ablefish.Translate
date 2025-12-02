@@ -25,6 +25,10 @@ namespace TranslateWebApp.Data
         private string _connectionString = string.Empty;
         private IConfiguration _config;
         private ILogger<DataContext> _logger;
+        private bool ValidUser
+        {
+            get => _userData.IsLoaded && _userData.UserId > 0;
+        }
 
         public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IApplicationWorkState appState)
         {
@@ -56,6 +60,20 @@ namespace TranslateWebApp.Data
         public List<UserProject> UserProjects { get => _userProjects; }
         public List<Language> SupportLanguages { get => _supportLanguages; }
         public List<Language> TargetLanguages { get => _targetLanguages; }
+
+        private async Task<bool> CheckUser(string logTo)
+        {
+            await LoadUserData(logTo);
+            if (!ValidUser)
+            {
+                _targetLanguages.Clear();
+                _userProjects.Clear();
+                _userProjectStatus.Clear();
+                _userProject = null;
+                return false;
+            }
+            return true;
+        }
 
         private void UpdateProject()
         {
@@ -116,43 +134,52 @@ namespace TranslateWebApp.Data
         {
             if (logTo == string.Empty)
                 _userData.Clear(logTo);
-            else if (_userData.Loaded && _userData.LogTo.Equals(logTo))
+            else if (_userData.IsValid && _userData.LogTo.Equals(logTo))
                 _logger.LogInformation($"GetUserData({logTo}): Returning cached object.");
+            else if (_userData.IsLoaded)
+                _logger.LogInformation($"GetUserData ({logTo}): Returning cached object.");
             else
-            {
-                _userData.Clear(logTo);
-                _logger.LogInformation($"EXEC Web.GetUserData({logTo}). Ctx: {ContextId}");
-                string sql = $"EXEC Web.GetUserFromLogTo @LogTo;";
-                using (IDbConnection connection = new SqlConnection(_connectionString))
+                try
                 {
-                    var rows = await connection.QueryAsync<UserData>(sql, new { LogTo = logTo });
-                    _userData = rows.FirstOrDefault<UserData>() ?? new();
+                    _userData.Clear(logTo);
+                    _logger.LogInformation($"EXEC Web.GetUserData({logTo}). Ctx: {ContextId}");
+                    string sql = $"EXEC Web.GetUserFromLogTo @LogTo;";
+                    using (IDbConnection connection = new SqlConnection(_connectionString))
+                    {
+                        var rows = await connection.QueryAsync<UserData>(sql, new { LogTo = logTo });
+                        _userData = rows.FirstOrDefault<UserData>() ?? new();
+                    }
+                    sql = $"EXEC Web.GetTargets @LogTo;";
+                    using (IDbConnection connection = new SqlConnection(_connectionString))
+                    {
+                        var rows = await connection.QueryAsync<Language>(sql, new { LogTo = logTo });
+                        _targetLanguages = rows.ToList<Language>();
+                    }
+                    sql = $"EXEC Web.GetProjects @LogTo;";
+                    using (IDbConnection connection = new SqlConnection(_connectionString))
+                    {
+                        var rows = await connection.QueryAsync<UserProject>(sql, new { LogTo = logTo });
+                        _userProjects = rows.ToList<UserProject>();
+                    }
+                    sql = $"EXEC Web.GetProjectStatus @LogTo;";
+                    using (IDbConnection connection = new SqlConnection(_connectionString))
+                    {
+                        var rows = await connection.QueryAsync<UserProjectStatus>(sql, new { LogTo = logTo });
+                        _userProjectStatus = rows.ToList<UserProjectStatus>();
+                    }
+                    _userData.SetLoaded();
                 }
-                sql = $"EXEC Web.GetTargets @LogTo;";
-                using (IDbConnection connection = new SqlConnection(_connectionString))
+                catch (Exception ex)
                 {
-                    var rows = await connection.QueryAsync<Language>(sql, new { LogTo = logTo });
-                    _targetLanguages = rows.ToList<Language>();
+                    _appState.SetDisabled();
+                    _userData.SetFailed(logTo, ex.Message);
+                    _logger.LogError(ex, $"Error loading user data for {logTo}");
                 }
-                sql = $"EXEC Web.GetProjects @LogTo;";
-                using (IDbConnection connection = new SqlConnection(_connectionString))
-                {
-                    var rows = await connection.QueryAsync<UserProject>(sql, new { LogTo = logTo });
-                    _userProjects = rows.ToList<UserProject>();
-                }
-                sql = $"EXEC Web.GetProjectStatus @LogTo;";
-                using (IDbConnection connection = new SqlConnection(_connectionString))
-                {
-                    var rows = await connection.QueryAsync<UserProjectStatus>(sql, new { LogTo = logTo });
-                    _userProjectStatus = rows.ToList<UserProjectStatus>();
-                }
-                _userData.SetLoaded();
-            }
         }
 
         public async Task LoadTranslations(string logTo)
         {
-            await LoadUserData(logTo);
+            if (await CheckUser(logTo) == false) return;
             _logger.LogInformation($"EXEC Web.GetWorkBatch( {_userData.ProjectId}, '{_userData.LogTo}', '{_userData.TargetLanguage}' );");
             string sql = $"EXEC Web.GetWorkBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
@@ -163,7 +190,7 @@ namespace TranslateWebApp.Data
         }
         public async Task LoadTranslationsText(string logTo, string searchFor)
         {
-            await LoadUserData(logTo);
+            if (await CheckUser(logTo) == false) return;
             _logger.LogInformation($"EXEC Web.GetTextBatch( {_userData.ProjectId}, '{_userData.LogTo}', '{_userData.TargetLanguage}' );");
             string sql = $"EXEC Web.GetTextBatch @ProjectId, @LogTo, @TargetLanguage, @HelperLanguage, @SearchFor;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
@@ -175,7 +202,7 @@ namespace TranslateWebApp.Data
 
         public async Task LoadConflicts(string logTo)
         {
-            await LoadUserData(logTo);
+            if (await CheckUser(logTo) == false) return;
             _logger.LogInformation($"EXEC WebJson.GetDisagreements( {_userData.ProjectId}, '{_userData.TargetLanguage}';");
             string sql = $"EXEC WebJson.GetDisagreements @ProjectId, @LangKey;";
             using (IDbConnection connection = new SqlConnection(_connectionString))

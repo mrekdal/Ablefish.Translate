@@ -1,0 +1,45 @@
+﻿@inject IDataContext data
+@inject IApplicationUser appUser
+@inject IApplicationWorkState appState
+
+@using Microsoft.AspNetCore.Components
+
+<div class="card shadow mt-2">
+
+    <div class="card-header">
+        <span class="fw-bold">
+            <InputCheckbox @bind-Value="@appState.ShowSettings" class="form-check-inline me-2" />Translation Settings
+        </span>
+        <span style="float:right;">Welcome: <b>@appUser.FirstName</b></span>
+    </div>
+
+    <div class="card-body">
+        @if (@appState.ShowSettings)
+        {
+            <div class="fw-bold">Select Project</div>
+            <div class="mb-2">
+                Choose your project, target language and support language.
+                The support language should be a manual translation and can be used to resolve ambiguities in the source language.
+                All support languages may not be available in all projects.
+            </div>
+            <ProjectControl OnClick="ApplySettings" />
+            <LanguageControl OnClick="ApplySettings" ShowHelper=true />
+        }
+        else
+        {
+            <div>Check the box above to change project or languages.</div>
+        }
+    </div>
+
+
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnSettingsChanged { get; set; }
+
+    public async Task ApplySettings()
+    {
+        await OnSettingsChanged.InvokeAsync(null);
+    }
+}

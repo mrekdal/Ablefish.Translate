@@ -13,8 +13,9 @@ namespace TranslateWebApp.Components.Pages
         int SelectedItemIndex = -1;
         private bool QueryIsRunning;
 
-        private bool ShowSettings = true;
         private bool IsSaving = false;
+
+        private bool IsInitializing => appState.CallsTranslations == 0 && QueryIsRunning;
 
         private void MoveToFirst()
         {
@@ -79,7 +80,7 @@ namespace TranslateWebApp.Components.Pages
             await Task.Delay(0);
         }
 
-        private async Task ApproveAiText( bool withDoubt )
+        private async Task ApproveAiText(bool withDoubt)
         {
             statusMessage.Clear();
             IsSaving = true;
@@ -97,7 +98,7 @@ namespace TranslateWebApp.Components.Pages
             IsSaving = false;
         }
 
-        private async Task ApproveManualText( bool withDoubt )
+        private async Task ApproveManualText(bool withDoubt)
         {
             statusMessage.Clear();
             IsSaving = true;
@@ -154,7 +155,7 @@ namespace TranslateWebApp.Components.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (appState.CallsTranslations == 0 && appUser.Authenticated)
+            if (appState.CallsTranslations == 0 )
                 await RunQuery();
         }
 

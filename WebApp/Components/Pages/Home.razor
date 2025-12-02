@@ -1,8 +1,6 @@
 ﻿@page "/"
 @page "/Translations"
 
-@using TranslateWebApp.Interfaces
-
 @inject ILogger<Home> logger
 @inject IApplicationUser appUser
 @inject ITransFactory transFactory
@@ -14,181 +12,159 @@
 
 <MenuBar />
 
-<AuthorizeView>
-    <Authorized>
+@if (appState.ReadyToWork)
+{
+    <AuthorizeView>
+        <Authorized>
 
-        <div class="card shadow mt-2">
+            <SettingsCard OnSettingsChanged="RunQuery" />
 
-            <div class="card-header">
-                <span class="fw-bold">
-                    <InputCheckbox @bind-Value="ShowSettings" class="form-check-inline me-2" />Translation Settings
-                </span>
-                <span style="float:right;">Welcome: <b>@appUser.FirstName</b></span>
-            </div>
-
-            <div class="card-body">
-                @if (appState.CallsTranslations == 0)
-                {
-                    <div class="text-center w-100">
-                        <div class="mb-2">
-                            Each user is assigned a set of projects and target languages.<br />
-                            They should load automatically within a few seconds.
-                            Click the button below to load your projects and languages manually.
-                        </div>
-                        <button class="btn btn-primary" @onclick="@(() => RunQuery())">Start Working</button>
-                    </div>
-                }
-                else if (ShowSettings)
-                {
-                    <div class="fw-bold">Select Project</div>
-                    <div class="mb-2">
-                        Choose your project, target language and support language.
-                        The support language should be a manual translation and can be used to resolve ambiguities in the source language.
-                        All support languages may not be available in all projects.
-                    </div>
-                    <ProjectControl OnClick="RunQuery" />
-                    <LanguageControl OnClick="RunQuery" ShowHelper=true />
-                }
-            </div>
-
-            <div class="card-footer">
-                <div class="progress" style="height: 24px;">
-                    <div class="progress-bar" role="progressbar" style="width: @(TextPercentDone)%;" aria-valuenow="@(TextPercentDone)" aria-valuemin="0" aria-valuemax="100">@(TextPercentDone)%</div>
-                </div>
-            </div>
-
-        </div>
-
-        @if (appState.CallsTranslations > 0)
-        {
-            <div class="card shadow mt-2">
-                <div class="card-header">Find Work</div>
-                <div class="card-body">
-
-                    <div class="input-group mt-2 mb-2">
-                        <InputText class="form-control" placeholder="Search for work items" aria-label="Search for work items" aria-describedby="basic-addon2" @bind-Value="SearchFor" />
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-primary" type="button" @onclick="@(() => RunSearch() )" >Search</button>
-                        </div>
-                    </div>
-
-                    @if (appState.Translations.Count == 0 )
-                    {
-                        ShowSettings = true;
-                        <div>
-                            There is no more work for you with the current settings.
-                            You may find more work in other projects or with other target languages.
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            You will automatically get @(appState.Translations.Count) text blocks to work with at a time.  
-                            When you are done, get more work by clicking on three dots. <i class="bi bi-three-dots" />
-                            You can search for specific work items below.
-                        </div>
-
-
-                        <div class="btn-group w-100 mt-2">
-                            <button class="btn btn-sm btn-secondary disabled twa-first-button">Text Block</button>
-                            @{
-                                int btnNo = 0;
-                                foreach (var e in appState.Translations)
-                                {
-                                    int locBtnNo = btnNo;
-                                    <button class="btn btn-sm @CssClassButton(btnNo, e)" @onclick="@(() => SelectItem(locBtnNo))" title="@e.WorkId">@(locBtnNo + 1)</button>
-                                    btnNo++;
-                                }
-                            }
-                            <button class="btn btn-sm btn-primary" @onclick="@(() => RunQuery())"><i class="bi bi-three-dots" /></button>
-                        </div>
-                    }
-
-                </div>
-            </div>
-        }
-
-        <div>
-
-            @if (workItem != null)
+            @if (appState.CallsTranslations > 0)
             {
                 <div class="card shadow mt-2">
-                    <div class="card-header">
-                        @(workItem.SourceLanguage) <span class="small fst-italic">Original</span>
-                        <span class="twa-work-item">@workItem.RowKey</span>
-                    </div>
+                    <div class="card-header">Find Work</div>
                     <div class="card-body">
-                        <div class="card-text">
-                            @workItem.Src1Text
-                        </div>
-                    </div>
-                </div>
 
-                @if (data.HelperLanguage != "xx" && !string.IsNullOrEmpty(workItem.Src2Text))
-                {
-                    <div class="card shadow mt-2">
-                        <div class="card-header">
-                            @(workItem.HelpLanguage) - <span class="@CssClassSecondaryTranslation()">@GetSecondaryTextWarning()</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-text">
-                                @workItem.Src2Text
+                        <div class="input-group mt-2 mb-2">
+                            <InputText class="form-control" placeholder="Search for work items" aria-label="Search for work items" aria-describedby="basic-addon2" @bind-Value="SearchFor" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-primary" type="button" @onclick="@(() => RunSearch())">Search</button>
                             </div>
                         </div>
-                    </div>
-                }
 
-                @if (!string.IsNullOrEmpty(workItem.WorkAi))
-                {
-                    <div class="card shadow mt-2">
-                        <div class="card-header">@(workItem.WorkLanguage) - Machine Translation</div>
-                        <div class="card-body">
-                            <div class="card-text">
-                                @workItem.WorkAi
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <span style="float: right;">
-                                <button class="btn btn-sm btn-primary" @onclick="@(() => EditText())"><i class="bi bi-pencil-fill me-2" />Edit</button>
-                                <button class="btn btn-sm btn-warning" @onclick="@(() => ApproveAiText(true))"><i class="bi bi-question-circle me-2" />In Doubt</button>
-                                <button class="btn btn-sm btn-success" @onclick="@(() => ApproveAiText(false))"><i class="bi bi-check-circle-fill me-2" />Approve</button>
-                            </span>
-                        </div>
-                    </div>
-                }
-
-                @if ((!string.IsNullOrEmpty(workItem.WorkFinal) || string.IsNullOrEmpty(workItem.WorkAi)) && !IsSaving)
-                {
-                    <div class="card shadow mt-2">
-                        <div class="card-header">
-                            @(workItem.WorkLanguage) - Manual Translation
-                            <span style="float: right;">
-                                <button class="btn btn-sm btn-primary btn-translate" @onclick="@(() => TranslateText("Azure"))"><i class="bi bi-microsoft me-2" />Azure</button>
-                                <button class="btn btn-sm btn-primary btn-translate" @onclick="@(() => TranslateText("DeepL"))"><i class="bi bi-translate me-2" />DeepL</button>
-                                <button class="btn btn-sm btn-primary btn-translate" @onclick="@(() => TranslateText("Lara"))"><i class="bi bi-translate me-2" />Lara</button>
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <InputTextArea @bind-Value="@workItem.WorkFinal" class="form-control manual-edit" />
-                        </div>
-                        @if (!statusMessage.IsEmpty)
+                        @if (appState.Translations.Count == 0)
                         {
-                            <div class="ms-3 me-3 mb-3">
-                                <StatusBox StatusMessage="@statusMessage" />
+                            appState.ShowSettings = true;
+                            <div>
+                                There is no more work for you with the current settings.
+                                You may find more work in other projects or with other target languages.
                             </div>
                         }
-                        <div class="card-footer">
-                            <span style="float: right;">
-                                <button class="btn btn-sm btn-warning" @onclick="@(() => ApproveManualText(true))"><i class="bi bi-question-circle me-2" />In Doubt</button>
-                                <button class="btn btn-sm btn-success" @onclick="@(() => ApproveManualText(false))"><i class="bi bi-check-circle-fill me-2" />Approve</button>
-                            </span>
+                        else
+                        {
+                            <div>
+                                You will automatically get @(appState.Translations.Count) text blocks to work with at a time.
+                                When you are done, get more work by clicking on three dots. <i class="bi bi-three-dots" />
+                                You can search for specific work items below.
+                            </div>
+
+                            <div class="btn-group w-100 mt-2">
+                                <button class="btn btn-sm btn-secondary disabled twa-first-button">Text Block</button>
+                                @{
+                                    int btnNo = 0;
+                                    foreach (var e in appState.Translations)
+                                    {
+                                        int locBtnNo = btnNo;
+                                        <button class="btn btn-sm @CssClassButton(btnNo, e)" @onclick="@(() => SelectItem(locBtnNo))" title="@e.WorkId">@(locBtnNo + 1)</button>
+                                        btnNo++;
+                                    }
+                                }
+                                <button class="btn btn-sm btn-primary" @onclick="@(() => RunQuery())"><i class="bi bi-three-dots" /></button>
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="progress" style="height: 24px;">
+                            <div class="progress-bar" role="progressbar" style="width: @(TextPercentDone)%;" aria-valuenow="@(TextPercentDone)" aria-valuemin="0" aria-valuemax="100">@(TextPercentDone)%</div>
                         </div>
                     </div>
-                }
+
+                </div>
+
+                <div>
+
+                    @if (workItem != null)
+                    {
+                        <div class="card shadow mt-2">
+                            <div class="card-header">
+                                @(workItem.SourceLanguage) <span class="small fst-italic">Original</span>
+                                <span class="twa-work-item">@workItem.RowKey</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    @workItem.Src1Text
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (data.HelperLanguage != "xx" && !string.IsNullOrEmpty(workItem.Src2Text))
+                        {
+                            <div class="card shadow mt-2">
+                                <div class="card-header">
+                                    @(workItem.HelpLanguage) - <span class="@CssClassSecondaryTranslation()">@GetSecondaryTextWarning()</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-text">
+                                        @workItem.Src2Text
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(workItem.WorkAi))
+                        {
+                            <div class="card shadow mt-2">
+                                <div class="card-header">@(workItem.WorkLanguage) - Machine Translation</div>
+                                <div class="card-body">
+                                    <div class="card-text">
+                                        @workItem.WorkAi
+                                    </div>
+                                </div>
+                                <div class="card-footer d-flex justify-content-end w-100">
+                                    <div class="btn-group">   
+                                        <button class="btn btn-primary btn-sized" @onclick="@(() => EditText())"><i class="bi bi-pencil-fill me-2" />Edit</button>
+                                        </div>
+                                    <div class="btn-group ms-4">
+                                        <button class="btn btn-warning btn-sized" @onclick="@(() => ApproveAiText(true))"><i class="bi bi-question-circle me-2" />In Doubt</button>
+                                        <button class="btn btn-success btn-sized " @onclick="@(() => ApproveAiText(false))"><i class="bi bi-check-circle-fill me-2" />Approve</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if ((!string.IsNullOrEmpty(workItem.WorkFinal) || string.IsNullOrEmpty(workItem.WorkAi)) && !IsSaving)
+                        {
+                            <div class="card shadow mt-2">
+                                <div class="card-header">
+                                    @(workItem.WorkLanguage) - Manual Translation
+                                    <div class="btn-group text-end">
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <InputTextArea @bind-Value="@workItem.WorkFinal" class="form-control manual-edit" />
+                                </div>
+
+                                @if (!statusMessage.IsEmpty)
+                                {
+                                    <div class="ms-3 me-3 mb-3">
+                                        <StatusBox StatusMessage="@statusMessage" />
+                                    </div>
+                                }
+                                <div class="card-footer d-flex justify-content-end w-100">
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary btn-translate btn-sized" @onclick="@(() => TranslateText("Azure"))"><i class="bi bi-microsoft me-2" />Azure</button>
+                                        <button class="btn btn-primary btn-translate btn-sized" @onclick="@(() => TranslateText("DeepL"))"><i class="bi bi-translate me-2" />DeepL</button>
+                                        <button class="btn btn-primary btn-translate" @onclick="@(() => TranslateText("Lara"))"><i class="bi bi-translate me-2" />Lara</button>
+                                    </div>
+                                    <div class="btn-group ms-4">
+                                        <button class="btn btn-warning btn-sized" @onclick="@(() => ApproveManualText(true))"><i class="bi bi-question-circle me-2" />In Doubt</button>
+                                        <button class="btn btn-success btn-sized" @onclick="@(() => ApproveManualText(false))"><i class="bi bi-check-circle-fill me-2" />Approve</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
             }
-        </div>
-    </Authorized>
-</AuthorizeView>
+        </Authorized>
+    </AuthorizeView>
+}
+else
+{
+        <LoadingControl />
+}
 
 @code {
 

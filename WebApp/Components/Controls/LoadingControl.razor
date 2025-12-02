@@ -1,0 +1,40 @@
+﻿@inject IApplicationWorkState appState
+
+<AuthorizeView>
+    <Authorized>
+        @if (appState.Disabled)
+        {
+            <div class="alert">
+                Your account is either not activated, or it has been disabled.
+            </div>
+        }
+        else if (!appState.ReadyToWork)
+        {
+            <div class="card shadow mt-2">
+                <div class="card-header fw-bold">
+                    Please Wait
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-1">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div class="col-11">
+                            Each user is assigned a set of projects and target languages by an administrator.
+                            You are an authorized user, and if you have been assigned work,
+                            it should load automatically within a few seconds.
+                            Please wait while your project is loading.
+                            If it takes more than 30 seconds, please contact support.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+}

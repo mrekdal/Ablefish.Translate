@@ -9,7 +9,7 @@ namespace TranslateWebApp.Interfaces
         string FirstName { get; }
         string LastName { get; }
         bool Authenticated { get; }
-        bool Loaded { get; }
+        bool IsValid { get; }
         int ProjectId { get; }
         string LogTo { get; }
         int UserId { get; }
