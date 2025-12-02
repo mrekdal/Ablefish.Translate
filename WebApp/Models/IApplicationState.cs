@@ -1,7 +1,17 @@
 ﻿
 namespace TranslateWebApp.Models
 {
-    public interface IApplicationWorkState
+    public enum AppStage
+    {
+        Initiaizing,
+        Cleared,
+        Loading,
+        LoadFailed,
+        UserLoaded,
+        DataLoaded
+    }
+
+    public interface IApplicationState
     {
         bool ReadyToWork { get; }
         bool Disabled { get; }
@@ -12,6 +22,7 @@ namespace TranslateWebApp.Models
         void SetConflicts(TranslationConflicts conflicts);
         void SetTranslations(List<WorkItem> translations);
         bool ShowSettings { get; set; }
-        void SetDisabled();
+        void SetStage(AppStage appStage);
+        AppStage Stage { get; }
     }
 }

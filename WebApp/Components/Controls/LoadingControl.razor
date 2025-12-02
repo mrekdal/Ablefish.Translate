@@ -1,43 +1,65 @@
-﻿@inject IApplicationWorkState appState
+﻿@inject IApplicationState appState
 @inject IDataContext data
 
 <AuthorizeView>
     <Authorized>
 
-        @if (!data.UserData.IsValid)
-        {
-            <div class="alert alert-danger mt-2">
-                <h4 class="alert-heading">Permission denied</h4>
-                Your account  either not activated, or it has been disabled.
-                <b>Message:</b> @(data.UserData.LoadError)
-            </div>
-        }
-        else if (!appState.ReadyToWork)
+        @if (appState.Stage <= AppStage.Loading || appState.Stage == AppStage.UserLoaded)
         {
             <div class="card shadow mt-2">
                 <div class="card-header fw-bold">
                     Please Wait
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-1">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
                             <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                        <div class="col-11">
-                            Each user is assigned a set of projects and target languages by an administrator.
-                            You are an authorized user, and if you have been assigned work,
-                            it should load automatically within a few seconds.
-                            Please wait while your project is loading.
-                            If it takes more than 30 seconds, please contact support.
+                        <div class="col">
+                            <span>
+                                An authorized user can be assigned a set of projects and target languages by an administrator.
+                                You are an authenticated (signed in) and authorized (privileged) user,
+                                and if you have been assigned work, it should load automatically within a few seconds.
+                            </span>
+                            @if (appState.Stage == AppStage.UserLoaded)
+                            {
+                                <span>
+                                    <b>@(data.UserData.FirstName)</b> - your user account is alive and kicking.
+                                    Please wait while your project is loading.
+                                    If it takes more than 30 seconds, please contact support.
+                                </span>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         }
+        else if (appState.Stage == AppStage.LoadFailed)
+        {
+            <div class="alert alert-danger mt-2">
+                <h4 class="alert-heading fw-bold">Permission denied</h4>
+                You are logged in, but your account is either not authorized, or it has later been disabled.
+                <b>Message from the database:</b> @(data.UserData.LoadError)
+            </div>
+        }
+        else if (!appState.ReadyToWork)
+        {
+            <div class="alert alert-warning mt-2">
+                <h4 class="alert-heading">Not Ready</h4>
+                For some reason, the application is not ready to work.
+            </div>
+        }
 
     </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-info mt-2">
+            <h4 class="alert-heading fw-bold">Not Authenticated</h4>
+            You need to be signed in to use this application.  You can sign in or create an account by clicking on the button in the top right corner.
+            After creating an account, please contact support to get your account authorized and to be assigned to projects.
+        </div>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {
@@ -49,13 +71,13 @@
 
     protected override void OnInitialized()
     {
-        data.OnUserDataLoaded += UserDataLoaded;
+        data.OnUserDataChanged += UserDataLoaded;
         base.OnInitialized();
     }
 
     public void Dispose()
     {
-        data.OnUserDataLoaded -= UserDataLoaded;
+        data.OnUserDataChanged -= UserDataLoaded;
     }
 
 }

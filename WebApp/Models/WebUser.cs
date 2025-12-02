@@ -20,7 +20,7 @@ namespace TranslateWebApp.Models
         public string FirstName { get => _dataContext.UserData.FirstName; }
         public string LastName { get => _dataContext.UserData.LastName; }
         public bool Authenticated { get => User?.Identity?.IsAuthenticated ?? false; }
-        public bool IsValid { get => _dataContext.UserData.LoadStatus == UserDataLoadStatus.Loaded; }
+        public bool IsValid { get => _dataContext.UserData.UserId > 0; }
 
         public string LogTo { get => User?.FindFirst("sub")?.Value ?? ""; }
 

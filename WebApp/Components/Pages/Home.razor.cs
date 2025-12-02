@@ -142,7 +142,7 @@ namespace TranslateWebApp.Components.Pages
         #region Event Handler to register and unregister    
         protected override async Task OnInitializedAsync()
         {
-            data.OnUserDataLoaded += UserDataLoaded;
+            data.OnUserDataChanged += UserDataLoaded;
             await base.OnInitializedAsync();
         }
 
@@ -160,7 +160,7 @@ namespace TranslateWebApp.Components.Pages
 
         public void Dispose()
         {
-            data.OnUserDataLoaded -= UserDataLoaded;
+            data.OnUserDataChanged -= UserDataLoaded;
         }
 
         #endregion

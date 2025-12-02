@@ -16,7 +16,7 @@ namespace TranslateWebApp.Data
 
         private Guid ContextId = Guid.NewGuid();
         private UserData _userData = new();
-        private IApplicationWorkState _appState;
+        private IApplicationState _appState;
         private List<Language> _targetLanguages = new();
         private List<Language> _supportLanguages = new();
         private List<UserProject> _userProjects = new();
@@ -32,9 +32,9 @@ namespace TranslateWebApp.Data
         }
 
         // Event: raised when user data has been successfully loaded
-        public Action? OnUserDataLoaded { get; set; }
+        public Action? OnUserDataChanged { get; set; }
 
-        public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IApplicationWorkState appState)
+        public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IApplicationState appState)
         {
             _config = configuration;
             _appState = appState;
@@ -136,23 +136,34 @@ namespace TranslateWebApp.Data
 
         public async Task LoadUserData(string logTo)
         {
+            _logger.LogInformation($"LoadUserData({logTo}): Called");
             if (logTo == string.Empty)
+            {
                 _userData.Clear(logTo);
+                _appState.SetStage(AppStage.Cleared);
+                OnUserDataChanged?.Invoke();
+            }
             else if (_userData.IsValid && _userData.LogTo.Equals(logTo))
                 _logger.LogInformation($"GetUserData({logTo}): Returning cached object.");
             else if (_userData.IsLoaded)
                 _logger.LogInformation($"GetUserData ({logTo}): Returning cached object.");
-            else
+            else if ( _appState.Stage != AppStage.LoadFailed)
                 try
                 {
                     _userData.Clear(logTo);
+                    _appState.SetStage(AppStage.Cleared);
                     _logger.LogInformation($"EXEC Web.GetUserData({logTo}). Ctx: {ContextId}");
                     string sql = $"EXEC Web.GetUserFromLogTo @LogTo;";
+                    _appState.SetStage(AppStage.Loading);
                     using (IDbConnection connection = new SqlConnection(_connectionString))
                     {
                         var rows = await connection.QueryAsync<UserData>(sql, new { LogTo = logTo });
                         _userData = rows.FirstOrDefault<UserData>() ?? new();
                     }
+
+                    _appState.SetStage(AppStage.UserLoaded);
+                    OnUserDataChanged?.Invoke();
+
                     sql = $"EXEC Web.GetTargets @LogTo;";
                     using (IDbConnection connection = new SqlConnection(_connectionString))
                     {
@@ -171,16 +182,16 @@ namespace TranslateWebApp.Data
                         var rows = await connection.QueryAsync<UserProjectStatus>(sql, new { LogTo = logTo });
                         _userProjectStatus = rows.ToList<UserProjectStatus>();
                     }
-                    _userData.SetLoaded();
+                    _appState.SetStage(AppStage.DataLoaded);
 
-                    // Raise notification that user data has been loaded
-                    OnUserDataLoaded?.Invoke();
+                    OnUserDataChanged?.Invoke();
                 }
                 catch (Exception ex)
                 {
-                    _appState.SetDisabled();
+                    _appState.SetStage(AppStage.LoadFailed);
                     _userData.SetFailed(logTo, ex.Message);
                     _logger.LogError(ex, $"Error loading user data for {logTo}");
+                    OnUserDataChanged?.Invoke();
                 }
         }
 

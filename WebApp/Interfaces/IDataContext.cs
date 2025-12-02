@@ -5,7 +5,7 @@ namespace TranslateWebApp.Interfaces
 {
     public interface IDataContext
     {
-        Action? OnUserDataLoaded { get; set; }
+        Action? OnUserDataChanged { get; set; }
         UserData UserData { get; }
         Task LoadUserData(string logTo);
         Task ApproveAiText(WorkItem workItem, bool withDoubt);
