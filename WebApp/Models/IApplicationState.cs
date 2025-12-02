@@ -13,6 +13,7 @@ namespace TranslateWebApp.Models
 
     public interface IApplicationState
     {
+        bool BusyState { get; }
         bool ReadyToWork { get; }
         bool Disabled { get; }
         int CallsConflicts { get; }

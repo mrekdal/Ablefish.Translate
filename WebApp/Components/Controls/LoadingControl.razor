@@ -4,10 +4,10 @@
 <AuthorizeView>
     <Authorized>
 
-        @if (appState.Stage <= AppStage.Loading || appState.Stage == AppStage.UserLoaded)
+        @if (appState.BusyState)
         {
             <div class="card shadow mt-2">
-                <div class="card-header fw-bold">
+                <div class="h4 card-header fw-bold">
                     Please Wait
                 </div>
                 <div class="card-body">
@@ -18,17 +18,19 @@
                             </div>
                         </div>
                         <div class="col">
-                            <span>
-                                An authorized user can be assigned a set of projects and target languages by an administrator.
-                                You are an authenticated (signed in) and authorized (privileged) user,
-                                and if you have been assigned work, it should load automatically within a few seconds.
-                            </span>
                             @if (appState.Stage == AppStage.UserLoaded)
                             {
                                 <span>
                                     <b>@(data.UserData.FirstName)</b> - your user account is alive and kicking.
-                                    Please wait while your project is loading.
+                                    If you have been assigned work, it should load automatically within a few seconds.
                                     If it takes more than 30 seconds, please contact support.
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    An authorized user can be assigned a set of projects and target languages by an administrator.
+                                    You are an authenticated (signed in) user. It's a good start, we are checking your authorization now.
                                 </span>
                             }
                         </div>

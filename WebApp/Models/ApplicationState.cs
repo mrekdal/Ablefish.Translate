@@ -19,8 +19,17 @@
             Translations = translations;
             CallsTranslations++;
         }
-        public bool ReadyToWork => ( CallsTranslations > 0 && Stage == AppStage.DataLoaded);    
+        public bool ReadyToWork => (CallsTranslations > 0 && Stage == AppStage.DataLoaded);
         public bool Disabled => CallsTranslations < 0;
+
+        public bool BusyState
+        {
+            get
+            {
+                return Stage <= AppStage.Loading ||
+                       Stage == AppStage.UserLoaded;
+            }
+        }
 
         public void SetStage(AppStage appStage)
         {
