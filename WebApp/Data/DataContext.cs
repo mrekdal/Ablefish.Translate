@@ -42,10 +42,10 @@ namespace TranslateWebApp.Data
             _logger = logger;
             _userData.Clear(string.Empty);
             _supportLanguages.Add(new Language("xx", "No Language", "-"));
-            _supportLanguages.Add(new Language("ca", "Catalan", "CAT"));
-            _supportLanguages.Add(new Language("nb", "Norwegian - Bokmål", "NOR"));
-            _supportLanguages.Add(new Language("nl", "Dutch", "NED"));
+            _supportLanguages.Add(new Language("nb", "Norwegian", "NOR"));
             _supportLanguages.Add(new Language("es", "Spanish", "SPA"));
+            _supportLanguages.Add(new Language("en", "English", "ENG"));
+            _supportLanguages.Add(new Language("en-GB", "British", "ENB"));
         }
 
         public UserData UserData => _userData;
