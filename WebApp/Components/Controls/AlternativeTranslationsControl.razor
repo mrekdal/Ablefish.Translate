@@ -1,0 +1,109 @@
+﻿@inject IStatusMessage statusMessageApprove
+@inject IDataContext data
+
+<div class="card shadow mt-2">
+    <div class="card-header">
+        <span class="fw-bold">Alternative Translations</span>
+        <span class="text-end" style="float:right;">Work Item #<b>@Conflict.WorkId</b></span>
+    </div>
+
+    @if (!statusMessageApprove.IsEmpty)
+    {
+        <div class="card-header">
+            <StatusBox StatusMessage="statusMessageApprove" />
+        </div>
+    }
+
+    @if (Conflict != null)
+    {
+        <div class="card-body">
+
+            <table class="table table-sm">
+                <thead>
+                    <tr class="bg-primary-subtle">
+                        <td class="bg-primary-subtle" colspan="2">
+                            @Conflict.SrcText
+                        </td>
+                        @if (ShowNumbers)
+                        {
+                            <td class="text-sm-end">
+                                @Conflict.WorkId
+                            </td>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Conflict.Candidate)
+                    {
+                        if (!e.Discarded)
+                        {
+                            <tr class="align-middle">
+                                <td>
+                                    <span>@e.RawText</span>
+                                    @if (ShowUsers)
+                                    {
+                                        <span class="text-muted small fst-italic ms-2">@e.UserName</span>
+                                    }
+                                </td>
+                                @if (ShowNumbers)
+                                {
+                                    <td class="text-sm-end"><a class="text-decoration-none">@e.BlockId</a></td>
+                                }
+                                <td class="text-end">
+                                    <button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
+                                    <button title="@e.UserName" class="btn btn-sm btn-warning" @onclick="@(() => DiscardBlock(e.BlockId))"><i class="bi bi-trash" /></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="card-footer">
+            <b>RowKey:</b> @(Conflict.RowKey)
+            <span class="float-end">
+                Show User Names <InputCheckbox @bind-Value="ShowUsers" />
+            </span>
+        </div>
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public required TextConflict Conflict { get; set; }
+    [Parameter]
+    public bool ShowNumbers { get; set; } = true;
+    [Parameter]
+    public EventCallback OnPickFirst { get; set; }
+
+    private bool ShowUsers { get; set; } = false;
+
+    private async Task PickBlock(int blockId)
+    {
+        statusMessageApprove.Clear();
+        if (Conflict == null) return;
+        foreach (var c in Conflict.Candidate)
+            if (c.BlockId == blockId)
+                c.Approved = true;
+            else if (c.BlockId != blockId && !c.Discarded)
+                await DiscardBlock(c.BlockId);
+    }
+
+    private async Task DiscardBlock(int blockId)
+    {
+        statusMessageApprove.Clear();
+        try
+        {
+            if (Conflict == null) return;
+            await data.DiscardBlock(blockId);
+            if (Conflict.DiscardBlock(blockId) == 0)
+                await OnPickFirst.InvokeAsync();
+        }
+        catch (Exception e)
+        {
+            statusMessageApprove.SetException(e);
+        }
+    }
+}

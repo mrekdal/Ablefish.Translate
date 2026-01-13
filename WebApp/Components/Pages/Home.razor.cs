@@ -121,7 +121,10 @@ namespace TranslateWebApp.Components.Pages
             try
             {
                 QueryIsRunning = true;
-                await data.LoadTranslations(appUser.LogTo);
+                if (string.IsNullOrEmpty(SearchFor))
+                    await data.LoadTranslations(appUser.LogTo);
+                else
+                    await data.LoadTranslationsText(appUser.LogTo, SearchFor);
                 MoveToFirst();
                 statusMessage.Clear();
             }

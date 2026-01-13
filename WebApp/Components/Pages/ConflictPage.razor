@@ -1,0 +1,123 @@
+﻿@page "/Conflicts"
+
+@using TranslateWebApp.Interfaces
+
+@inject ILogger<ConflictPage> logger
+@inject IDataContext data
+@inject IStatusMessage statusMessageQuery
+@inject IApplicationUser appUser
+@inject IApplicationState appState
+
+<PageTitle>Conflicts</PageTitle>
+
+<MenuBar />
+
+<AuthorizeView>
+    <Authorized>
+
+        <div class="card shadow mt-2">
+            <div class="card-header">
+                <span>Conflict Resolution</span>
+                <span style="float:right;">Welcome: <b>@appUser.FirstName</b></span>
+            </div>
+            <div class="card-body">
+                <div class="m-1">
+                    @if (data.UserProjects.Count > 0)
+                    {
+                        <div>
+                            Choose your project and language.
+                        </div>
+                    }
+                    else
+                    {
+                        <div>Click the <b>Start Working</b> button to find translation conflicts in your projects.</div>
+                        <div class="text-center mt-2">
+                            <button class="btn btn-lg btn-success" @onclick="@(() => ClickStart())">Start Working</button>
+                        </div>
+                    }
+                </div>
+                <ProjectControl OnClick="RunQuery" />
+                <LanguageControl OnClick="RunQuery" ShowHelper=false />
+            </div>
+
+            @if (!statusMessageQuery.IsEmpty)
+            {
+                <div class="card-footer">
+                    <StatusBox StatusMessage="statusMessageQuery" />
+                </div>
+            }
+
+        </div>
+
+        @if (!QueryIsRunning)
+        {
+            if (appState.Conflicts != null && appState.Conflicts.Items.Count > 0)
+            {
+                <ConflictListControl ShowNumbers="@ShowNumbers" OnPick="HandleOnPick" />
+            }
+            if (textConflict != null && textConflict.CandidatesLeft > 0)
+            {
+                <AlternativeTranslationsControl Conflict="@textConflict" ShowNumbers="@ShowNumbers" OnPickFirst="PickFirst" />
+            }
+        }
+
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+    private TextConflict? textConflict;
+    private bool QueryIsRunning = false;
+    private bool ShowNumbers = false;
+
+    private async Task ClickStart()
+    {
+        await RunQuery();
+    }
+
+    private void HandleOnPick(TextConflict conflict)
+    {
+        textConflict = conflict;
+        StateHasChanged();
+    }
+
+    private void PickFirst()
+    {
+        if (appState.Conflicts.Items.Count > 0)
+        {
+            textConflict = appState.Conflicts.Items[0];
+            statusMessageQuery.SetInformation("Workload", $"There are {appState.Conflicts.Items.Count} more conflicts to resolve.");
+        }
+        else
+        {
+            statusMessageQuery.SetSuccess("No more conflicts", "There are no translation conflicts for the selected project and language");
+            textConflict = null;
+        }
+    }
+
+    private async Task RunQuery()
+    {
+        if (!appUser.Authenticated || QueryIsRunning) return;
+        try
+        {
+            statusMessageQuery.SetInformation("Loading data ...", "Retrieving a list of conflicts for you to resolve.  Please wait for this message to disappear.");
+            QueryIsRunning = true;
+            await data.LoadConflicts(appUser.LogTo);
+            PickFirst();
+        }
+        catch (Exception e)
+        {
+            statusMessageQuery.SetException(e);
+        }
+        QueryIsRunning = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (appState.CallsConflicts == 0 && appUser.Authenticated)
+            await RunQuery();
+    }
+
+
+}
