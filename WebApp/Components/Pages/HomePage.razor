@@ -1,12 +1,13 @@
 ﻿@page "/"
 @page "/Translations"
 
-@inject ILogger<Home> logger
+@inject ILogger<HomePage> logger
 @inject IApplicationUser appUser
 @inject ITransFactory transFactory
 @inject IStatusMessage statusMessage
 @inject IApplicationState appState
 @inject IDataContext data
+
 @implements IDisposable
 
 <PageTitle>Translation Work</PageTitle>

@@ -3,7 +3,7 @@ using TransService;
 
 namespace TranslateWebApp.Components.Pages
 {
-    public partial class Home
+    public partial class HomePage
     {
 
         WorkItem? workItem;
