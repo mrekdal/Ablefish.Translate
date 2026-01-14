@@ -1,39 +1,56 @@
 ﻿@inject IApplicationState appState
 @inject IDataContext data
 
-
 <div class="card shadow mt-2">
     <div class="card-header">
         <span><b>Work Items</b> with conflicts</span>
         <span class="text-end" style="float: right;">Project #<b>@data.ProjectId</b></span>
     </div>
+
     <div class="card-body">
-        <table class="table table-sm">
+
+        <div class="btn-group w-100">
+
+            <button class="btn btn-sm btn-outline-primary" @onclick="@(() => MoveLeft())">Left</button>
+            @{
+                int i = firstButton;
+                int lastButton = firstButton + maxButtons;
+                while (i < lastButton)
+                {
+                    int buttonNumber = i;
+                    <button class="btn btn-sm btn-outline-primary" @onclick="@(() => OnBatchPicked(buttonNumber))">@(buttonNumber + 1)</button>
+                    i++;
+                }
+            }
+            <button class="btn btn-sm btn-outline-primary" @onclick="@(() => MoveRight())">Right</button>
+        </div>
+
+        <table class="table table-sm mt-2">
             <tbody>
                 @{
-                    rowNo = 0;
-                    visibleRows = 0;
-
+                    int itemIndex = 0;
+                    int visibleItems = 0;
                     foreach (var e in appState.Conflicts.Items)
                     {
-                        int localRowNo = rowNo;
-                        if (e.CandidatesLeft > 0)
+                        int localRowNo = itemIndex;
+                        if (itemIndex >= startAt  && e.CandidatesLeft > 0 )
                         {
-                            visibleRows++;
+                            visibleItems++;
                             TextConflict tc = e;
                             <tr class="align-middle">
+                                <td class="text-end small">@(itemIndex+1).</td>
                                 <td class="text-truncate twa-long-text @CssRowClass(tc)">@e.SrcText</td>
                                 @if (ShowNumbers)
                                 {
-                                    <td scope="row" class="text-end"><a class="text-decoration-none">@e.WorkId</a></td>
+                                    <td class="text-end"><a class="text-decoration-none">@e.WorkId</a></td>
                                 }
                                 <td class="text-end @CssRowClass(tc)">
                                     <button class="btn btn-sm btn-primary" @onclick="@(() => PickRow(tc))"><i class="bi bi-eye" /></button>
                                 </td>
                             </tr>
                         }
-                        rowNo++;
-                        if (visibleRows > 4)
+                        itemIndex++;
+                        if (visibleItems >= batchSize)
                             break;
                     }
                 }
@@ -42,21 +59,36 @@
     </div>
 </div>
 
-
 @code {
+
+    #region Parameters
+
     [Parameter]
     public bool ShowNumbers { get; set; } = true;
     [Parameter]
     public EventCallback<TextConflict> OnPick { get; set; }
 
-    private TextConflict? textConflict = null;
+    #endregion
 
-    private int rowNo = 0;
-    private int visibleRows = 0;
+    #region Local Fields
+
+    private TextConflict? currentConflict = null;
+    private int batchSize = 5;
+    private int maxButtons { get; set; }
+    private int firstButton = 0;
+    private int currentBatchNo = 0;
+    private int startAt => currentBatchNo * batchSize;
+
+    #endregion
+
+    private void UpdateButtons()
+    {
+        maxButtons = Math.Min(appState.Conflicts.Items.Count / batchSize + 1, 16);
+    }
 
     private string CssRowClass(TextConflict conflict)
     {
-        if (textConflict != null && conflict.RowKey == textConflict.RowKey)
+        if (currentConflict != null && conflict.RowKey == currentConflict.RowKey)
             return "bg-primary-subtle";
         else
             return "";
@@ -64,8 +96,32 @@
 
     private async Task PickRow(TextConflict pickedRow)
     {
-        textConflict = pickedRow;
+        currentConflict = pickedRow;
         await OnPick.InvokeAsync(pickedRow);
+    }
+
+    private void OnBatchPicked(int batchNo)
+    {
+        currentBatchNo = batchNo;
+        UpdateButtons();
+        StateHasChanged();
+    }
+
+    private void MoveLeft()
+    {
+        if (firstButton > 0)
+        {
+            firstButton--;
+            UpdateButtons();
+            StateHasChanged();
+        }
+    }
+
+    private void MoveRight()
+    {
+        firstButton++;
+        UpdateButtons();
+        StateHasChanged();
     }
 
 }
