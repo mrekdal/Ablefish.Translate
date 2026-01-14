@@ -9,6 +9,13 @@
         public List<WorkItem> Translations { get; internal set; } = new();
         public TranslationConflicts Conflicts { get; internal set; } = new();
 
+
+        public void ClearConflicts()
+        {
+            Conflicts.Items.Clear();
+            CallsConflicts++;
+        }
+
         public void SetConflicts(TranslationConflicts conflicts)
         {
             Conflicts = conflicts;

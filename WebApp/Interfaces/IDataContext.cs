@@ -5,6 +5,7 @@ namespace TranslateWebApp.Interfaces
 {
     public interface IDataContext
     {
+        public bool IsLoaded { get; }   
         Action? OnUserDataChanged { get; set; }
         UserData UserData { get; }
         Task LoadUserData(string logTo);

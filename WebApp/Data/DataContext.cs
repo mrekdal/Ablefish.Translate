@@ -13,6 +13,7 @@ namespace TranslateWebApp.Data
 {
     public class DataContext : IDataContext
     {
+        #region Private Fields
 
         private Guid ContextId = Guid.NewGuid();
         private UserData _userData = new();
@@ -26,13 +27,13 @@ namespace TranslateWebApp.Data
         private string _connectionString = string.Empty;
         private IConfiguration _config;
         private ILogger<DataContext> _logger;
+
+        #endregion
+
         private bool ValidUser
         {
             get => _userData.IsLoaded && _userData.UserId > 0;
         }
-
-        // Event: raised when user data has been successfully loaded
-        public Action? OnUserDataChanged { get; set; }
 
         public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IApplicationState appState)
         {
@@ -47,6 +48,11 @@ namespace TranslateWebApp.Data
             _supportLanguages.Add(new Language("en", "English", "ENG"));
             _supportLanguages.Add(new Language("en-GB", "British", "ENB"));
         }
+
+        // Event: raised when user data has been successfully loaded
+        public Action? OnUserDataChanged { get; set; }
+
+        public bool IsLoaded => ValidUser;
 
         public UserData UserData => _userData;
         public int ProjectId { get => _userData.ProjectId; }
@@ -147,7 +153,7 @@ namespace TranslateWebApp.Data
                 _logger.LogInformation($"GetUserData({logTo}): Returning cached object.");
             else if (_userData.IsLoaded)
                 _logger.LogInformation($"GetUserData ({logTo}): Returning cached object.");
-            else if ( _appState.Stage != AppStage.LoadFailed)
+            else if (_appState.Stage != AppStage.LoadFailed)
                 try
                 {
                     _userData.Clear(logTo);
@@ -220,14 +226,17 @@ namespace TranslateWebApp.Data
 
         public async Task LoadConflicts(string logTo)
         {
+            _appState.ClearConflicts();
             if (await CheckUser(logTo) == false) return;
-            _logger.LogInformation($"EXEC WebJson.GetDisagreements( {_userData.ProjectId}, '{_userData.TargetLanguage}';");
+            _logger.LogInformation($"EXEC WebJson.GetDisagreements( {_userData.ProjectId} ), '{_userData.TargetLanguage}';");
             string sql = $"EXEC WebJson.GetDisagreements @ProjectId, @LangKey;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
                 string? jsonResult = await connection.ExecuteScalarAsync<string?>(sql, new { ProjectId = _userData.ProjectId, LangKey = _userData.TargetLanguage });
-                if (jsonResult != null)
-                    _appState.SetConflicts(JsonSerializer.Deserialize<TranslationConflicts>(jsonResult) ?? new());
+                if (jsonResult == null) return;
+                TranslationConflicts? conflicts = JsonSerializer.Deserialize<TranslationConflicts>(jsonResult);
+                if (conflicts == null) return;
+                _appState.SetConflicts(conflicts);
             }
         }
     }

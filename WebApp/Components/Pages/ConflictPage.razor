@@ -42,7 +42,7 @@
 
             @if (!statusMessageQuery.IsEmpty)
             {
-                <div class="card-footer">
+                <div class="card-footer p-3">
                     <StatusBox StatusMessage="statusMessageQuery" />
                 </div>
             }
@@ -55,9 +55,9 @@
             {
                 <ConflictListControl ShowNumbers="@ShowNumbers" OnPick="HandleOnPick" />
             }
-            if (textConflict != null && textConflict.CandidatesLeft > 0)
+            if (currentConflict != null && currentConflict.CandidatesLeft > 0)
             {
-                <AlternativeTranslationsControl Conflict="@textConflict" ShowNumbers="@ShowNumbers" OnPickFirst="PickFirst" />
+                <AlternativeTranslationsControl Conflict="@currentConflict" ShowNumbers="@ShowNumbers" OnPickFirst="PickFirst" />
             }
         }
 
@@ -66,9 +66,16 @@
 
 
 @code {
-    private TextConflict? textConflict;
+    [CascadingParameter]
+    public required Task<AuthenticationState> AuthStateTask { get; set; }
+
+    #region Private Fields  
+
+    private TextConflict? currentConflict;
     private bool QueryIsRunning = false;
     private bool ShowNumbers = false;
+
+    #endregion
 
     private async Task ClickStart()
     {
@@ -77,7 +84,7 @@
 
     private void HandleOnPick(TextConflict conflict)
     {
-        textConflict = conflict;
+        currentConflict = conflict;
         StateHasChanged();
     }
 
@@ -85,13 +92,13 @@
     {
         if (appState.Conflicts.Items.Count > 0)
         {
-            textConflict = appState.Conflicts.Items[0];
+            currentConflict = appState.Conflicts.Items[0];
             statusMessageQuery.SetInformation("Workload", $"There are {appState.Conflicts.Items.Count} more conflicts to resolve.");
         }
         else
         {
             statusMessageQuery.SetSuccess("No more conflicts", "There are no translation conflicts for the selected project and language");
-            textConflict = null;
+            currentConflict = null;
         }
     }
 
@@ -100,7 +107,7 @@
         if (!appUser.Authenticated || QueryIsRunning) return;
         try
         {
-            statusMessageQuery.SetInformation("Loading data ...", "Retrieving a list of conflicts for you to resolve.  Please wait for this message to disappear.");
+            statusMessageQuery.SetInformation("Please Wait", "Retrieving a list of conflicts for you to resolve.  Please wait for this message to disappear. It may take several seconds.");
             QueryIsRunning = true;
             await data.LoadConflicts(appUser.LogTo);
             PickFirst();
@@ -112,12 +119,5 @@
         QueryIsRunning = false;
         StateHasChanged();
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (appState.CallsConflicts == 0 && appUser.Authenticated)
-            await RunQuery();
-    }
-
 
 }

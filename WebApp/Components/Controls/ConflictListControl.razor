@@ -33,12 +33,12 @@
                     foreach (var e in appState.Conflicts.Items)
                     {
                         int localRowNo = itemIndex;
-                        if (itemIndex >= startAt  && e.CandidatesLeft > 0 )
+                        if (itemIndex >= startAt && e.CandidatesLeft > 0)
                         {
                             visibleItems++;
                             TextConflict tc = e;
                             <tr class="align-middle">
-                                <td class="text-end small">@(itemIndex+1).</td>
+                                <td class="text-end small">@(itemIndex + 1).</td>
                                 <td class="text-truncate twa-long-text @CssRowClass(tc)">@e.SrcText</td>
                                 @if (ShowNumbers)
                                 {
@@ -110,16 +110,15 @@
     private void MoveLeft()
     {
         if (firstButton > 0)
-        {
             firstButton--;
-            UpdateButtons();
-            StateHasChanged();
-        }
+        UpdateButtons();
+        StateHasChanged();
     }
 
     private void MoveRight()
     {
-        firstButton++;
+        if (firstButton + 1 < maxButtons)
+            firstButton++;
         UpdateButtons();
         StateHasChanged();
     }
