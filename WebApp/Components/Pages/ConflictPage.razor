@@ -53,11 +53,11 @@
         {
             if (appState.Conflicts != null && appState.Conflicts.Items.Count > 0)
             {
-                <ConflictListControl ShowNumbers="@ShowNumbers" OnPick="HandleOnPick" />
+                <ConflictListControl SelectedConflict="@currentConflict" ShowNumbers="@ShowNumbers" OnPick="HandleOnPick" />
             }
             if (currentConflict != null && currentConflict.CandidatesLeft > 0)
             {
-                <AlternativeTranslationsControl Conflict="@currentConflict" ShowNumbers="@ShowNumbers" OnPickFirst="PickFirst" />
+                <AlternativeTranslationsControl Conflict="@currentConflict" ShowNumbers="@ShowNumbers" OnResolved="HandleOnResolved" />
             }
         }
 
@@ -73,7 +73,7 @@
 
     private TextConflict? currentConflict;
     private bool QueryIsRunning = false;
-    private bool ShowNumbers = false;
+    private bool ShowNumbers = true;
 
     #endregion
 
@@ -88,7 +88,15 @@
         StateHasChanged();
     }
 
-    private void PickFirst()
+    private void HandleOnResolved(TextConflict conflict)
+    {
+        int itemIndex = appState.Conflicts.Items.FindIndex(c => c.WorkId == conflict.WorkId);
+        appState.Conflicts.Items.Remove(conflict);
+        UpdateMessages();
+        StateHasChanged();  
+    }
+
+    private void UpdateMessages()
     {
         if (appState.Conflicts.Items.Count > 0)
         {
@@ -100,6 +108,7 @@
             statusMessageQuery.SetSuccess("No more conflicts", "There are no translation conflicts for the selected project and language");
             currentConflict = null;
         }
+        StateHasChanged();
     }
 
     private async Task RunQuery()
@@ -110,7 +119,7 @@
             statusMessageQuery.SetInformation("Please Wait", "Retrieving a list of conflicts for you to resolve.  Please wait for this message to disappear. It may take several seconds.");
             QueryIsRunning = true;
             await data.LoadConflicts(appUser.LogTo);
-            PickFirst();
+            UpdateMessages();
         }
         catch (Exception e)
         {

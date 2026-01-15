@@ -1,4 +1,5 @@
-﻿@inject IStatusMessage statusMessageApprove
+﻿@using BlazorTextDiff
+@inject IStatusMessage statusMessageApprove
 @inject IDataContext data
 
 <div class="card shadow mt-2">
@@ -20,45 +21,77 @@
 
             <table class="table table-sm">
                 <thead>
-                    <tr class="bg-primary-subtle">
-                        <td class="bg-primary-subtle" colspan="2">
+                    <tr>
+                        <th class="align-bottom" width="64">Diffing</th>
+                        <th>
+                            Original text and translations
+                        </th>
+                        @if (ShowNumbers)
+                        {
+                            <td class="text-sm-end small">
+                                #
+                            </td>
+                        }
+                        <th class="text-center align-bottom" width="64">
+                            Actions
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-center align-bottom" width="64"></th>
+                        <td class="text-primary">
                             @Conflict.SrcText
                         </td>
                         @if (ShowNumbers)
                         {
-                            <td class="text-sm-end">
+                            <td class="text-sm-end text-muted small align-text-top">
                                 @Conflict.WorkId
                             </td>
                         }
+                        <th class="text-center align-top" width="64">
+                            <button class="btn btn-sm btn-danger w-100" title="Flag as problematic"><i class="bi bi-flag" /></button>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var e in Conflict.Candidate)
                     {
-                        if (!e.Discarded)
-                        {
-                            <tr class="align-middle">
-                                <td>
-                                    <span>@e.RawText</span>
-                                    @if (ShowUsers)
-                                    {
-                                        <span class="text-muted small fst-italic ms-2">@e.UserName</span>
-                                    }
-                                </td>
-                                @if (ShowNumbers)
+                        <tr class="align-middle align-text-top">
+                            <td>
+                                <div class="btn-group w-100">
+                                    <button class="btn btn-sm btn-outline-secondary @(BtnClass(e, 0))" @onclick="@(() => DiffIt(e, 0))">L</button>
+                                    <button class="btn btn-sm btn-outline-secondary @(BtnClass(e, 1))" @onclick="@(() => DiffIt(e, 1))">R</button>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="@(TextClass(e))">@e.RawText</span>
+                                @if (ShowUsers)
                                 {
-                                    <td class="text-sm-end"><a class="text-decoration-none">@e.BlockId</a></td>
+                                    <span class="text-muted small fst-italic ms-2">@e.UserName</span>
                                 }
-                                <td class="text-end">
+                            </td>
+                            @if (ShowNumbers)
+                            {
+                                <td class="text-sm-end text-muted small">@e.BlockId</td>
+                            }
+                            <td class="text-end">
+                                <div class="btn-group w-100">
                                     <button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
                                     <button title="@e.UserName" class="btn btn-sm btn-warning" @onclick="@(() => DiscardBlock(e.BlockId))"><i class="bi bi-trash" /></button>
-                                </td>
-                            </tr>
-                        }
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
-
+            <TextDiff OldText="@(leftBlock?.RawText)" NewText="@(rightBlock?.RawText)">
+                <Header>
+                    <div class="diff-stats">
+                        <span class="badge bg-success">+@context.WordAdditionCount</span>
+                        <span class="badge bg-warning">~@context.WordModificationCount</span>
+                        <span class="badge bg-danger">-@context.WordDeletionCount</span>
+                    </div>
+                </Header>
+            </TextDiff>
         </div>
         <div class="card-footer">
             <b>RowKey:</b> @(Conflict.RowKey)
@@ -66,44 +99,109 @@
                 Show User Names <InputCheckbox @bind-Value="ShowUsers" />
             </span>
         </div>
+
+
     }
 
 </div>
 
 @code {
+    private TextConflict _conflict = default!;
+
     [Parameter]
-    public required TextConflict Conflict { get; set; }
+    public required TextConflict Conflict
+    {
+        get => _conflict;
+        set
+        {
+            _conflict = value;
+            if (_conflict.Candidate.Count < 2)
+            {
+                leftBlock = null;
+                rightBlock = null;
+                return;
+            }
+            leftBlock = _conflict.Candidate[0];
+            rightBlock = _conflict.Candidate[1];
+        }
+    }
+
     [Parameter]
     public bool ShowNumbers { get; set; } = true;
     [Parameter]
-    public EventCallback OnPickFirst { get; set; }
+    public EventCallback<TextConflict> OnResolved { get; set; }
 
     private bool ShowUsers { get; set; } = false;
+    private Candidate? leftBlock;
+    private Candidate? rightBlock;
+
+    private string TextClass(Candidate candidate)
+    {
+        if (candidate.Approved)
+            return "text-success fw-bold";
+        if (candidate.Discarded)
+            return "text-muted text-decoration-line-through";
+        return string.Empty;
+    }
+
+    private string BtnClass(Candidate candidate, int boxNo)
+    {
+        if (candidate.BlockId == leftBlock?.BlockId && boxNo == 0)
+            return "active";
+        if (candidate.BlockId == rightBlock?.BlockId && boxNo == 1)
+            return "active";
+        return string.Empty;
+    }
+
+    private void DiffIt(Candidate candidate, int boxNo)
+    {
+        switch (boxNo)
+        {
+            case 0:
+                leftBlock = candidate;
+                break;
+            default:
+                rightBlock = candidate;
+                break;
+        }
+    }
+
+    #region Block Picking
 
     private async Task PickBlock(int blockId)
     {
         statusMessageApprove.Clear();
         if (Conflict == null) return;
-        foreach (var c in Conflict.Candidate)
-            if (c.BlockId == blockId)
-                c.Approved = true;
-            else if (c.BlockId != blockId && !c.Discarded)
-                await DiscardBlock(c.BlockId);
-    }
-
-    private async Task DiscardBlock(int blockId)
-    {
-        statusMessageApprove.Clear();
         try
         {
-            if (Conflict == null) return;
-            await data.DiscardBlock(blockId);
-            if (Conflict.DiscardBlock(blockId) == 0)
-                await OnPickFirst.InvokeAsync();
+            Conflict.PickBlock(blockId);
+            foreach (var b in Conflict.Candidate)
+                if (b.Discarded)
+                    await data.DiscardBlock(b.BlockId);
+            await OnResolved.InvokeAsync(Conflict);
         }
         catch (Exception e)
         {
             statusMessageApprove.SetException(e);
         }
     }
+
+    private async Task DiscardBlock(int blockId)
+    {
+        statusMessageApprove.Clear();
+        if (Conflict == null) return;
+        try
+        {
+            await data.DiscardBlock(blockId);
+            if (Conflict.DiscardBlock(blockId) == 0)
+                await OnResolved.InvokeAsync(Conflict);
+        }
+        catch (Exception e)
+        {
+            statusMessageApprove.SetException(e);
+        }
+    }
+
+    #endregion
+
 }

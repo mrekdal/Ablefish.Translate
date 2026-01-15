@@ -32,6 +32,18 @@
             return CandidatesLeft;
         }
 
+        public int PickBlock( int blockId )
+        {
+            foreach (var c in Candidate)
+            {
+                if (c.BlockId == blockId)
+                    c.Approved = true;
+                else
+                    c.Discarded = true;
+            }
+            return CandidatesLeft;
+        }
+
         #endregion
     }
 

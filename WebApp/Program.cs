@@ -1,4 +1,6 @@
 using Ablefish.Blazor.Status;
+using DiffPlex;
+using DiffPlex.DiffBuilder;
 using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -31,6 +33,8 @@ namespace TranslateWebApp
             builder.Services.AddScoped<IDataContext, DataContext>();
             builder.Services.AddSingleton<ITransFactory, TransFactory>();
             builder.Services.AddTransient<IStatusMessage, StatusMessage>();
+            builder.Services.AddScoped<ISideBySideDiffBuilder, SideBySideDiffBuilder>();
+            builder.Services.AddScoped<IDiffer, Differ>();
 
             #region Set up LogTo Authentication
 

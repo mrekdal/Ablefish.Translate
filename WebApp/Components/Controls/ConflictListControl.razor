@@ -9,22 +9,6 @@
 
     <div class="card-body">
 
-        <div class="btn-group w-100">
-
-            <button class="btn btn-sm btn-outline-primary" @onclick="@(() => MoveLeft())">Left</button>
-            @{
-                int i = firstButton;
-                int lastButton = firstButton + maxButtons;
-                while (i < lastButton)
-                {
-                    int buttonNumber = i;
-                    <button class="btn btn-sm btn-outline-primary" @onclick="@(() => OnBatchPicked(buttonNumber))">@(buttonNumber + 1)</button>
-                    i++;
-                }
-            }
-            <button class="btn btn-sm btn-outline-primary" @onclick="@(() => MoveRight())">Right</button>
-        </div>
-
         <table class="table table-sm mt-2">
             <tbody>
                 @{
@@ -38,11 +22,11 @@
                             visibleItems++;
                             TextConflict tc = e;
                             <tr class="align-middle">
-                                <td class="text-end small">@(itemIndex + 1).</td>
+                                <td class="text-end @CssRowClass(tc)">@(itemIndex + 1).</td>
                                 <td class="text-truncate twa-long-text @CssRowClass(tc)">@e.SrcText</td>
                                 @if (ShowNumbers)
                                 {
-                                    <td class="text-end"><a class="text-decoration-none">@e.WorkId</a></td>
+                                    <td class="text-end text-muted small @CssRowClass(tc)">@e.WorkId</td>
                                 }
                                 <td class="text-end @CssRowClass(tc)">
                                     <button class="btn btn-sm btn-primary" @onclick="@(() => PickRow(tc))"><i class="bi bi-eye" /></button>
@@ -57,6 +41,22 @@
             </tbody>
         </table>
     </div>
+    <div class="card-footer">
+        <div class="btn-group w-100">
+            <button class="btn btn-sm btn-outline-primary" @onclick="@(() => MoveLeft())"><i class="bi bi-chevron-left" /></button>
+            @{
+                int i = firstButton;
+                int lastButton = firstButton + maxButtons;
+                while (i < lastButton)
+                {
+                    int buttonNumber = i;
+                    <button class="btn btn-sm btn-outline-primary" @onclick="@(() => OnBatchPicked(buttonNumber))">@(buttonNumber + 1)</button>
+                    i++;
+                }
+            }
+            <button class="btn btn-sm btn-outline-primary" @onclick="@(() => MoveRight())"><i class="bi bi-chevron-right" /></button>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -67,12 +67,12 @@
     public bool ShowNumbers { get; set; } = true;
     [Parameter]
     public EventCallback<TextConflict> OnPick { get; set; }
-
+    [Parameter]
+    public TextConflict? SelectedConflict { get; set; }
     #endregion
 
     #region Local Fields
 
-    private TextConflict? currentConflict = null;
     private int batchSize = 5;
     private int maxButtons { get; set; }
     private int firstButton = 0;
@@ -83,12 +83,12 @@
 
     private void UpdateButtons()
     {
-        maxButtons = Math.Min(appState.Conflicts.Items.Count / batchSize + 1, 16);
+        maxButtons = Math.Min(appState.Conflicts.Items.Count / batchSize + 1, 15);
     }
 
     private string CssRowClass(TextConflict conflict)
     {
-        if (currentConflict != null && conflict.RowKey == currentConflict.RowKey)
+        if (SelectedConflict != null && conflict.RowKey == SelectedConflict.RowKey)
             return "bg-primary-subtle";
         else
             return "";
@@ -96,7 +96,7 @@
 
     private async Task PickRow(TextConflict pickedRow)
     {
-        currentConflict = pickedRow;
+        SelectedConflict = pickedRow;
         await OnPick.InvokeAsync(pickedRow);
     }
 
