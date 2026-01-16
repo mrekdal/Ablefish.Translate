@@ -159,7 +159,7 @@
     private async Task CleanIt(Candidate candidate)
     {
         if (candidate == null) return;
-        candidate.RawText = candidate.RawText.Replace("\n", " ").Replace("\r", " ") ?? string.Empty;
+        candidate.RawText = candidate.RawText.Replace("\n", " ").Replace("\r", " ").Trim();
         StateHasChanged();
     }
 
