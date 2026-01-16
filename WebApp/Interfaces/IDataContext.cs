@@ -26,5 +26,7 @@ namespace TranslateWebApp.Interfaces
         List<Language> SupportLanguages { get; }
         List<Language> TargetLanguages { get; }
         List<UserProject> UserProjects { get; }
+
+        Task FlagWorkItem( int workId );
     }
 }

@@ -130,6 +130,15 @@ namespace TranslateWebApp.Data
             }
         }
 
+        public async Task FlagWorkItem(int workId)
+        {
+            string sql = $"EXEC Web.FlagWorkItem @WorkId, @LogTo;";
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.ExecuteAsync(sql, new { WorkId = workId, _userData.LogTo });
+            }
+        }
+
         public async Task StoreAiText(WorkItem workItem, string logToAi)
         {
             _logger.LogInformation($"EXEC Web.AddTextBlock( {workItem.WorkId}, '{workItem.LangWorkKey}', '{logToAi}' );");

@@ -48,7 +48,9 @@
                             </td>
                         }
                         <th class="text-center align-top" width="64">
-                            <button class="btn btn-sm btn-danger w-100" title="Flag as problematic"><i class="bi bi-flag" /></button>
+                            <div class="btn-group w-100">
+                                <button class="btn btn-sm btn-danger w-100" title="Flag as problematic" @onclick="@(() => FlagIt(Conflict.WorkId))"><i class="bi bi-flag" /></button>
+                            </div>
                         </th>
                     </tr>
                 </thead>
@@ -75,6 +77,7 @@
                             }
                             <td class="text-end">
                                 <div class="btn-group w-100">
+                                    <button class="btn btn-sm btn-secondary" @onclick="@(() => CleanIt(e))"><i class="bi bi-magic" /></button>
                                     <button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
                                     <button title="@e.UserName" class="btn btn-sm btn-warning" @onclick="@(() => DiscardBlock(e.BlockId))"><i class="bi bi-trash" /></button>
                                 </div>
@@ -151,6 +154,28 @@
         if (candidate.BlockId == rightBlock?.BlockId && boxNo == 1)
             return "active";
         return string.Empty;
+    }
+
+    private async Task CleanIt(Candidate candidate)
+    {
+        if (candidate == null) return;
+        candidate.RawText = candidate.RawText.Replace("\n", " ").Replace("\r", " ") ?? string.Empty;
+        StateHasChanged();
+    }
+
+    private async Task FlagIt(int workId)
+    {
+        statusMessageApprove.Clear();
+        try
+        {
+            Conflict.Flagged = true;
+            await data.FlagWorkItem(workId);
+            await OnResolved.InvokeAsync(Conflict);
+        }
+        catch (Exception e)
+        {
+            statusMessageApprove.SetException(e);
+        }
     }
 
     private void DiffIt(Candidate candidate, int boxNo)
