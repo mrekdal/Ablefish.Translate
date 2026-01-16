@@ -77,16 +77,17 @@
                             }
                             <td class="text-end">
                                 <div class="btn-group w-100">
-                                    <button class="btn btn-sm btn-secondary" @onclick="@(() => CleanIt(e))"><i class="bi bi-magic" /></button>
-                                    <button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
                                     <button title="@e.UserName" class="btn btn-sm btn-warning" @onclick="@(() => DiscardBlock(e.BlockId))"><i class="bi bi-trash" /></button>
+                                    <button class="btn btn-sm btn-secondary" @onclick="@(() => CleanIt(e))"><i class="bi bi-magic" /></button>
+                                    <button title="Modify Text" class="btn btn-sm btn-secondary" @onclick="@(() => EditBlock(e.BlockId))"><i class="bi bi-pencil" /></button>
+                                    <button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
                                 </div>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-            <TextDiff OldText="@(leftBlock?.RawText)" NewText="@(rightBlock?.RawText)">
+            <TextDiff OldText="@(leftBlock?.RawText.Trim())" NewText="@(rightBlock?.RawText.Trim())">
                 <Header>
                     <div class="diff-stats">
                         <span class="badge bg-success">+@context.WordAdditionCount</span>
@@ -192,6 +193,11 @@
     }
 
     #region Block Picking
+
+    private async Task EditBlock(int blockId)
+    {
+        
+    }
 
     private async Task PickBlock(int blockId)
     {
