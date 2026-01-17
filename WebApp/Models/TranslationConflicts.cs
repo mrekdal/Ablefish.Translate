@@ -17,6 +17,9 @@
         public int WorkId { get; set; }
         public string RowKey { get; set; } = string.Empty;
         public string SrcText { get; set; } = string.Empty;
+
+        public int CheckSrc { get; set; }
+
         public bool Flagged { get; set; }
         public List<Candidate> Candidate { get; set; } = new();
 
