@@ -81,7 +81,6 @@
     <Build Include="Security\Permissions.sql" />
     <Build Include="dbo\Tables\TextApproved.sql" />
     <Build Include="Security\WebPublicUser.sql" />
-    <Build Include="dbo\Stored Procedures\GetWorkBatch.sql" />
     <Build Include="dbo\Stored Procedures\ApproveFinalText.sql" />
     <Build Include="dbo\Tables\WorkItem.sql" />
     <Build Include="dbo\Tables\Project.sql" />
@@ -96,8 +95,6 @@
     <Build Include="dbo\Tables\UserProject.sql" />
     <Build Include="Web\Stored Procedures\GetTargets.sql" />
     <Build Include="Web\Stored Procedures\GetProjects.sql" />
-    <Build Include="Web\Synonyms\GetWorkBatch.sql" />
-    <Build Include="Web\Synonyms\ApproveFinalText.sql" />
     <Build Include="Web\Synonyms\AddTextBlock.sql" />
     <Build Include="dbo\Tables\UserBatchLog.sql" />
     <Build Include="Web\Stored Procedures\GetUsage.sql" />
@@ -115,6 +112,16 @@
     <Build Include="Security\WebJson.sql" />
     <Build Include="Web\Stored Procedures\GetTextBatch.sql" />
     <Build Include="dbo\Stored Procedures\AddResourceText.sql" />
+    <Build Include="dbo\Tables\MSSQL_TemporalHistoryFor_338100245.sql" />
+    <Build Include="Web\Functions\GetApprovedTranslations.sql" />
+    <Build Include="Web\Stored Procedures\GetWorkPeriods.sql" />
+    <Build Include="Web\Stored Procedures\GetWorkBatches.sql" />
+    <Build Include="Web\Stored Procedures\GetWorkBatch.sql" />
+    <Build Include="Web\Stored Procedures\FlagWorkItem.sql" />
+    <Build Include="Web\Stored Procedures\ApproveFinalText.sql" />
+    <Build Include="dbo\Stored Procedures\Utf8Fixes.sql" />
+    <Build Include="dbo\Stored Procedures\MarkFormItemForDeletion.sql" />
+    <Build Include="dbo\Synonyms\GetWorkBatch.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />
