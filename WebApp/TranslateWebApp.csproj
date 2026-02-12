@@ -11,7 +11,7 @@
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="DiffPlex" Version="1.9.0" />
     <PackageReference Include="Logto.AspNetCore.Authentication" Version="0.2.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
   </ItemGroup>
 
   <ItemGroup>
