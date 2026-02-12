@@ -60,3 +60,4 @@ nunit-*.xml
 *.v2
 .vs/
 /WebApp/appsettings.Development.json
+*.csproj.user

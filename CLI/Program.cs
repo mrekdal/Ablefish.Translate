@@ -54,7 +54,7 @@ namespace PostTranslations
             DataContext dc = new DataContext(config);
             var workList = await dc.GetMonographList();
             foreach (var e in workList)
-                Console.WriteLine($"EXEC dbo.AddTextBlock 1, '{e.RowKey}', {SqlUtils.TextToSql(e.LangCode)}, {SqlUtils.TextToSql(e.SrcText)}, 'ResX';");
+                Console.WriteLine($"EXEC dbo.AddWorkItem 3, '{e.RowKey}', {SqlUtils.TextToSql(e.SrcText)};");
         }
 
         static void ReadResourceData(string sourceLanguage)
