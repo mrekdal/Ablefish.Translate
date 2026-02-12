@@ -9,7 +9,7 @@ using System.Text.Json;
 using TranslateWebApp.Interfaces;
 using TranslateWebApp.Models;
 
-namespace TranslateWebApp.Data
+namespace TranslateWebApp.Data  
 {
     public class DataContext : IDataContext
     {
@@ -30,10 +30,7 @@ namespace TranslateWebApp.Data
 
         #endregion
 
-        private bool ValidUser
-        {
-            get => _userData.IsLoaded && _userData.UserId > 0;
-        }
+        #region Constructor
 
         public DataContext(ILogger<DataContext> logger, IConfiguration configuration, IApplicationState appState)
         {
@@ -49,7 +46,10 @@ namespace TranslateWebApp.Data
             _supportLanguages.Add(new Language("en-GB", "British", "ENB"));
         }
 
-        // Event: raised when user data has been successfully loaded
+        #endregion
+
+        #region Public Properties
+
         public Action? OnUserDataChanged { get; set; }
 
         public bool IsLoaded => ValidUser;
@@ -71,6 +71,19 @@ namespace TranslateWebApp.Data
         public List<Language> SupportLanguages { get => _supportLanguages; }
         public List<Language> TargetLanguages { get => _targetLanguages; }
 
+        #endregion
+
+        #region Private Properties
+
+        private bool ValidUser
+        {
+            get => _userData.IsLoaded && _userData.UserId > 0;
+        }
+
+        #endregion
+
+        #region Private Methods
+
         private async Task<bool> CheckUser(string logTo)
         {
             await LoadUserData(logTo);
@@ -89,6 +102,10 @@ namespace TranslateWebApp.Data
         {
             _userProject = _userProjectStatus.Find(up => up.ProjectId == _userData.ProjectId && up.LangKey == _userData.TargetLanguage);
         }
+
+        #endregion
+
+        #region Public Methods
         public void SetProjectId(int projectId)
         {
             _userData.ProjectId = projectId;
@@ -248,5 +265,8 @@ namespace TranslateWebApp.Data
                 _appState.SetConflicts(conflicts);
             }
         }
+
+        #endregion
+
     }
 }
