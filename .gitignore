@@ -61,3 +61,4 @@ nunit-*.xml
 .vs/
 /WebApp/appsettings.Development.json
 *.csproj.user
+/TranslationWriteback/appsettings.json
