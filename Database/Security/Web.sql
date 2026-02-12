@@ -13,3 +13,8 @@ GO
 GRANT EXECUTE
     ON SCHEMA::[Web] TO [WebAdminUser];
 
+
+GO
+GRANT SELECT
+    ON SCHEMA::[Web] TO [WebPublicUser];
+
