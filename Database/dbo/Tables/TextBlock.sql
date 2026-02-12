@@ -10,8 +10,9 @@
     [IsDiscarded] BIT            DEFAULT ((0)) NOT NULL,
     [DiscardedBy] VARCHAR (16)   NULL,
     [WithDoubt]   BIT            DEFAULT ((0)) NOT NULL,
+    [CheckSrc]    INT            NOT NULL,
     CONSTRAINT [PK_BlockId] PRIMARY KEY CLUSTERED ([BlockId] ASC),
-    FOREIGN KEY ([DiscardedBy]) REFERENCES [dbo].[UserList] ([LogTo]),
+    CONSTRAINT [FK_TextBlock_DiscardedBy] FOREIGN KEY ([DiscardedBy]) REFERENCES [dbo].[UserList] ([LogTo]),
     CONSTRAINT [FK_TextBlock_LangKey] FOREIGN KEY ([LangKey]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
     CONSTRAINT [FK_TextBlock_LogTo] FOREIGN KEY ([LogTo]) REFERENCES [dbo].[UserList] ([LogTo]) ON UPDATE CASCADE,
     CONSTRAINT [FK_TextBlock_WorkId] FOREIGN KEY ([WorkId]) REFERENCES [dbo].[WorkItem] ([WorkId])
@@ -28,17 +29,29 @@
 
 
 
+
+
 GO
 
 
 
 GO
-CREATE UNIQUE NONCLUSTERED INDEX [UIDX_TextBlock_WorkItemRowId_LangKey_LogTo]
-    ON [dbo].[TextBlock]([WorkId] ASC, [LangKey] ASC, [LogTo] ASC);
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [IDX_TextBlock_LogTo]
     ON [dbo].[TextBlock]([LogTo] ASC)
-    INCLUDE([LangKey], [WorkId], [CheckRaw]);
+    INCLUDE([LangKey], [WorkId], [CheckSrc]);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [UIDX_TextBlock_WorkItem_WorkId_CheckSrc_LangKey_LogTo]
+    ON [dbo].[TextBlock]([WorkId] ASC, [CheckSrc] ASC, [LangKey] ASC, [LogTo] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IDX_TextBlock_LangKey_IsDiscarded]
+    ON [dbo].[TextBlock]([LangKey] ASC, [IsDiscarded] ASC)
+    INCLUDE([WorkId], [LogTo], [CheckRaw]);
 
