@@ -5,6 +5,7 @@
     [LangHelp]  VARCHAR (12) NOT NULL,
     [CreatedAt] DATETIME     CONSTRAINT [DF_UserBatch_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [ProjectId] INT          NOT NULL,
+    [CreatedBy] INT          DEFAULT (user_id()) NULL,
     CONSTRAINT [PK_UserBatch] PRIMARY KEY CLUSTERED ([BatchId] ASC),
     CONSTRAINT [FK_UserBatch_LangHelp] FOREIGN KEY ([LangHelp]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
     CONSTRAINT [FK_UserBatch_LangWork] FOREIGN KEY ([LangWork]) REFERENCES [dbo].[TextLanguage] ([LangKey]) ON UPDATE CASCADE,
