@@ -1,232 +1,385 @@
 ﻿@using BlazorTextDiff
+@using TranslateWebApp.Models
 @inject IStatusMessage statusMessageApprove
 @inject IDataContext data
 
 <div class="card shadow mt-2">
-    <div class="card-header">
-        <span class="fw-bold">Alternative Translations</span>
-        <span class="text-end" style="float:right;">Work Item #<b>@Conflict.WorkId</b></span>
-    </div>
+	<div class="card-header">
+		<span class="fw-bold">Alternative Translations</span>
+		<span class="text-end" style="float:right;">Work Item #<b>@Conflict.WorkId</b></span>
+	</div>
 
-    @if (!statusMessageApprove.IsEmpty)
-    {
-        <div class="card-header">
-            <StatusBox StatusMessage="statusMessageApprove" />
-        </div>
-    }
+	@if (!statusMessageApprove.IsEmpty)
+	{
+		<div class="card-header">
+			<StatusBox StatusMessage="statusMessageApprove" />
+		</div>
+	}
 
-    @if (Conflict != null)
-    {
-        <div class="card-body">
+	@if (Conflict != null)
+	{
+		<div class="card-body">
 
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th class="align-bottom" width="64">Diffing</th>
-                        <th>
-                            Original text and translations
-                        </th>
-                        @if (ShowNumbers)
-                        {
-                            <td class="text-sm-end small">
-                                #
-                            </td>
-                        }
-                        <th class="text-center align-bottom" width="64">
-                            Actions
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="text-center align-bottom" width="64"></th>
-                        <td class="text-primary">
-                            @Conflict.SrcText
-                        </td>
-                        @if (ShowNumbers)
-                        {
-                            <td class="text-sm-end text-muted small align-text-top">
-                                @Conflict.WorkId
-                            </td>
-                        }
-                        <th class="text-center align-top" width="64">
-                            <div class="btn-group w-100">
-                                <button class="btn btn-sm btn-danger w-100" title="Flag as problematic" @onclick="@(() => FlagIt(Conflict.WorkId))"><i class="bi bi-flag" /></button>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var e in Conflict.Candidate)
-                    {
-                        <tr class="align-middle align-text-top">
-                            <td>
-                                <div class="btn-group w-100">
-                                    <button class="btn btn-sm btn-outline-secondary @(BtnClass(e, 0))" @onclick="@(() => DiffIt(e, 0))">L</button>
-                                    <button class="btn btn-sm btn-outline-secondary @(BtnClass(e, 1))" @onclick="@(() => DiffIt(e, 1))">R</button>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="@(TextClass(e))">@e.RawText</span>
-                                @if (ShowUsers)
-                                {
-                                    <span class="text-muted small fst-italic ms-2">@e.UserName</span>
-                                }
-                            </td>
-                            @if (ShowNumbers)
-                            {
-                                <td class="text-sm-end text-muted small">@e.BlockId</td>
-                            }
-                            <td class="text-end">
-                                <div class="btn-group w-100">
-                                    <button class="btn btn-sm btn-secondary" @onclick="@(() => CleanIt(e))"><i class="bi bi-magic" /></button>
-                                    <button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
-                                    <button title="@e.UserName" class="btn btn-sm btn-warning" @onclick="@(() => DiscardBlock(e.BlockId))"><i class="bi bi-trash" /></button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <TextDiff OldText="@(leftBlock?.RawText)" NewText="@(rightBlock?.RawText)">
-                <Header>
-                    <div class="diff-stats">
-                        <span class="badge bg-success">+@context.WordAdditionCount</span>
-                        <span class="badge bg-warning">~@context.WordModificationCount</span>
-                        <span class="badge bg-danger">-@context.WordDeletionCount</span>
-                    </div>
-                </Header>
-            </TextDiff>
-        </div>
-        <div class="card-footer">
-            <b>RowKey:</b> @(Conflict.RowKey)
-            <span class="float-end">
-                Show User Names <InputCheckbox @bind-Value="ShowUsers" />
-            </span>
-        </div>
+			<table class="table table-sm">
+				<thead>
+					<tr>
+						<th class="align-bottom" width="64">Diffing</th>
+						<th>
+							Original text and translations
+						</th>
+						@if (ShowNumbers)
+						{
+							<td class="text-sm-end small">
+								#
+							</td>
+						}
+						<th class="text-center align-bottom" width="64">
+							Actions
+						</th>
+					</tr>
+					<tr>
+						<th class="text-center align-bottom" width="64"></th>
+						<td class="@OrigClass()">
+							@Conflict.SrcText
+						</td>
+						@if (ShowNumbers)
+						{
+							<td class="text-sm-end text-muted small align-text-top">
+								@Conflict.WorkId
+							</td>
+						}
+						<th class="text-center align-top" width="64">
+							<div class="btn-group w-100">
+								<button class="btn btn-sm btn-danger w-100" title="Flag as problematic" @onclick="@(() => FlagOriginalText())"><i class="bi bi-flag" /></button>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var e in Conflict.Candidate)
+					{
+						<tr class="align-middle align-text-top">
+							<td>
+								<div class="btn-group w-100">
+									<button class="btn btn-sm btn-outline-secondary @(BtnClass(e, 0))" @onclick="@(() => DiffIt(e, 0))">L</button>
+									<button class="btn btn-sm btn-outline-secondary @(BtnClass(e, 1))" @onclick="@(() => DiffIt(e, 1))">R</button>
+								</div>
+							</td>
+							<td>
+								<span class="@(TextClass(e))">@e.RawText</span>
+								@if (ShowUsers)
+								{
+									<span class="text-muted small fst-italic ms-2">@e.UserName</span>
+								}
+							</td>
+							@if (ShowNumbers)
+							{
+								<td class="text-sm-end text-muted small">@e.BlockId</td>
+							}
+							<td class="text-end">
+								<div class="btn-group w-100">
+									<button title="@e.UserName" class="btn btn-sm btn-warning" @onclick="@(() => DiscardBlock(e.BlockId))"><i class="bi bi-trash" /></button>
+									<button title="Modify Text" class="btn btn-sm btn-secondary" @onclick="@(() => EditBlock(e.BlockId))"><i class="bi bi-pencil" /></button>
+									<button title="@e.UserName" class="btn btn-sm btn-success" @onclick="@(() => PickBlock(e.BlockId))"><i class="bi bi-check2-circle" /></button>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+			<TextDiff OldText="@(leftBlock?.RawText.Trim())" NewText="@(rightBlock?.RawText.Trim())">
+				<Header>
+					<div class="d-flex align-items-center w-100">
+						<div class="diff-stats">
+							<span class="badge bg-success">+@context.WordAdditionCount</span>
+							<span class="badge bg-warning">~@context.WordModificationCount</span>
+							<span class="badge bg-danger">-@context.WordDeletionCount</span>
+						</div>
+						<div class="ms-auto">
+							<div class="btn-group">
+								<button class="btn btn-sm btn-outline-secondary" @onclick="ToggleShowUsers" title="Toggle username visibility">
+									<i class="bi bi-people me-2" />Users
+								</button>
+								<button class="btn btn-sm btn-outline-secondary" @onclick="HeaderCleanAll" title="Trim all candidates">
+									<i class="bi bi-magic me-2" />Trim
+								</button>
+							</div>
+						</div>
+					</div>
+				</Header>
+			</TextDiff>
+		</div>
+		<div class="card-footer">
+			<b>RowKey:</b> @(Conflict.RowKey)
+		</div>
 
+		@* Editor overlay *@
 
-    }
+		@if (showEditorOverlay)
+		{
+			<div class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center" style="z-index:1050;" @onclick="CloseEditor">
+				<div class="card w-75" @onclick:stopPropagation="true">
+					<div class="card-header">
+						<strong>Add new Translation</strong>
+						<span class="text-muted small ms-2">Block #@editingBlockId</span>
+					</div>
+					<div class="card-body">
+						<InputTextArea class="form-control" @bind-Value="editText" rows="8" />
+					</div>
+					<div class="card-footer text-end">
+						<button class="btn btn-secondary me-2" @onclick="CloseEditor">Cancel</button>
+						<button class="btn btn-primary" @onclick="SaveEdit">Approve</button>
+					</div>
+				</div>
+			</div>
+		}
+	}
 
 </div>
 
 @code {
-    private TextConflict _conflict = default!;
+	private TextConflict _conflict = default!;
 
-    [Parameter]
-    public required TextConflict Conflict
-    {
-        get => _conflict;
-        set
-        {
-            _conflict = value;
-            if (_conflict.Candidate.Count < 2)
-            {
-                leftBlock = null;
-                rightBlock = null;
-                return;
-            }
-            leftBlock = _conflict.Candidate[0];
-            rightBlock = _conflict.Candidate[1];
-        }
-    }
+	[Parameter]
+	public required TextConflict Conflict
+	{
+		get => _conflict;
+		set
+		{
+			_conflict = value;
+			if (_conflict.Candidate.Count < 2)
+			{
+				leftBlock = null;
+				rightBlock = null;
+				return;
+			}
+			leftBlock = _conflict.Candidate[0];
+			rightBlock = _conflict.Candidate[1];
+		}
+	}
 
-    [Parameter]
-    public bool ShowNumbers { get; set; } = true;
-    [Parameter]
-    public EventCallback<TextConflict> OnResolved { get; set; }
+	[Parameter]
+	public bool ShowNumbers { get; set; } = true;
+	[Parameter]
+	public EventCallback<TextConflict> OnResolved { get; set; }
 
-    private bool ShowUsers { get; set; } = false;
-    private Candidate? leftBlock;
-    private Candidate? rightBlock;
+	private bool ShowUsers { get; set; } = false;
+	private Candidate? leftBlock;
+	private Candidate? rightBlock;
 
-    private string TextClass(Candidate candidate)
-    {
-        if (candidate.Approved)
-            return "text-success fw-bold";
-        if (candidate.Discarded)
-            return "text-muted text-decoration-line-through";
-        return string.Empty;
-    }
+	// Editor state
+	private bool showEditorOverlay = false;
+	private Candidate? editingCandidate;
+	private int editingBlockId = 0;
+	private string editText = string.Empty;
 
-    private string BtnClass(Candidate candidate, int boxNo)
-    {
-        if (candidate.BlockId == leftBlock?.BlockId && boxNo == 0)
-            return "active";
-        if (candidate.BlockId == rightBlock?.BlockId && boxNo == 1)
-            return "active";
-        return string.Empty;
-    }
+	// Nuevo: WorkItem que se crea cuando se edita un Candidate
 
-    private async Task CleanIt(Candidate candidate)
-    {
-        if (candidate == null) return;
-        candidate.RawText = candidate.RawText.Replace("\n", " ").Replace("\r", " ").Trim();
-        StateHasChanged();
-    }
+	private WorkItem? editingWorkItem;
 
-    private async Task FlagIt(int workId)
-    {
-        statusMessageApprove.Clear();
-        try
-        {
-            Conflict.Flagged = true;
-            await data.FlagWorkItem(workId);
-            await OnResolved.InvokeAsync(Conflict);
-        }
-        catch (Exception e)
-        {
-            statusMessageApprove.SetException(e);
-        }
-    }
+	#region CSS Utilities
 
-    private void DiffIt(Candidate candidate, int boxNo)
-    {
-        switch (boxNo)
-        {
-            case 0:
-                leftBlock = candidate;
-                break;
-            default:
-                rightBlock = candidate;
-                break;
-        }
-    }
+	private string TextClass(Candidate candidate)
+	{
+		if (candidate.Approved)
+			return "text-success fw-bold";
+		if (candidate.Discarded)
+			return "text-muted text-decoration-line-through";
+		return string.Empty;
+	}
 
-    #region Block Picking
+	private string OrigClass()
+	{
+		if (Conflict.Flagged)
+			return "text-danger";
+		else
+			return "text-primary";
+	}
 
-    private async Task PickBlock(int blockId)
-    {
-        statusMessageApprove.Clear();
-        if (Conflict == null) return;
-        try
-        {
-            Conflict.PickBlock(blockId);
-            foreach (var b in Conflict.Candidate)
-                if (b.Discarded)
-                    await data.DiscardBlock(b.BlockId);
-            await OnResolved.InvokeAsync(Conflict);
-        }
-        catch (Exception e)
-        {
-            statusMessageApprove.SetException(e);
-        }
-    }
+	private string BtnClass(Candidate candidate, int boxNo)
+	{
+		if (candidate.BlockId == leftBlock?.BlockId && boxNo == 0)
+			return "active";
+		if (candidate.BlockId == rightBlock?.BlockId && boxNo == 1)
+			return "active";
+		return string.Empty;
+	}
 
-    private async Task DiscardBlock(int blockId)
-    {
-        statusMessageApprove.Clear();
-        if (Conflict == null) return;
-        try
-        {
-            await data.DiscardBlock(blockId);
-            if (Conflict.DiscardBlock(blockId) == 0)
-                await OnResolved.InvokeAsync(Conflict);
-        }
-        catch (Exception e)
-        {
-            statusMessageApprove.SetException(e);
-        }
-    }
+	#endregion
 
-    #endregion
+	private async Task CleanIt(Candidate candidate)
+	{
+		if (candidate == null) return;
+		candidate.RawText = candidate.RawText.Replace("\n", " ").Replace("\r", " ").Trim();
+		StateHasChanged();
+	}
 
+	private async Task FlagOriginalText()
+	{
+		statusMessageApprove.Clear();
+		try
+		{
+			Conflict.Flagged = true;
+			await data.FlagWorkItem(Conflict.WorkId);
+		}
+		catch (Exception e)
+		{
+			statusMessageApprove.SetException(e);
+		}
+	}
+
+	private void DiffIt(Candidate candidate, int boxNo)
+	{
+		candidate.RawText.Trim();
+		switch (boxNo)
+		{
+			case 0:
+				leftBlock = candidate;
+				break;
+			default:
+				rightBlock = candidate;
+				break;
+		}
+	}
+
+	#region Block Editing
+
+	private async Task EditBlock(int blockId)
+	{
+		if (Conflict == null) return;
+		editingCandidate = Conflict.Candidate.Find(c => c.BlockId == blockId);
+		if (editingCandidate == null) return;
+		// Copy data to a new WorkItem for editing
+		editingWorkItem = new WorkItem
+		{
+			WorkId = Conflict.WorkId,
+			RowKey = Conflict.RowKey,
+			Src1Text = Conflict.SrcText,
+			Src1Check = Conflict.CheckSrc,
+			WorkFinal = editingCandidate.RawText ?? string.Empty,
+			WorkFinalCheck = editingCandidate.CheckRaw,
+			LangWorkKey = data.UserData.TargetLanguage,
+			WorkLanguage = string.Empty, // Not needed
+			HelpLanguage = string.Empty, // Not needed
+			LogTo = data.UserData.LogTo, // This block is ours now...
+		};
+		editingBlockId = blockId;
+		editText = editingCandidate.RawText ?? string.Empty;
+		showEditorOverlay = true;
+		StateHasChanged();
+	}
+
+	private async Task SaveEdit()
+	{
+		statusMessageApprove.Clear();
+		if (Conflict == null) return;
+		try
+		{
+			if (editingCandidate != null && editingWorkItem != null)
+			{
+				// Read the edited text from the overlay
+				editingWorkItem.WorkFinal = (editText ?? string.Empty).Trim();
+
+				// Save the edited text as new TextBlock.
+				await data.ApproveText(editingWorkItem, false);
+
+				Candidate? alreadyEditedCandidate = Conflict.Candidate.Find(c => (Math.Abs(c.BlockId) == Math.Abs(editingBlockId) && c.BlockId < 0));
+				if (alreadyEditedCandidate != null)
+				{
+					// Update the existing candidate in-place.
+					alreadyEditedCandidate.RawText = editingWorkItem.WorkFinal;
+					alreadyEditedCandidate.CheckRaw = editingWorkItem.WorkFinalCheck;
+					alreadyEditedCandidate.UserName = data.UserData.UserName;
+					alreadyEditedCandidate.Discarded = false;
+					alreadyEditedCandidate.Approved = false;
+				}
+				else
+				{
+					// If no matching candidate exists, add a new one (use negative id to indicate new)
+					Candidate newCandidate = new Candidate
+					{
+						BlockId = -Math.Abs(editingBlockId),
+						RawText = editingWorkItem.WorkFinal,
+						UserName = data.UserData.UserName,
+						CheckRaw = editingWorkItem.WorkFinalCheck,
+						Discarded = false,
+						Approved = false
+					};
+					Conflict.Candidate.Add(newCandidate);
+				}
+			}
+			CloseEditor();
+		}
+		catch (Exception e)
+		{
+			statusMessageApprove.SetException(e);
+		}
+	}
+
+	private void CloseEditor()
+	{
+		showEditorOverlay = false;
+		editingCandidate = null;
+		editingBlockId = 0;
+		editText = string.Empty;
+		editingWorkItem = null;
+		StateHasChanged();
+	}
+
+	#endregion
+
+	#region Block Picking
+
+	private async Task PickBlock(int blockId)
+	{
+		statusMessageApprove.Clear();
+		if (Conflict == null) return;
+		try
+		{
+			Conflict.PickBlock(blockId);
+			foreach (var b in Conflict.Candidate)
+				if (b.Discarded)
+					await data.DiscardBlock(b.BlockId);
+			await OnResolved.InvokeAsync(Conflict);
+		}
+		catch (Exception e)
+		{
+			statusMessageApprove.SetException(e);
+		}
+	}
+
+	private async Task DiscardBlock(int blockId)
+	{
+		statusMessageApprove.Clear();
+		if (Conflict == null) return;
+		try
+		{
+			await data.DiscardBlock(blockId);
+			if (Conflict.DiscardBlock(blockId) == 0)
+				await OnResolved.InvokeAsync(Conflict);
+		}
+		catch (Exception e)
+		{
+			statusMessageApprove.SetException(e);
+		}
+	}
+
+	#endregion
+
+	// Botones del header: alternar usuarios y limpiar todos los candidatos
+
+	private void ToggleShowUsers()
+	{
+		ShowUsers = !ShowUsers;
+		StateHasChanged();
+	}
+
+	private async Task HeaderCleanAll()
+	{
+		if (Conflict == null) return;
+		foreach (var c in Conflict.Candidate)
+		{
+			await CleanIt(c);
+		}
+	}
 }
