@@ -70,18 +70,18 @@
     <Folder Include="Web\Functions\" />
     <Folder Include="WebJson\" />
     <Folder Include="WebJson\Stored Procedures\" />
+    <Folder Include="Tools\" />
+    <Folder Include="Tools\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TextLanguage.sql" />
     <Build Include="dbo\Tables\TextBlock.sql" />
     <Build Include="Security\WebAdminUser.sql" />
     <Build Include="dbo\Stored Procedures\GetWorkList.sql" />
-    <Build Include="dbo\Stored Procedures\GetTranslations.sql" />
     <Build Include="dbo\Stored Procedures\AddTextBlock.sql" />
     <Build Include="Security\Permissions.sql" />
     <Build Include="dbo\Tables\TextApproved.sql" />
     <Build Include="Security\WebPublicUser.sql" />
-    <Build Include="dbo\Stored Procedures\ApproveFinalText.sql" />
     <Build Include="dbo\Tables\WorkItem.sql" />
     <Build Include="dbo\Tables\Project.sql" />
     <Build Include="dbo\Tables\UserLog.sql" />
@@ -121,6 +121,9 @@
     <Build Include="Web\Stored Procedures\ApproveFinalText.sql" />
     <Build Include="dbo\Stored Procedures\Utf8Fixes.sql" />
     <Build Include="dbo\Stored Procedures\MarkFormItemForDeletion.sql" />
+    <Build Include="dbo\Synonyms\GetWorkBatch.sql" />
+    <Build Include="Tools\Stored Procedures\Utf8Fixes.sql" />
+    <Build Include="Security\Tools.sql" />
     <Build Include="dbo\Synonyms\GetWorkBatch.sql" />
   </ItemGroup>
   <ItemGroup>
