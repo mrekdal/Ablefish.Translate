@@ -138,44 +138,44 @@
 </div>
 
 @code {
-	private TextConflict _conflict = default!;
-
 	[Parameter]
-	public required TextConflict Conflict
-	{
-		get => _conflict;
-		set
-		{
-			_conflict = value;
-			if (_conflict.Candidate.Count < 2)
-			{
-				leftBlock = null;
-				rightBlock = null;
-				return;
-			}
-			leftBlock = _conflict.Candidate[0];
-			rightBlock = _conflict.Candidate[1];
-		}
-	}
-
+	public required TextConflict Conflict { get; set; } = default!;
 	[Parameter]
 	public bool ShowNumbers { get; set; } = true;
 	[Parameter]
 	public EventCallback<TextConflict> OnResolved { get; set; }
+
+	#region Private State	
 
 	private bool ShowUsers { get; set; } = false;
 	private Candidate? leftBlock;
 	private Candidate? rightBlock;
 
 	// Editor state
+
 	private bool showEditorOverlay = false;
 	private Candidate? editingCandidate;
 	private int editingBlockId = 0;
 	private string editText = string.Empty;
-
-	// Nuevo: WorkItem que se crea cuando se edita un Candidate
-
 	private WorkItem? editingWorkItem;
+
+	#endregion
+
+    #region Lifecycle Override 
+
+	protected override void OnParametersSet()
+	{
+		if (Conflict.Candidate.Count < 2)
+		{
+			leftBlock = null;
+			rightBlock = null;
+			return;
+		}
+		leftBlock = Conflict.Candidate[0];
+		rightBlock = Conflict.Candidate[1];
+	}
+
+	#endregion
 
 	#region CSS Utilities
 
@@ -206,6 +206,8 @@
 	}
 
 	#endregion
+
+	#region Block Actions
 
 	private async Task CleanIt(Candidate candidate)
 	{
@@ -241,6 +243,8 @@
 				break;
 		}
 	}
+
+	#endregion
 
 	#region Block Editing
 
