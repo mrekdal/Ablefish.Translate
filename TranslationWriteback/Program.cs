@@ -118,7 +118,7 @@ class Program
         foreach (var monograph in updates)
         {
             Console.WriteLine($"-- MonographId {monograph.Key}");
-            Console.WriteLine("UPDATE dbo.Monograph");
+            Console.WriteLine("UPDATE XL.Monograph");
             Console.WriteLine("SET");
 
             int i = 0;
@@ -131,7 +131,7 @@ class Program
                 Console.WriteLine($"    [{columnName}] = N'{escapedText}'{comma}");
             }
 
-            Console.WriteLine($"WHERE MonographId = {monograph.Key};");
+            Console.WriteLine($"WHERE MonographId = {monograph.Key} AND LangKey='es';");
             Console.WriteLine();
         }
 

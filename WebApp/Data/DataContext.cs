@@ -158,11 +158,11 @@ namespace TranslateWebApp.Data
 
         public async Task StoreAiText(WorkItem workItem, string logToAi)
         {
-            _logger.LogInformation($"EXEC Web.AddTextBlock( {workItem.WorkId}, '{workItem.LangWorkKey}', '{logToAi}' );");
-            string sql = $"EXEC Web.AddTextBlock @WorkId, @LangWorkKey, @WorkAi, @LogTo;";
+            _logger.LogInformation($"EXEC Web.AddTextBlock( {workItem.WorkId}, {workItem.Src1Check}, '{workItem.LangWorkKey}', '{logToAi}' );");
+            string sql = $"EXEC Web.AddTextBlock @WorkId, @Src1Check, @LangWorkKey, @WorkAi, @LogTo;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync(sql, new { workItem.WorkId, workItem.LangWorkKey, workItem.WorkAi, LogTo = logToAi });
+                await connection.ExecuteAsync(sql, new { workItem.WorkId, workItem.Src1Check, workItem.LangWorkKey, workItem.WorkAi, LogTo = logToAi });
             }
         }
 
