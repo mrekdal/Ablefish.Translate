@@ -129,7 +129,7 @@ namespace TranslateWebApp.Data
         public async Task ApproveText(WorkItem workItem, bool withDoubt)
         {
             _userProject?.AddOne();
-            _logger.LogInformation($"EXEC Web.ApproveFinalText( {workItem.WorkId}, {workItem.Src1Check} );");
+            _logger.LogInformation($"EXEC Web.ApproveFinalText( {workItem.WorkId}, '{_userData.TargetLanguage}', '{_userData.LogTo}', {workItem.Src1Check} );");
             workItem.Approve();
             string sql = $"EXEC Web.ApproveFinalText @WorkId, @LogTo, @TargetLanguage, @Src1Check, @WorkFinal, @withDoubt;";
             using (IDbConnection connection = new SqlConnection(_connectionString))
