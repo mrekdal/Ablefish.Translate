@@ -12,7 +12,9 @@
     [RowVer]         ROWVERSION   NOT NULL,
     [CreatedAt]      DATETIME     DEFAULT (getdate()) NOT NULL,
     [IsActive]       BIT          DEFAULT ((1)) NOT NULL,
+    [CoLogTo]        VARCHAR (16) NULL,
     CONSTRAINT [PK_UserList] PRIMARY KEY CLUSTERED ([LogTo] ASC),
+    CONSTRAINT [FK_UserList_CoLogTo] FOREIGN KEY ([CoLogTo]) REFERENCES [dbo].[UserList] ([LogTo]),
     CONSTRAINT [FK_UserList_Helper] FOREIGN KEY ([HelperLanguage]) REFERENCES [dbo].[TextLanguage] ([LangKey]),
     CONSTRAINT [FK_UserList_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId]),
     CONSTRAINT [FK_UserList_Target] FOREIGN KEY ([TargetLanguage]) REFERENCES [dbo].[TextLanguage] ([LangKey])
