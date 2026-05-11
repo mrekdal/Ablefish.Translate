@@ -1,21 +1,49 @@
+SELECT * FROM dbo.UserList ORDER BY FirstName;
+GO
 
-SELECT * FROM dbo.UserList
 
+
+UPDATE dbo.UserList SET FirstName = 'Magne', LastName = 'Rekdal' WHERE UserId = 29;
+UPDATE dbo.UserList SET FirstName = 'Azure', LastName = 'Translated' WHERE UserId = 18;
 
 SELECT CheckTrg, MIN(CheckSrc), MAX(CheckSrc), COUNT(*) 
 FROM dbo.TextApproved
 GROUP BY CheckTrg
 HAVING COUNT(*) > 1;
+GO
 
 SELECT * FROM dbo.TextApproved ORDER BY ApprId DESC;
+GO
+
+EXEC Web.GetProjectStatus 'truo918l9xwc'; -- Huda
+EXEC Web.GetProjectStatus 'zxs29rog9jp4'; -- Magne
+EXEC Web.GetProjectStatus 'lr2a649vjvg1'; -- Huda
+EXEC Web.GetProjectStatus '23kxcn6h3ard'; -- Marti
+EXEC Web.GetProjectStatus '78120y9vpvpa'; -- Ikram
+EXEC Web.GetProjectStatus '0jm0se48cq02'; -- Nils
+GO
+
+EXEC Web.GetWorkPeriods '78120y9vpvpa', 15; -- Ikram
+EXEC Web.GetWorkPeriods 'truo918l9xwc', 15; -- Huda
+GO
 
 EXEC Tools.GetWorkDetails 3, '2026-02-23', '2026-02-25 03:00';
 EXEC Tools.GetWorkDetails 3, '2026-02-23', '2026-02-24 03:00';
 EXEC Tools.GetWorkDetails 11, '2026-02-24', '2026-02-25 03:00';
+EXEC Tools.GetWorkDetails 11, '2026-03-17', '2026-03-19'
+EXEC Tools.GetWorkDetails 11, '2026-03-20 03:00', '2026-03-21 03:00'
+EXEC Tools.GetWorkDetails 11, '2026-03-20 23:00', '2026-03-21 23:00' -- Saturday
+EXEC Tools.GetWorkDetails 11, '2026-03-22 03:00', '2026-03-23 03:00'
+EXEC Tools.GetWorkDetails 11, '2026-03-21 03:00', '2026-03-22 03:00'
+EXEC Tools.GetWorkDetails 11, '2026-03-30 03:00', '2026-04-11 03:00'
 GO
-EXEC Tools.GetWorkDetails 3, '2026-02-14', '2026-02-15 03:00';
-EXEC Tools.GetWorkDetails 11, '2026-02-14', '2026-02-15 03:00';
 
+EXEC Tools.GetWorkDetails 3, '2026-02-14', '2026-02-15 03:00';
+EXEC Tools.GetWorkDetails 11, '2026-03-18 12:00', '2026-03-19 03:00';
+EXEC Tools.GetWorkDetails 11, '2026-03-19 12:00', '2026-03-20 03:00';
+EXEC Tools.GetWorkDetails 11, '2026-03-25 11:00', '2026-03-26 03:00';
+EXEC Tools.GetWorkDetails 11, '2026-04-11 11:00', '2026-04-12 04:00';
+GO
 EXEC Tools.GetWorkDetails 11;
 GO
 
@@ -32,16 +60,12 @@ FROM
 GROUP BY YMDH, LogTo
 ORDER BY YMDH DESC;
 
-EXEC Web.GetProjectStatus 'zxs29rog9jp4'; -- Magne
-EXEC Web.GetProjectStatus 'lr2a649vjvg1'; -- Huda
-EXEC Web.GetProjectStatus '23kxcn6h3ard'; -- Marti
-EXEC Web.GetProjectStatus '78120y9vpvpa'; -- Ikram
-GO
+
 
 
 exec web.GetWorkDone 'Martí';
 GO
-exec web.GetWorkDone 'Huda';
+EXEC web.GetWorkDone 'Huda';
 GO
 exec web.GetWorkDone 'Ikram';
 GO
@@ -90,5 +114,3 @@ SELECT TOP 1000 * FROM dbo.TextBlock ORDER BY BlockId DESC;
 SELECT TOP 10 * FROM dbo.TextBlock ORDER BY BlockId DESC;
 SELECT TOP 10 * FROM dbo.TextApproved ORDER BY ApprId DESC;
 
-
-- Eliminated in unchanged form. Less potent inhibitor of CYP 2C9.
