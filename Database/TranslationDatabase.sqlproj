@@ -73,6 +73,7 @@
     <Folder Include="Tools\" />
     <Folder Include="Tools\Stored Procedures\" />
     <Folder Include="Tools\Views\" />
+    <Folder Include="Tools\Functions\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TextLanguage.sql" />
@@ -132,6 +133,12 @@
     <Build Include="Tools\Stored Procedures\GetWorkDetails.sql" />
     <Build Include="dbo\Stored Procedures\AddUserToProject.sql" />
     <Build Include="Security\XL.sql" />
+    <Build Include="dbo\Tables\WorkItemHistory.sql" />
+    <Build Include="dbo\Tables\TextBlockHistory.sql" />
+    <Build Include="Tools\Functions\GetUserWorkPeriods.sql" />
+    <Build Include="Tools\Functions\GetProjectWorkPeriods.sql" />
+    <Build Include="Tools\Stored Procedures\GetChangedWorkItems.sql" />
+    <Build Include="Tools\Stored Procedures\GetChangedTextBlocks.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />
