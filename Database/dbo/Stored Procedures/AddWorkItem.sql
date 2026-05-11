@@ -8,5 +8,5 @@ BEGIN
 	VALUES ( @ProjectId, @RowKey, @RawText );
   ELSE
     UPDATE dbo.WorkItem SET RawText = @RawText, UpdatedAt = GETDATE() 
-	WHERE WorkId = @WorkId AND ISNULL(RawText,'') COLLATE Latin1_General_CS_AS  <> ISNULL(@RawText,'') COLLATE Latin1_General_CS_AS;
+	WHERE WorkId = @WorkId AND ISNULL(RawText,'') <> ISNULL(@RawText,'');
 END
