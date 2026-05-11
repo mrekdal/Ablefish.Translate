@@ -4,12 +4,9 @@ BEGIN
 
     WITH OrderedLogs AS
     (
-        SELECT
-            ubl.CreatedAt,
-            LAG(ubl.CreatedAt) OVER (ORDER BY ubl.CreatedAt) AS PrevCreatedAt
-        FROM dbo.UserBatchLog ubl
-		JOIN dbo.UserList ul ON ul.LogTo = ubl.LogTo
-        WHERE ubl.LogTo = @LogTo OR ul.FirstName = @LogTo
+
+        SELECT ubl.BoundAt AS CreatedAt, LAG(ubl.BoundAt) OVER (ORDER BY ubl.BoundAt) AS PrevCreatedAt
+        FROM Tools.GetUserWorkPeriods( @LogTo ) ubl
     ),
     PeriodFlags AS
     (
@@ -36,8 +33,8 @@ BEGIN
     SELECT
         @LogTo AS UserName,
         PeriodID,
-        MIN(CreatedAt) AS PeriodStart,
-        MAX(CreatedAt) AS PeriodEnd,
+        MIN(DATEADD(HH,1,CreatedAt)) AS PeriodStart,
+        MAX(DATEADD(HH,1,CreatedAt)) AS PeriodEnd,
         DATEDIFF(MINUTE, MIN(CreatedAt), MAX(CreatedAt)) + 2 AS DurationMinutes
     FROM PeriodGroups
     GROUP BY PeriodID
