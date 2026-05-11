@@ -16,7 +16,9 @@
     CONSTRAINT [FK_WorkItem_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId]),
     PERIOD FOR SYSTEM_TIME ([ValidFrom], [ValidTo])
 )
-WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE=[dbo].[MSSQL_TemporalHistoryFor_338100245], DATA_CONSISTENCY_CHECK=ON));
+WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE=[dbo].[WorkItemHistory], DATA_CONSISTENCY_CHECK=ON));
+
+
 
 
 
