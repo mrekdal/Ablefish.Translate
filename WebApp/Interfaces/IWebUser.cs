@@ -1,7 +1,6 @@
-﻿using Ablefish.Blazor.Observer;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
-namespace TranslateWebApp.Interfaces
+namespace Ablefish.Translation.WebApp.Interfaces
 {
     public interface IApplicationUser
     {

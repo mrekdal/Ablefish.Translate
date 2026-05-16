@@ -1,8 +1,7 @@
 ﻿using System.Security.Claims;
-using Ablefish.Blazor.Observer;
-using TranslateWebApp.Interfaces;
+using Ablefish.Translation.WebApp.Interfaces;
 
-namespace TranslateWebApp.Models
+namespace Ablefish.Translation.WebApp.Models
 {
     public class WebUser : IApplicationUser
     {

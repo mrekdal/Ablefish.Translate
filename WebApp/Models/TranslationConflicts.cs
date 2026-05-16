@@ -1,4 +1,4 @@
-﻿namespace TranslateWebApp.Models
+﻿namespace Ablefish.Translation.WebApp.Models
 {
     public class Candidate
     {

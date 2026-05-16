@@ -6,10 +6,10 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
 using System.Data;
 using System.Text.Json;
-using TranslateWebApp.Interfaces;
-using TranslateWebApp.Models;
+using Ablefish.Translation.WebApp.Interfaces;
+using Ablefish.Translation.WebApp.Models;
 
-namespace TranslateWebApp.Data  
+namespace Ablefish.Translation.WebApp.Data  
 {
     public class DataContext : IDataContext
     {

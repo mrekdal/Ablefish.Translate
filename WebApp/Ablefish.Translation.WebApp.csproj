@@ -17,7 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Ablefish\Ablefish.Blazor.Components\Ablefish.Blazor.Components.csproj" />
     <ProjectReference Include="..\..\Ablefish.StringUtils\Ablefish.StringUtils.csproj" />
-    <ProjectReference Include="..\Libraries\TransService.csproj" />
+    <ProjectReference Include="..\Libraries\Ablefish.Translation.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>

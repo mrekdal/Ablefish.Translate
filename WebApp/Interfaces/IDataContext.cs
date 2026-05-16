@@ -1,7 +1,7 @@
 ﻿using Ablefish.Blazor.Observer;
-using TranslateWebApp.Models;
+using Ablefish.Translation.WebApp.Models;
 
-namespace TranslateWebApp.Interfaces
+namespace Ablefish.Translation.WebApp.Interfaces
 {
     public interface IDataContext
     {

@@ -1,7 +1,7 @@
-﻿using TranslateWebApp.Models;
+﻿using Ablefish.Translation.WebApp.Models;
 using TransService;
 
-namespace TranslateWebApp.Components.Pages
+namespace Ablefish.Translation.WebApp.Components.Pages
 {
     public partial class HomePage
     {
@@ -12,8 +12,6 @@ namespace TranslateWebApp.Components.Pages
         private bool QueryIsRunning;
 
         private bool IsSaving = false;
-
-        private bool IsInitializing => appState.CallsTranslations == 0 && QueryIsRunning;
 
         private void MoveToFirst()
         {
@@ -114,7 +112,6 @@ namespace TranslateWebApp.Components.Pages
             IsSaving = false;
         }
 
-
         protected async Task RunQuery()
         {
             if (!appUser.Authenticated && QueryIsRunning) return;
@@ -136,19 +133,18 @@ namespace TranslateWebApp.Components.Pages
             StateHasChanged();
         }
 
-
         private async void UserDataLoaded()
         {
             await RunQuery();
         }
 
         #region Event Handler to register and unregister    
+
         protected override async Task OnInitializedAsync()
         {
             data.OnUserDataChanged += UserDataLoaded;
             await base.OnInitializedAsync();
         }
-
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -159,7 +155,6 @@ namespace TranslateWebApp.Components.Pages
                 await data.LoadUserData(appUser.LogTo);
             }
         }
-
 
         public void Dispose()
         {

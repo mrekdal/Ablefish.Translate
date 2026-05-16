@@ -4,14 +4,14 @@ using DiffPlex.DiffBuilder;
 using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using TranslateWebApp.Components;
-using TranslateWebApp.Data;
-using TranslateWebApp.Interfaces;
-using TranslateWebApp.Models;
-using TranslateWebApp.Models.TranslateWebApp.Models;
+using Ablefish.Translation.WebApp.Components;
+using Ablefish.Translation.WebApp.Data;
+using Ablefish.Translation.WebApp.Interfaces;
+using Ablefish.Translation.WebApp.Models;
+using Ablefish.Translation.WebApp.Models.TranslateWebApp.Models;
 using TransService;
 
-namespace TranslateWebApp
+namespace Ablefish.Translation.WebApp
 {
     public class Program
     {
