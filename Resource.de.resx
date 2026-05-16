@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About.Back1" xml:space="preserve">
+    <value>Die Arzneimitteldatenbank für akute Porphyrien wurde am Norwegischen Porphyriezentrum (Napos) am Universitätsklinikum Haukeland (Norwegen) im Jahr 2002 geschaffen und eingerichtet. 
+Grundlage hierfür war die visionäre Arbeit von Dr. Atle Brun, der fast 20 Jahre lang die treibende Kraft hinter der Arzneimitteldatenbank war.
+Im Jahr 2005 wurde die Datenbank von einer nordischen Datenbank zu einer internationalen Online-Ressource erweitert.</value>
+  </data>
+  <data name="About.Back2" xml:space="preserve">
+    <value>Wir danken Professor Stig Thunell vom Porphyriezentrum des 
+Karolinska Universitätsklinikums (Schwede) für seine Arbeit sowohl bei der Methodenentwicklung als auch bei der Bewertung von Arzneimitteln.</value>
+  </data>
+  <data name="About.Back3" xml:space="preserve">
+    <value>Im Rahmen eines von der EU finanzierten EPNET-Projekts wurden im Zeitraum von 2007 bis 2010 klinische Arzneimittelberichte gesammelt. 
+Diese trugen dazu bei, die Evidenz für die Sicherheitsklassifizierung vieler Arzneimittel zu evaluieren und die Klassifizierungsmethode zu überprüfen. 
+Wir sind all jenen dankbar, die an diesem EPNET-Projekt teilgenommen und Berichte über klinische Arzneimittel eingereicht haben.</value>
+  </data>
+  <data name="About.Back4" xml:space="preserve">
+    <value>Derzeit wird die Datenbank regelmäßig von Napos mit der Unterstützung von Apothekern und Porphyrieexperten des UK Porphyria Medicines Service (UKPMIS), 
+    Cardiff Porphyria Service und der Ipnet Safety of Drugs for Porphyria Patients Working Group (WG-DRUGS) aktualisiert und weiterentwickelt.</value>
+  </data>
+  <data name="About.Back5" xml:space="preserve">
+    <value>Die Bewertung und Klassifizierung von Arzneimitteln in der Arzneimitteldatenbank beruht auf der im folgenden Artikel beschriebenen Methode: 
+"Guide to drug porphyrinogenicity prediction and drug prescription in the acute porphyrias" von Stig Thunell, Erik Pomp und Atle Brun.</value>
+  </data>
+  <data name="About.Background" xml:space="preserve">
+    <value>Hintergrund</value>
+  </data>
+  <data name="About.CopyrightNotice" xml:space="preserve">
+    <value>Copyright-Hinweis</value>
+  </data>
+  <data name="About.Disclaim0" xml:space="preserve">
+    <value>Mit der Nutzung dieser Website erklären Sie sich mit den folgenden Bestimmungen einverstanden:</value>
+  </data>
+  <data name="About.Disclaim1" xml:space="preserve">
+    <value>Die Arzneimitteldatenbank für akute Porphyrie ist Eigentum des Norwegischen Porphyriezentrums (Napos). 
+Die in dieser Datenbank enthaltenen Informationen sind für die Verwendung durch medizinisches Fachpersonal bestimmt.
+Sie können zwar für Patienten von Interesse sein, jedoch sollten Entscheidungen über den Einsatz von Medikamenten bei akuter Porphyrie immer in Absprache mit medizinischem Fachpersonal getroffen werden.
+In Fällen von Unsicherheit sollte zusätzlicher Rat eingeholt werden.</value>
+  </data>
+  <data name="About.Disclaim2" xml:space="preserve">
+    <value>Die Datenbank umfasst Expertenbewertungen des Potenzials von Arzneimitteln im Hinblick auf eine mögliche Auslösung von  Porphyrieattacken bei Patienten mit akuter hepatischer Porphyrie. 
+Dies umfasst die Entitäten der akuter intermittierender Porphyrie (AIP), Porphyria variegata (VP), hereditärer Koproporphyrie (HCP) und ALA-Dehydratase-Mangelporphyrie (ADP).
+Der Leitfaden basiert auf einer gründlichen Auswertung der internationalen klinischen Erfahrung, veröffentlichten Fallberichten und theoretischen Überlegungen.
+Die in dieser Datenbank enthaltenen Informationen, die mit einem gewissen Grad an Unsicherheit behaftet sind, dienen als als Orientierungshilfe für medizinisches Fachpersonal.</value>
+  </data>
+  <data name="About.Disclaim3" xml:space="preserve">
+    <value>Das Norwegische Porphyrie-Zentrum (Napos) übernimmt keine Verantwortung für etwaige Fehler,
+Meinungsverschiedenheiten oder nachteilige Folgen, die sich aus der Nutzung der auf dieser Website veröffentlichten Informationen ergeben.</value>
+  </data>
+  <data name="About.Disclaimer" xml:space="preserve">
+    <value>Haftungsausschluss</value>
+  </data>
+  <data name="About.PageTitle" xml:space="preserve">
+    <value>Über die Datenbank</value>
+  </data>
+  <data name="About.TermsOfUse" xml:space="preserve">
+    <value>Nutzungsbedingungen</value>
+  </data>
+  <data name="AIP" xml:space="preserve">
+    <value>akute intermittierende Porphyrie</value>
+  </data>
+  <data name="and" xml:space="preserve">
+    <value>und</value>
+  </data>
+  <data name="brand_names" xml:space="preserve">
+    <value>Markennamen</value>
+  </data>
+  <data name="classified_by" xml:space="preserve">
+    <value>Medikamente werden in Risikokategorien eingeteilt, je nachdem, ob sie akute Anfälle bei Menschen mit</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+  <data name="Copy0" xml:space="preserve">
+    <value>Diese Website und ihr Inhalt unterliegen dem Urheberrecht des Norwegischen Porphyriezentrums (Napos). Alle Rechte vorbehalten.</value>
+  </data>
+  <data name="Copy1" xml:space="preserve">
+    <value>Die Verbreitung oder kommerzielle Nutzung des Inhalts ist ohne ausdrückliche schriftliche Genehmigung der Napos untersagt. (Kontakt: drugs.porphyria@helse-bergen.no) </value>
+  </data>
+  <data name="Copy2" xml:space="preserve">
+    <value>Die Nutzer dürfen Auszüge nur für den persönlichen und nichtkommerziellen Gebrauch ausdrucken oder herunterladen.</value>
+  </data>
+  <data name="Copy3" xml:space="preserve">
+    <value>Bei der Darstellung der Inhalte oder bei Verweisen auf diese müssen die Nutzer die Website als Quelle des Materials angeben.</value>
+  </data>
+  <data name="Copy4" xml:space="preserve">
+    <value>Die Übertragung oder Speicherung des Inhalts auf einer anderen Website oder einem elektronischen Abrufsystem ist strengstens untersagt.</value>
+  </data>
+  <data name="Culture.Header" xml:space="preserve">
+    <value>Land und Sprache</value>
+  </data>
+  <data name="Culture.Introduction" xml:space="preserve">
+    <value>Dieser Text sollte automatisch in die Sprache übersetzt werden, die als Routenparameter auf dieser Seite angegeben ist.</value>
+  </data>
+  <data name="Culture.Language" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="Culture.MachineTranslation" xml:space="preserve">
+    <value>Die mit einem Sternchen gekennzeichneten Sprachen sind maschinell aus dem Englischen übersetzt, und der Inhalt wurde nicht manuell überprüft.</value>
+  </data>
+  <data name="DrugList.AboutTheList" xml:space="preserve">
+    <value>Diese Liste enthält Rohdaten, die in verschiedenen Ländern erhoben wurden.
+In einigen Fällen ist eine umfassendere Liste der verfügbaren Arzneimittelpakete enthalten.
+Daher können sehr ähnliche Begriffe mehrfach vorkommen.
+Die fettgedruckten Namen sind die über das Suchfeld erfassbaren Begriffe, während die folgenden grauen Namen alle dem fettgedruckten Begriff zugeordnet sind.</value>
+  </data>
+  <data name="DrugList.CleaningNote" xml:space="preserve">
+    <value>Die Bereinigung erfolgt automatisch durch einen proprietären Algorithmus, der Fehler verursachen kann. Wir bemühen uns, ihn ständig zu verbessern.</value>
+  </data>
+  <data name="DrugList.Note" xml:space="preserve">
+    <value>Hinweis</value>
+  </data>
+  <data name="DrugList.ShowMore" xml:space="preserve">
+    <value>Weitere Details und Informationen zu den aufgeführten Markennamen anzeigen</value>
+  </data>
+  <data name="HCP" xml:space="preserve">
+    <value>hereditäre Koproporphyrie</value>
+  </data>
+  <data name="Lang.Apply" xml:space="preserve">
+    <value>Sprache einstellen</value>
+  </data>
+  <data name="Lang.Catalan" xml:space="preserve">
+    <value>Katalanisch</value>
+  </data>
+  <data name="Lang.Danish" xml:space="preserve">
+    <value>Dänisch</value>
+  </data>
+  <data name="Lang.Dutch" xml:space="preserve">
+    <value>Niederländisch</value>
+  </data>
+  <data name="Lang.English" xml:space="preserve">
+    <value>Englisch</value>
+  </data>
+  <data name="Lang.French" xml:space="preserve">
+    <value>Französisch</value>
+  </data>
+  <data name="Lang.German" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="Lang.Icelandic" xml:space="preserve">
+    <value>Isländisch</value>
+  </data>
+  <data name="Lang.Italian" xml:space="preserve">
+    <value>Italienisch</value>
+  </data>
+  <data name="Lang.Latvian" xml:space="preserve">
+    <value>Lettisch</value>
+  </data>
+  <data name="Lang.Lithuanian" xml:space="preserve">
+    <value>Litauisch</value>
+  </data>
+  <data name="Lang.Norwegian" xml:space="preserve">
+    <value>Norwegisch</value>
+  </data>
+  <data name="Lang.Portuguese" xml:space="preserve">
+    <value>Portugiesisch</value>
+  </data>
+  <data name="Lang.Serbian" xml:space="preserve">
+    <value>Serbisch</value>
+  </data>
+  <data name="Lang.Spanish" xml:space="preserve">
+    <value>Spanisch</value>
+  </data>
+  <data name="Lang.Swedish" xml:space="preserve">
+    <value>Schwedisch</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Laden</value>
+  </data>
+  <data name="Main.Database" xml:space="preserve">
+    <value>Akute Porphyrie Medikamente</value>
+  </data>
+  <data name="Main.InCooperationWith" xml:space="preserve">
+    <value>In Zusammenarbeit mit</value>
+  </data>
+  <data name="Mono.ChemicalDescription" xml:space="preserve">
+    <value>Beschreibung der chemischen Eigenschaften</value>
+  </data>
+  <data name="Mono.ExploreAlternatives" xml:space="preserve">
+    <value>Suche nach alternativen Arzneimitteln in ähnlichen therapeutischen Klassen</value>
+  </data>
+  <data name="Mono.GoBack" xml:space="preserve">
+    <value>zurückgehen</value>
+  </data>
+  <data name="Mono.HepaticExposure" xml:space="preserve">
+    <value>Hepatische Metabolisierung</value>
+  </data>
+  <data name="Mono.ImportantInformation" xml:space="preserve">
+    <value>Wichtige Informationen</value>
+  </data>
+  <data name="Mono.IpnetDrugReports" xml:space="preserve">
+    <value>Ipnet - Berichte über Medikamente</value>
+  </data>
+  <data name="Mono.MetabolismAndPharmacokinetics" xml:space="preserve">
+    <value>Metabolismus und Pharmakokinetik</value>
+  </data>
+  <data name="Mono.NoMonograph" xml:space="preserve">
+    <value>Keine Monographie gefunden</value>
+  </data>
+  <data name="Mono.NoMonographFor" xml:space="preserve">
+    <value>Keine Monographie für</value>
+  </data>
+  <data name="Mono.NoMoreInfo" xml:space="preserve">
+    <value>Für diese Medikamentenklasse sind keine weiteren Informationen verfügbar.</value>
+  </data>
+  <data name="Mono.PersonalCommunication" xml:space="preserve">
+    <value>Persönliche Mitteilung</value>
+  </data>
+  <data name="Mono.PreclinicalData" xml:space="preserve">
+    <value>Präklinische Daten</value>
+  </data>
+  <data name="Mono.PublishedExperience" xml:space="preserve">
+    <value>Veröffentlichte Erfahrungsberichte</value>
+  </data>
+  <data name="Mono.Rationale" xml:space="preserve">
+    <value>Begründung</value>
+  </data>
+  <data name="Mono.References" xml:space="preserve">
+    <value>Referenzen</value>
+  </data>
+  <data name="Mono.SideEffects" xml:space="preserve">
+    <value>Nebenwirkungen</value>
+  </data>
+  <data name="Mono.SimilarDrugs" xml:space="preserve">
+    <value>Ähnliche Medikamente</value>
+  </data>
+  <data name="Mono.TherapeuticCharacteristics" xml:space="preserve">
+    <value>Therapeutische Merkmale</value>
+  </data>
+  <data name="Mono.Tradenames" xml:space="preserve">
+    <value>Markennamen</value>
+  </data>
+  <data name="Nav.About" xml:space="preserve">
+    <value>Über die Datenbank</value>
+  </data>
+  <data name="Nav.News" xml:space="preserve">
+    <value>Nachrichten</value>
+  </data>
+  <data name="Nav.PopularDrugs" xml:space="preserve">
+    <value>Häufige Medikamente</value>
+  </data>
+  <data name="Nav.Regions" xml:space="preserve">
+    <value>Regionen</value>
+  </data>
+  <data name="Nav.RiskClasses" xml:space="preserve">
+    <value>Risikoklassen</value>
+  </data>
+  <data name="Nav.SafeDrugs" xml:space="preserve">
+    <value>Sichere Medikamente</value>
+  </data>
+  <data name="Nav.Search" xml:space="preserve">
+    <value>Suche</value>
+  </data>
+  <data name="Nav.Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Nav.SignIn" xml:space="preserve">
+    <value>Eintragen</value>
+  </data>
+  <data name="Nav.SignOut" xml:space="preserve">
+    <value>Abmeldung</value>
+  </data>
+  <data name="Nav.Spanish" xml:space="preserve">
+    <value>Spanisch</value>
+  </data>
+  <data name="News.Header" xml:space="preserve">
+    <value>Neue Monographien</value>
+  </data>
+  <data name="News.HeaderDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="News.HeaderRisk" xml:space="preserve">
+    <value>Risiko</value>
+  </data>
+  <data name="News.HeaderSubstance" xml:space="preserve">
+    <value>Inhalt und Begründung</value>
+  </data>
+  <data name="News.Intro" xml:space="preserve">
+    <value>Dies ist eine Liste der letzten 25 Monographien in umgekehrter Reihenfolge ihres Hinzufügens oder ihrer Überarbeitung. 
+Klicken Sie auf die Nummer der Monographie (erste Spalte), um weitere Informationen zu erhalten. Alle Monografien sind in englischer Sprache verfasst.</value>
+  </data>
+  <data name="NotFound.Header" xml:space="preserve">
+    <value>Seite nicht gefunden</value>
+  </data>
+  <data name="NotFound.Introduction" xml:space="preserve">
+    <value>Die gewünschte Seite existiert nicht. Bitte treffen Sie eine Auswahl aus dem Menü auf der linken Seite.</value>
+  </data>
+  <data name="or_atc_codes" xml:space="preserve">
+    <value>oder ATC-Codes.</value>
+  </data>
+  <data name="ProblemReport" xml:space="preserve">
+    <value>Um ein Problem zu melden oder einen Verbesserungsvorschlag zu machen, senden Sie eine E-Mail an drugs.porphyria@helse-bergen.no.</value>
+  </data>
+  <data name="read_more" xml:space="preserve">
+    <value>Lesen Sie mehr in</value>
+  </data>
+  <data name="recommended" xml:space="preserve">
+    <value>empfohlen</value>
+  </data>
+  <data name="Regions.Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Regions.Header" xml:space="preserve">
+    <value>Regionale Abkürzungen</value>
+  </data>
+  <data name="Regions.Introduction" xml:space="preserve">
+    <value>Dies sind Links, mit denen Sie eine Seite mit einer vorgewählten Sprache und Quelle für Handelsnamen als Lesezeichen speichern können.
+    Wenn Sie z. B. nur nach norwegischen Arzneimittelnamen suchen und die norwegische Sprache für die Benutzeroberfläche verwenden möchten, klicken Sie auf NOR und setzen Sie ein Lesezeichen für diese Seite.</value>
+  </data>
+  <data name="Regions.Language" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="Regions.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Regions.Sources" xml:space="preserve">
+    <value>Quellen</value>
+  </data>
+  <data name="Results.ClickName" xml:space="preserve">
+    <value>Klicken Sie auf den Namen des Medikaments, um Details zu erfahren.</value>
+  </data>
+  <data name="Results.Risk" xml:space="preserve">
+    <value>Risiko</value>
+  </data>
+  <data name="Results.ShowAllSources" xml:space="preserve">
+    <value>Geben Sie alle Quellen an, nicht nur meine aktuelle Auswahl:</value>
+  </data>
+  <data name="Results.ShowFlags" xml:space="preserve">
+    <value>Zeigen Sie die Länder an, in denen die Arzneimittel erhältlich sind.</value>
+  </data>
+  <data name="Results.ShowUnclassified" xml:space="preserve">
+    <value>Nicht klassifizierte Drogen anzeigen.</value>
+  </data>
+  <data name="returned_nothing" xml:space="preserve">
+    <value>nichts zurück.</value>
+  </data>
+  <data name="Risk.Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Risk.DescribeNC" xml:space="preserve">
+    <value>Noch nicht als sicher eingestuft und sollte vermieden werden. Nur bei starker Indikation verschreiben, wenn keine sichereren Alternativen verfügbar sind.  Lassen Sie sich von einem Porphyrieexperten beraten oder kontaktieren Sie ein Porphyriezentrum.</value>
+  </data>
+  <data name="Risk.DescribeNP" xml:space="preserve">
+    <value>Wird als Mittel der ersten Wahl verwendet. Keine Vorsichtsmaßnahmen erforderlich.</value>
+  </data>
+  <data name="Risk.DescribeP" xml:space="preserve">
+    <value>Nur bei dringenden Indikationen verschreiben. Bei allen Patienten sollten Vorsichtsmaßnahmen getroffen werden.</value>
+  </data>
+  <data name="Risk.DescribePNP" xml:space="preserve">
+    <value>Wird als Mittel der ersten Wahl verwendet. Keine speziellen Maßnahmen erforderlich.</value>
+  </data>
+  <data name="Risk.DescribePRP" xml:space="preserve">
+    <value>Verschreibung nur bei starken oder dringenden Indikationen. Eine engmaschige Überwachung ist angezeigt.</value>
+  </data>
+  <data name="Risk.DescribePSP" xml:space="preserve">
+    <value>Nur verwenden, wenn aus medizinischer Sicht keine Alternativen verfügbar sind und die Indikation dringlich ist. Eine engmaschige Überwachung ist unabdingbar, zudem sollte Rücksprache mit einem Porphyriezentrum genommen werden.</value>
+  </data>
+  <data name="Risk.Description" xml:space="preserve">
+    <value>Auslegung</value>
+  </data>
+  <data name="Risk.RiskClassificationOfDrugs" xml:space="preserve">
+    <value>Risikoklassifizierung von Arzneimitteln</value>
+  </data>
+  <data name="Risk.TitleNC" xml:space="preserve">
+    <value>Noch nicht Klassifiziert</value>
+  </data>
+  <data name="Risk.TitleNP" xml:space="preserve">
+    <value>Nicht Porphyrinogen</value>
+  </data>
+  <data name="Risk.TitleP" xml:space="preserve">
+    <value>Porphyrinogen</value>
+  </data>
+  <data name="Risk.TitlePNP" xml:space="preserve">
+    <value>Wahrscheinlich nicht Porphyrinogen</value>
+  </data>
+  <data name="Risk.TitlePRP" xml:space="preserve">
+    <value>Wahrscheinlich Porphyrinogen</value>
+  </data>
+  <data name="Risk.TitlePSP" xml:space="preserve">
+    <value>Möglicherweise Porphyrinogen</value>
+  </data>
+  <data name="SafeDrugs.Header" xml:space="preserve">
+    <value>Sichere Medikamente</value>
+  </data>
+  <data name="SafeDrugs.Introduction" xml:space="preserve">
+    <value>Die in dieser Liste aufgeführten Arzneimittel sind als sicher eingestuft (nicht porphyrinogen/wahrscheinlich nicht porphyrinogen). 
+Verwendung als Mittel der ersten Wahl, keine Vorsichtsmaßnahmen erforderlich. 
+Klicken Sie auf den Medikamentennamen für Details.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suche</value>
+  </data>
+  <data name="Search.DefaultInfo" xml:space="preserve">
+    <value>Standardmäßig werden nur klassifizierte Arzneimittel angezeigt (es sei denn, alle sind nicht klassifiziert).</value>
+  </data>
+  <data name="Search.Disclaimer" xml:space="preserve">
+    <value>Die in dieser Datenbank enthaltenen Informationen sind zur Verwendung durch medizinisches Fachpersonal bestimmt. 
+Sie dienen als Handlungsempfehlung für die Behandlung von Patienten mit akuter Porphyrie oder von Personen mit einer genetischen Disposition für akute Porphyrie. 
+Das Norwegische Porphyriezentrum (Napos) übernimmt keine Verantwortung für Fehler, Meinungsverschiedenheiten oder nachteilige Folgen, die sich aus der Nutzung der auf dieser Website veröffentlichten Informationen ergeben. 
+In der Datenbank sind die Medikamente in verschiedene Risikokategorien eingeteilt, die auf einer gründlichen Auswertung der internationalen klinischen Erfahrung, veröffentlichten Fallberichten und theoretischen Überlegungen beruhen. 
+Es ist wichtig, sich darüber im Klaren zu sein, dass damit ein gewisses Maß an Unsicherheit verbunden ist. 
+Obwohl dies für Patienten von Interesse sein kann, sollten Entscheidungen über die Verwendung von Medikamenten bei akuter Porphyrie immer in Absprache mit medizinischem Fachpersonal getroffen werden.</value>
+  </data>
+  <data name="Search.Info" xml:space="preserve">
+    <value>Suche nach Wirkstoffen</value>
+  </data>
+  <data name="Search.PageHeader" xml:space="preserve">
+    <value>Medikamentensuche</value>
+  </data>
+  <data name="Search.Placeholder" xml:space="preserve">
+    <value>Suchtext (für beste Ergebnisse Markennamen verwenden)</value>
+  </data>
+  <data name="Search.Sorry1" xml:space="preserve">
+    <value>Entschuldigung, die Suche nach</value>
+  </data>
+  <data name="Search.Type4" xml:space="preserve">
+    <value>Geben Sie 4 oder mehr Zeichen ein und bestätigen Sie</value>
+  </data>
+  <data name="Search.Type4more" xml:space="preserve">
+    <value>Geben Sie einen Suchbegriff ein oder klicken Sie auf die Schaltfläche "Suchen."</value>
+  </data>
+  <data name="Src.AllSources" xml:space="preserve">
+    <value>Alle Quellen</value>
+  </data>
+  <data name="Src.Belgium" xml:space="preserve">
+    <value>Belgien</value>
+  </data>
+  <data name="Src.Canada" xml:space="preserve">
+    <value>Kanada</value>
+  </data>
+  <data name="Src.Colombia" xml:space="preserve">
+    <value>Kolumbien</value>
+  </data>
+  <data name="Src.DataSource" xml:space="preserve">
+    <value>Datenquelle</value>
+  </data>
+  <data name="Src.Denmark" xml:space="preserve">
+    <value>Dänemark</value>
+  </data>
+  <data name="Src.Estonia" xml:space="preserve">
+    <value>Estland</value>
+  </data>
+  <data name="Src.Finland" xml:space="preserve">
+    <value>Finnland</value>
+  </data>
+  <data name="Src.France" xml:space="preserve">
+    <value>Frankreich</value>
+  </data>
+  <data name="Src.Hungary" xml:space="preserve">
+    <value>Ungarn</value>
+  </data>
+  <data name="Src.Iceland" xml:space="preserve">
+    <value>Island</value>
+  </data>
+  <data name="Src.Information" xml:space="preserve">
+    <value>Sie können die Suchergebnisse auf eine bestimmte Quelle beschränken oder sich Ergebnisse aus allen Quellen anzeigen lassen.</value>
+  </data>
+  <data name="Src.Ireland" xml:space="preserve">
+    <value>Irland</value>
+  </data>
+  <data name="Src.Italy" xml:space="preserve">
+    <value>Italien</value>
+  </data>
+  <data name="Src.Latvia" xml:space="preserve">
+    <value>Lettland</value>
+  </data>
+  <data name="Src.Lithuania" xml:space="preserve">
+    <value>Litauen</value>
+  </data>
+  <data name="Src.Luxembourg" xml:space="preserve">
+    <value>Luxemburg</value>
+  </data>
+  <data name="Src.Netherlands" xml:space="preserve">
+    <value>Niederlande</value>
+  </data>
+  <data name="Src.Norway" xml:space="preserve">
+    <value>Norwegen</value>
+  </data>
+  <data name="Src.Poland" xml:space="preserve">
+    <value>Polen</value>
+  </data>
+  <data name="Src.Romania" xml:space="preserve">
+    <value>Rumänien</value>
+  </data>
+  <data name="Src.Serbia" xml:space="preserve">
+    <value>Serbien</value>
+  </data>
+  <data name="Src.Slovenia" xml:space="preserve">
+    <value>Slowenien</value>
+  </data>
+  <data name="Src.Spain" xml:space="preserve">
+    <value>Spanien</value>
+  </data>
+  <data name="Src.Switzerland" xml:space="preserve">
+    <value>Schweiz</value>
+  </data>
+  <data name="Src.UnitedKingdom" xml:space="preserve">
+    <value>Vereinigtes Königreich</value>
+  </data>
+  <data name="Term1" xml:space="preserve">
+    <value>Die Datenbank wird in regelmäßigen Abständen um neue Informationen aktualisiert. Ebenso können sich die vorhandenen Daten ändern.</value>
+  </data>
+  <data name="Term2" xml:space="preserve">
+    <value>Alle Informationen auf dieser Website werden vom Norwegischen Porphyrie-Zentrum (Napos) nach bestem Wissen und Gewissen ausschließlich zu allgemeinen Informationszwecken veröffentlicht. Sie können ohne vorherige Ankündigung geändert werden.</value>
+  </data>
+  <data name="Term3" xml:space="preserve">
+    <value>Napos übernimmt keine Gewähr oder Garantie für die Vollständigkeit, Zuverlässigkeit und Richtigkeit der Informationen. Die Nutzer erkennen an, dass jede Handlung, die auf der Grundlage der auf dieser Website gefundenen Informationen vorgenommen wird, ausschließlich selbstverantwortlich auf ihr eigenes Risiko erfolgt.</value>
+  </data>
+  <data name="Term4" xml:space="preserve">
+    <value>Napos haftet nicht für Verluste und/oder Schäden im Zusammenhang mit der Nutzung der Arzneimitteldatenbank für Patienten mit akuter Porphyrie.</value>
+  </data>
+  <data name="Term5" xml:space="preserve">
+    <value>Obwohl wir uns bemühen, die Website funktionsfähig zu halten, übernimmt Napos keine Verantwortung und haftet nicht für eine vorübergehende Nichtverfügbarkeit aufgrund technischer Probleme, die sich unserem Einflussbereich entziehen.</value>
+  </data>
+  <data name="Term6" xml:space="preserve">
+    <value>Die Beschränkungen für die Nutzung der Daten dieser Website sind im Abschnitt "Urheberrecht" dargelegt.</value>
+  </data>
+  <data name="Term7" xml:space="preserve">
+    <value>Wenn Sie Daten von dieser Website verwenden, ist eine ordnungsgemäße Zitierung wie folgt erforderlich.  Siehe: Die Arzneimitteldatenbank für akute Porphyrie. Das norwegische Porphyriezentrum (Napos). https://drugsporphyria.net/ [Zeitpunkt des Zugriffs].</value>
+  </data>
+  <data name="Term8" xml:space="preserve">
+    <value>Durch die Nutzung dieser Website erklären sich die Nutzer mit dem Haftungsausschluss einverstanden und stimmen den Nutzungsbedingungen zu.</value>
+  </data>
+  <data name="UserSettings.CookiePolicy" xml:space="preserve">
+    <value>Ihre Einstellungen werden in einem Cookie gespeichert.
+Wenn Sie auf die Schaltfläche klicken, stimmen Sie der Verwendung von Cookies für diesen Zweck zu.
+Wir verwenden keine Cookies für andere Zwecke.</value>
+  </data>
+  <data name="UserSettings.Header" xml:space="preserve">
+    <value>Meine Einstellungen</value>
+  </data>
+  <data name="UserSettings.LetMyFilterResults" xml:space="preserve">
+    <value>Ich möchte die Ergebnisse auf der Suchseite nach Land/Quelle filtern.</value>
+  </data>
+  <data name="UserSettings.ShowFlags" xml:space="preserve">
+    <value>Flaggen für die Auswahl von Quellen in den Suchergebnissen anzeigen.</value>
+  </data>
+  <data name="VP" xml:space="preserve">
+    <value>Porphyria Variegata</value>
+  </data>
+</root>
