@@ -1,0 +1,8 @@
+﻿CREATE SCHEMA [API]
+    AUTHORIZATION [dbo];
+
+
+GO
+GRANT EXECUTE
+    ON SCHEMA::[API] TO [WebPublicUser];
+

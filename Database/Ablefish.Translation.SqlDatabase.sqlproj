@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>TranslationDatabase</Name>
+    <Name>Ablefish.Translation.SqlDatabase</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{187f69e9-c049-4a47-898e-9c1b8fa29425}</ProjectGuid>
@@ -74,6 +74,8 @@
     <Folder Include="Tools\Stored Procedures\" />
     <Folder Include="Tools\Views\" />
     <Folder Include="Tools\Functions\" />
+    <Folder Include="API\" />
+    <Folder Include="API\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TextLanguage.sql" />
@@ -139,6 +141,8 @@
     <Build Include="Tools\Functions\GetProjectWorkPeriods.sql" />
     <Build Include="Tools\Stored Procedures\GetChangedWorkItems.sql" />
     <Build Include="Tools\Stored Procedures\GetChangedTextBlocks.sql" />
+    <Build Include="API\Stored Procedures\GetUserTranslation.sql" />
+    <Build Include="Security\API.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare.scmp" />

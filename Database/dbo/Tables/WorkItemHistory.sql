@@ -10,8 +10,11 @@
     [Flagged]   BIT            NOT NULL,
     [FlaggedBy] VARCHAR (16)   NULL,
     [ValidFrom] DATETIME2 (7)  NOT NULL,
-    [ValidTo]   DATETIME2 (7)  NOT NULL
+    [ValidTo]   DATETIME2 (7)  NOT NULL,
+    [InUse]     BIT            NOT NULL
 );
+
+
 
 
 GO

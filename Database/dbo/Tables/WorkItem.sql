@@ -11,12 +11,15 @@
     [FlaggedBy] VARCHAR (16)                                NULL,
     [ValidFrom] DATETIME2 (7) GENERATED ALWAYS AS ROW START DEFAULT (sysutcdatetime()) NOT NULL,
     [ValidTo]   DATETIME2 (7) GENERATED ALWAYS AS ROW END   DEFAULT (CONVERT([datetime2](7),'9999-12-31 23:59:59.9999999')) NOT NULL,
+    [InUse]     BIT                                         DEFAULT ((1)) NOT NULL,
     CONSTRAINT [PK_WorkItem] PRIMARY KEY CLUSTERED ([WorkId] ASC),
     FOREIGN KEY ([FlaggedBy]) REFERENCES [dbo].[UserList] ([LogTo]),
     CONSTRAINT [FK_WorkItem_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Project] ([ProjectId]),
     PERIOD FOR SYSTEM_TIME ([ValidFrom], [ValidTo])
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE=[dbo].[WorkItemHistory], DATA_CONSISTENCY_CHECK=ON));
+
+
 
 
 
