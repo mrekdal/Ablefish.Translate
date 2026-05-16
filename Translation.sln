@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransService", "Libraries\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationWriteback", "TranslationWriteback\TranslationWriteback.csproj", "{FDDC5507-2B81-4F17-8A7D-514FF69E2D9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationApi", "TranslationApi\TranslationApi.csproj", "{F4981C8A-12AB-79D9-2A36-E054C7113AD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{FDDC5507-2B81-4F17-8A7D-514FF69E2D9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDDC5507-2B81-4F17-8A7D-514FF69E2D9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDDC5507-2B81-4F17-8A7D-514FF69E2D9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4981C8A-12AB-79D9-2A36-E054C7113AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4981C8A-12AB-79D9-2A36-E054C7113AD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4981C8A-12AB-79D9-2A36-E054C7113AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4981C8A-12AB-79D9-2A36-E054C7113AD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
