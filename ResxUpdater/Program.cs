@@ -7,26 +7,30 @@ namespace AblefishResxUpdater
 {
     public class Options
     {
-        [Option('p', "ProjectId", Required = true, HelpText = "Project ID to fetch translations for.")]
+        [Option('p', "ProjectId", Required = true, HelpText = "ProjectId to fetch translations for.")]
         public int ProjectId { get; set; }
 
-        [Option('l', "LangKey", Required = true, HelpText = "Language key (e.g. 'de', 'fr').")]
+        [Option('l', "LangKey", Required = true, HelpText = "Language key (e.g. 'es', 'nl', 'de', 'ca' or 'nb').")]
         public string LangKey { get; set; } = string.Empty;
 
-        [Option('u', "UserName", Required = true, HelpText = "LogTo user name.")]
+        [Option('u', "UserName", Required = false, HelpText = "LogTo user name. If omitted, approved translations are fetched instead.")]
         public string UserName { get; set; } = string.Empty;
 
         [Option('f', "File", Required = true, HelpText = "Full path to the .resx file to update.")]
         public string ResxFile { get; set; } = string.Empty;
     }
 
-    public record UserTranslation(
-        string RowKey,
-        string TextOriginal,
-        string TextResX,
-        string TextTranslated,
-        int Changed,
-        string LogTo);
+    public class UserTranslation
+    {
+        public int RowId { get; set; }
+        public string RowKey { get; set; } = string.Empty;
+        public string TextOriginal { get; set; } = string.Empty;
+        public string TextResX { get; set; } = string.Empty;
+        public string TextTranslated { get; set; } = string.Empty;
+        public int Changed { get; set; }
+        public int BlockId { get; set; }
+        public string LogTo { get; set; } = string.Empty;
+    }
 
     internal class Program
     {
@@ -70,12 +74,16 @@ namespace AblefishResxUpdater
 
             // Fetch translations from the API
             using HttpClient http = new HttpClient { BaseAddress = new Uri(baseUrl) };
-            string url = $"/GetUserTranslation?projectId={options.ProjectId}&langKey={Uri.EscapeDataString(options.LangKey)}&userName={Uri.EscapeDataString(options.UserName)}";
+            string url = string.IsNullOrWhiteSpace(options.UserName)
+                ? $"/GetApprovedTranslation?projectId={options.ProjectId}&langKey={Uri.EscapeDataString(options.LangKey)}"
+                : $"/GetUserTranslation?projectId={options.ProjectId}&langKey={Uri.EscapeDataString(options.LangKey)}&userName={Uri.EscapeDataString(options.UserName)}";
 
             List<UserTranslation>? translations;
             try
             {
                 translations = await http.GetFromJsonAsync<List<UserTranslation>>(url);
+                if (translations != null)
+                    Console.Error.WriteLine($"\nSuccess: API call returned {translations.Count} translations.");
             }
             catch (Exception ex)
             {
@@ -96,6 +104,7 @@ namespace AblefishResxUpdater
 
             int updated = 0;
             int skipped = 0;
+            int unchanged = 0;
 
             foreach (UserTranslation t in translations)
             {
@@ -125,8 +134,7 @@ namespace AblefishResxUpdater
 
                 if (valueElement.Value == t.TextTranslated)
                 {
-                    Console.WriteLine($"  SKIP (no change): {t.RowKey}");
-                    skipped++;
+                    unchanged++;
                     continue;
                 }
 
@@ -138,7 +146,7 @@ namespace AblefishResxUpdater
             doc.Save(options.ResxFile);
 
             Console.WriteLine();
-            Console.WriteLine($"Done. Updated: {updated}, Skipped: {skipped}");
+            Console.WriteLine($"DONE. Updated: {updated}, Skipped: {skipped}, Unchanged: {unchanged}");
             return 0;
         }
     }
