@@ -1,7 +1,9 @@
-SELECT * FROM dbo.UserList ORDER BY FirstName;
+EXEC Web.GetWorkPeriods '78120y9vpvpa', 15; -- Ikram
+EXEC Web.GetWorkPeriods 'truo918l9xwc', 15; -- Huda
 GO
 
-
+SELECT * FROM dbo.UserList ORDER BY FirstName;
+GO
 
 UPDATE dbo.UserList SET FirstName = 'Magne', LastName = 'Rekdal' WHERE UserId = 29;
 UPDATE dbo.UserList SET FirstName = 'Azure', LastName = 'Translated' WHERE UserId = 18;
@@ -23,9 +25,6 @@ EXEC Web.GetProjectStatus '78120y9vpvpa'; -- Ikram
 EXEC Web.GetProjectStatus '0jm0se48cq02'; -- Nils
 GO
 
-EXEC Web.GetWorkPeriods '78120y9vpvpa', 15; -- Ikram
-EXEC Web.GetWorkPeriods 'truo918l9xwc', 15; -- Huda
-GO
 
 EXEC Tools.GetWorkDetails 3, '2026-02-23', '2026-02-25 03:00';
 EXEC Tools.GetWorkDetails 3, '2026-02-23', '2026-02-24 03:00';
