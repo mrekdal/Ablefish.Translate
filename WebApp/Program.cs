@@ -3,7 +3,6 @@ using DiffPlex;
 using DiffPlex.DiffBuilder;
 using Logto.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Ablefish.Translation.WebApp.Components;
 using Ablefish.Translation.WebApp.Data;
 using Ablefish.Translation.WebApp.Interfaces;

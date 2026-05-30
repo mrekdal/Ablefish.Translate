@@ -81,4 +81,48 @@ app.MapGet("/GetApprovedTranslation", async (int projectId, string langKey, ICon
 .Produces(StatusCodes.Status400BadRequest)
 .Produces(StatusCodes.Status500InternalServerError);
 
+app.MapPost("/AddTranslation", async (AddTranslationRequest request, IConfiguration config) =>
+{
+    if (request.LangKey.Length < 2 || request.LangKey.Length > 12)
+        return Results.BadRequest("LangKey must be between 2 and 12 characters.");
+
+    if (string.IsNullOrWhiteSpace(request.RowKey))
+        return Results.BadRequest("RowKey is required.");
+
+    if (string.IsNullOrWhiteSpace(request.LogTo))
+        return Results.BadRequest("LogTo is required.");
+
+    string connectionString = config.GetConnectionString("MSSQL")
+        ?? throw new InvalidOperationException("Connection string 'MSSQL' is not configured.");
+
+    try
+    {
+        using IDbConnection connection = new SqlConnection(connectionString);
+        await connection.ExecuteAsync(
+            "EXEC API.AddTextBlockRowKey @ProjectId, @RowKey, @LangKey, @RawText, @CheckSrc, @LogTo;",
+            new
+            {
+                request.ProjectId,
+                request.RowKey,
+                request.LangKey,
+                request.RawText,
+                request.CheckSrc,
+                request.LogTo
+            });
+
+        return Results.Ok();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+    }
+})
+.WithName("AddTranslation")
+.WithSummary("Add or update a translation")
+.WithDescription("Posts a translation for the given project, row key and language by calling the stored procedure API.AddTextBlockRowKey.")
+.Accepts<AddTranslationRequest>("application/json")
+.Produces(StatusCodes.Status200OK)
+.Produces(StatusCodes.Status400BadRequest)
+.Produces(StatusCodes.Status500InternalServerError);
+
 app.Run();
